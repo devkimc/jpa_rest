@@ -11,11 +11,11 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @Setter
-public class Group {
+public class Rest {
 
-    @Id @GeneratedValue
-    @Column(name = "group_id")
+    @Id
+    @GeneratedValue
+    @Column(name = "rest_id")
     private Long id;
-    private Member member;
-    private Long createUserId;
+    private String restname;
 }
