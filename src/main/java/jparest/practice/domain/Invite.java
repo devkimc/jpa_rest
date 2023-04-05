@@ -16,10 +16,9 @@ public class Invite {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "group_member_id")
+    private GroupMember groupMember;
 
-    private String groupName;
     private Long recvUserId;
 
     @Enumerated(EnumType.STRING)
