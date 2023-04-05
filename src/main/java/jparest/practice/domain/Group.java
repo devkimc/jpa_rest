@@ -31,10 +31,12 @@ public class Group {
     }
 
     //==생성 메서드==//
-    public static Group createGroup(Long createUserId, String groupName, GroupMember groupMember) {
+    public static Group createGroup(Long createUserId, String groupName,
+                                    GroupMember groupMember) {
         Group group = new Group();
         group.setCreateUserId(createUserId);
         group.setGroupName(groupName);
+
         group.addGroupMember(groupMember);
         return group;
     }
