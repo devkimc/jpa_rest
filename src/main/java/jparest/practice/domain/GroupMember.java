@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "group_member")
 @Getter
 @Setter
 public class GroupMember {
@@ -27,4 +28,13 @@ public class GroupMember {
 
     @OneToMany(mappedBy = "groupMember")
     private List<Invite> invites = new ArrayList<>();
+
+    //==생성 메서드==/
+    public static GroupMember createGroupMember(Member member) {
+        GroupMember groupMember = new GroupMember();
+        groupMember.setMember(member);
+
+        return groupMember;
+    }
+
 }
