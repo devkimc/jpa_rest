@@ -24,4 +24,13 @@ public class Invite {
     @Enumerated(EnumType.STRING)
     private InviteStatus status;
 
+    //==생성 메서드==//
+    public static Invite createInvite(Long recvUserId, GroupMember groupMember) {
+        Invite invite = new Invite();
+        invite.setRecvUserId(recvUserId);
+        invite.setGroupMember(groupMember);
+        invite.setStatus(InviteStatus.WAITING);
+
+        return invite;
+    }
 }

@@ -29,7 +29,13 @@ public class GroupMember {
     @OneToMany(mappedBy = "groupMember")
     private List<Invite> invites = new ArrayList<>();
 
-    //==생성 메서드==/
+    //==연관관계 메서드==//
+    public void addInvite(Invite invite) {
+        invites.add(invite);
+        invite.setGroupMember(this);
+    }
+
+    //==생성 메서드==//
     public static GroupMember createGroupMember(Member member) {
         GroupMember groupMember = new GroupMember();
         groupMember.setMember(member);
