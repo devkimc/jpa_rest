@@ -27,4 +27,12 @@ public class GroupRepository {
         return em.find(Group.class, id);
     }
 
+    public GroupMember findByGroupIdAndMemberId(Long groupId, Long memberId) {
+        return em.createQuery("select g from GroupMember g where g.groupId = :groupId and :g.memberId = :memberId",
+                        GroupMember.class)
+                .setParameter("groupId", groupId)
+                .setParameter("memberID", memberId)
+                .getSingleResult();
+    }
+
 }
