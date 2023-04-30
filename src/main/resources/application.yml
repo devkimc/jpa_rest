@@ -1,19 +1,21 @@
 spring:
   datasource:
-    url: jdbc:h2:~/practice
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/security
+    username: root
+    password: 1234
 
   jpa:
-    database: h2
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: true
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
-        show_sql: true
+        show-sql: true
         format_sql: true
 logging.level:
   org.hibernate.SQL: debug
-# org.hibernate.type: trace #스프링 부트 2.x, hibernate5
-# org.hibernate.orm.jdbc.bind: trace #스프링 부트 3.x, hibernate6
+
+jwt:
+  secret-key: "spring-rest-practice"
