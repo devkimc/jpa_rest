@@ -66,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(authenticationEntryPoint) // 인증 실패
                 .accessDeniedHandler(accessDeniedHandler) // 인가 실패
                 .and().authorizeRequests()
-                .antMatchers(HttpMethod.GET, GET_WHITELIST).permitAll() // 해당 GET URL은 모두 허용
+//                .antMatchers(HttpMethod.GET, GET_WHITELIST).permitAll() // 해당 GET URL은 모두 허용
                 .antMatchers(HttpMethod.POST, POST_WHITELIST).permitAll() // 해당 POST URL은 모두 허용
                 .antMatchers("**").hasAnyRole("USER") // 권한 적용
                 .anyRequest().authenticated() // 나머지 요청에 대해서는 인증을 요구

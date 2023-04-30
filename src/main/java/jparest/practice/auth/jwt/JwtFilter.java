@@ -58,4 +58,15 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+            for(String url: EXCLUDE_URL) {
+                if(request.getRequestURI().equalsIgnoreCase(url)) {
+                    log.info("JwtFilter 에서 제외 : {}", request.getServletPath());
+                    return true;
+                }
+            }
+        return false;
+    }
 }
