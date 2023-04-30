@@ -18,14 +18,12 @@ public class UserController {
 
     @PostMapping(name = "로그인", value = "/login")
     public ApiResponse login(@RequestBody LoginDTO loginDTO) {
-        System.out.println("loginDTO = " + loginDTO);
         userService.login(loginDTO);
         return new ApiResponse();
     }
 
     @PostMapping(name = "회원가입", value = "/user")
     public ApiResponse join(@RequestBody UserJoinDTO userJoinDTO) {
-        System.out.println("userJoinDTO = " + userJoinDTO);
         userService.join(userJoinDTO);
         return new ApiResponse();
     }
@@ -34,7 +32,6 @@ public class UserController {
     public DataApiResponse<UserInfoDTO> info(@PathVariable long id) {
         System.out.println("id = " + id);
         UserInfoDTO userInfoDTO = userService.getInfo(id);
-        System.out.println("userInfoDTO = " + userInfoDTO);
         return new DataApiResponse<>(userInfoDTO);
     }
 

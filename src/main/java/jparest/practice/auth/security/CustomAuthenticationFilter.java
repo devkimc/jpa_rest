@@ -23,6 +23,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         final UsernamePasswordAuthenticationToken authRequest;
+        System.out.println("request = " + request);
 
         final LoginDTO loginDTO;
         try {

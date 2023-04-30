@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         final String[] POST_WHITELIST = new String[]{
                 "/login",
-//                "/user"
+                "/user"
         };
 
         http.csrf().disable()
