@@ -1,6 +1,7 @@
 package jparest.practice.auth.jwt;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -11,13 +12,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer";
     private final JwtProvider jwtProvider;
+    private final List<String> EXCLUDE_URL = List.of("/user", "/login");
 
     /**
      * 토큰 인증 정보를 현재 쓰레드의 SecurityContext 에 저장되는 역할 수행

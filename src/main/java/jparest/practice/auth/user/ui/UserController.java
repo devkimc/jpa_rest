@@ -30,7 +30,6 @@ public class UserController {
 
     @GetMapping(name = "회원 정보조회", value = "/user/{id}")
     public DataApiResponse<UserInfoDTO> info(@PathVariable long id) {
-        System.out.println("id = " + id);
         UserInfoDTO userInfoDTO = userService.getInfo(id);
         return new DataApiResponse<>(userInfoDTO);
     }

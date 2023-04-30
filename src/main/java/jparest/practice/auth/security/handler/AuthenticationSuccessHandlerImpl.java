@@ -26,6 +26,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         // JWT Token 발급
         final String token = jwtProvider.generateToken(authentication);
         // Response
+        System.out.println("token = " + token);
         ApiResponse.token(response, token);
     }
 }

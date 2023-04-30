@@ -18,4 +18,4 @@ logging.level:
   org.hibernate.SQL: debug
 
 jwt:
-  secret-key: "spring-rest-practice"
+  secret-key: "spring-rest-practice-spring-rest-practice-secret"
