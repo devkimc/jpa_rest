@@ -19,6 +19,9 @@ spring:
     host: localhost
     port: 6379
 
+domain:
+  host: 'localhost'
+
 logging.level:
   org.hibernate.SQL: debug
 

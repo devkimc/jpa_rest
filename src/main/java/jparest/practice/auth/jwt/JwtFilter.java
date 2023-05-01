@@ -3,9 +3,12 @@ package jparest.practice.auth.jwt;
 import jparest.practice.common.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -15,13 +18,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class JwtFilter extends OncePerRequestFilter {
+    @Value("${domain.host}")
+    private String domain;
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String BEARER_PREFIX = "Bearer";
+    private final JwtService jwtService;
+
     private final JwtTokenProvider jwtProvider;
     private final List<String> EXCLUDE_URL = List.of("/user", "/login");
 
@@ -30,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("JWT Filter 시작");
+        log.info("JWT Filter 실행 시작");
 
         boolean isValidationAccessToken = false;
         boolean isValidationRefreshToken = false;
@@ -43,37 +50,53 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (accessTokenCookie != null) {
             accessToken = CookieUtils.deserialize(accessTokenCookie, String.class);
-//            isValidationAccessToken = jwtSe
+            isValidationAccessToken = jwtService.validateToken(accessToken);
         }
 
-        // Request Header 에서 토큰 추출
-        String jwt = resolveToken(request);
-        System.out.println("jwt = " + jwt);
+        if (refreshTokenCookie != null) {
+            refreshToken = CookieUtils.deserialize(refreshTokenCookie, String.class);
+            isValidationRefreshToken = jwtService.validateToken(refreshToken) && jwtService.existedByRefreshToken(refreshToken);
+        }
 
-        // Token 유효성 검사
-//        if (StringUtils.hasText(jwt) && jwtProvider.isValidToken(jwt)) {
-//            System.out.println("jwt 통과");
-//
-//            // 토큰으로 인증 정보를 추출
-//            Authentication authentication = jwtProvider.getAuthentication(jwt);
-//            // SecurityContext 에 저장
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//        } else {
-//            System.out.println("Jwt 실패");
-//        }
+        log.info("액세스 토큰 유효성 체크 결과 {()}", isValidationAccessToken);
+        log.info("리프레시 토큰 유효성 체크 결과 {()}", isValidationRefreshToken);
 
+        // 리프레시 토큰이 검증되지 않았을 경우 쿠키에서 전부 삭제
+        if (isValidationRefreshToken == false) {
+            CookieUtils.deleteCookie(request, response, TokenType.REFRESH_TOKEN.name());
+            CookieUtils.deleteCookie(request, response, TokenType.ACCESS_TOKEN.name());
+            if (isValidationAccessToken == true) {
+
+                // TODO : 엑세스 토큰을 왜 넣을까?
+                jwtService.deleteRefreshTokenByAccessToken(accessToken);
+            }
+        }
+
+        // 액세스 X, 리프레시 O
+        if (!isValidationAccessToken && isValidationRefreshToken) {
+            setAuthentication(refreshToken, request, response);
+        }
+
+        // 액세스 O, 리프레시 O
+        if (isValidationAccessToken && isValidationRefreshToken) {
+            setAuthentication(accessToken, request, response);
+        }
+
+        log.info("JWT Filter 실행 종료");
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * Request Header 에서 토큰 추출
-     */
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(7);
+    private void setAuthentication(String token, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Authentication authentication = jwtService.tokenLogin(token);
+            String userType = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            CookieUtils.addCookie(response, TokenType.ACCESS_TOKEN.name(), jwtService.createAccessToken(authentication.getName(), userType), domain);
+        } catch (UsernameNotFoundException e) {
+            log.error("UsernameNotFoundException : 회원이 존재하지 않습니다. DB 확인해주세요.");
+            CookieUtils.deleteCookie(request, response, TokenType.REFRESH_TOKEN.name());
+            CookieUtils.deleteCookie(request, response, TokenType.ACCESS_TOKEN.name());
         }
-        return null;
     }
 
     @Override
