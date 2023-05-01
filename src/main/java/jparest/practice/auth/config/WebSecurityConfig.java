@@ -1,7 +1,7 @@
 package jparest.practice.auth.config;
 
 import jparest.practice.auth.jwt.JwtFilter;
-import jparest.practice.auth.jwt.JwtProvider;
+import jparest.practice.auth.jwt.JwtTokenProvider;
 import jparest.practice.auth.security.CustomAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -27,7 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     // JWT 제공 클래스
-    private final JwtProvider jwtProvider;
+    private final JwtTokenProvider jwtProvider;
     // 인증 실패 또는 인증헤더가 전달받지 못했을 때 핸들러
     private final AuthenticationEntryPoint authenticationEntryPoint;
     // 인증 성공 핸들러

@@ -1,6 +1,6 @@
 package jparest.practice.auth.security.handler;
 
-import jparest.practice.auth.jwt.JwtProvider;
+import jparest.practice.auth.jwt.JwtTokenProvider;
 import jparest.practice.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -16,7 +16,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHandler {
 
-    private final JwtProvider jwtProvider;
+    private final JwtTokenProvider jwtProvider;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -24,9 +24,9 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         // 전달받은 인증정보 SecurityContextHolder 에 저장
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // JWT Token 발급
-        final String token = jwtProvider.generateToken(authentication);
+//        final String token = jwtProvider.generateToken(authentication);
         // Response
-        System.out.println("token = " + token);
-        ApiResponse.token(response, token);
+//        System.out.println("token = " + token);
+//        ApiResponse.token(response, token);
     }
 }

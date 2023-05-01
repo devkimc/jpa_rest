@@ -50,7 +50,12 @@ public class CookieUtils {
     }
 
     // 쿠키 직렬화
-    private static String serialize(Object obj) {
+    public static String serialize(Object obj) {
         return Base64.getUrlEncoder().encodeToString(SerializationUtils.serialize(obj));
+    }
+
+    // 쿠키 역직렬화
+    public static <T> T deserialize(Cookie cookie, Class<T> cls) {
+        return cls.cast(SerializationUtils.deserialize(Base64.getUrlDecoder().decode(cookie.getValue())));
     }
 }

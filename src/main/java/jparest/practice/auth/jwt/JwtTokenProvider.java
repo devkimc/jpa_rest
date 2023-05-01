@@ -1,0 +1,111 @@
+package jparest.practice.auth.jwt;
+
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Date;
+
+@Slf4j
+@Component
+public class JwtTokenProvider implements InitializingBean {
+
+    private static final String AUTHORITIES_KEY = "auth";
+    private final String secret;
+    private final long accessTokenTTL;
+    private final long refreshTokenTTL;
+    private final String tokenIssure;
+    private Key key;
+
+    public JwtTokenProvider(@Value("${jwt.secret}") String secret,
+                            @Value("${jwt.token.accessTokenTTL}") long accessTokenTTL,
+                            @Value("${jwt.token.refreshTokenTTL}") long refreshTokenTTL,
+                            @Value("${jwt.token.issure}") String tokenIssure)
+    {
+        this.secret = secret;
+        this.accessTokenTTL = accessTokenTTL * 1000L;
+        this.refreshTokenTTL = refreshTokenTTL * 1000L;
+        this.tokenIssure = tokenIssure;
+    }
+
+    /**
+     * accessToken 발급
+     */
+    public String createAccessToken(String userId, String userType) {
+        log.debug("accessTokenTTL : {}ms", accessTokenTTL);
+
+        Date now = new Date();
+        return Jwts.builder()
+                .setSubject(TokenType.ACCESS_TOKEN.name())
+                .signWith(key, SignatureAlgorithm.HS256)
+                .claim(AUTHORITIES_KEY, userType)
+                .claim("userId", userId)
+                .setIssuer(tokenIssure)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + this.accessTokenTTL))
+                .compact();
+    }
+
+    /**
+     * refreshToken 발급
+     */
+    public String createRefreshToken(String userId) {
+        log.debug("Refresh : {}ms", refreshTokenTTL);
+
+        Date now = new Date();
+        return Jwts.builder()
+                .setSubject(TokenType.REFRESH_TOKEN.name())
+                .signWith(key, SignatureAlgorithm.HS256)
+                .claim("userId", userId)
+                .setIssuer(tokenIssure)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + this.refreshTokenTTL))
+                .compact();
+    }
+
+    public String getUserId(String jwt) {
+        return (String) Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build().parseClaimsJws(jwt)
+                .getBody().get("userId");
+    }
+
+    public long getRefreshTokenTTL() {
+        return refreshTokenTTL;
+    }
+
+    /**
+     * 토큰 검증
+     */
+    public boolean validateToken(String jwtToken) {
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build().parseClaimsJws(jwtToken);
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (SecurityException e) {
+            log.error("Invalid JWT signature.", e);
+        } catch (MalformedJwtException e) {
+            log.error("Invalid JWT token", e);
+        } catch (ExpiredJwtException e) {
+            log.debug("Expired JWT token -> reissue Access Token");
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT token", e);
+        } catch (IllegalArgumentException e) {
+            log.error("JWT token compact of handler are invalid.", e);
+        }
+        return false;
+    }
+
+    // 애플리케이션 재실행 시 key 값 주입
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+}
