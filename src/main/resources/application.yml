@@ -31,3 +31,9 @@ jwt:
     accessTokenTTL: 3600
     refreshTokenTTL: 1209600
     issure: "jpa.rest.wskim"
+
+cors:
+  allowed-origins: 'https://localhost:3000'
+  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+  allowed-headers: '*'
+  max-age: 3600
