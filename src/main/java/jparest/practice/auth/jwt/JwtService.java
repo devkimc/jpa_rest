@@ -27,6 +27,7 @@ public class JwtService {
     public String createRefreshToken(String userId) {
         String refreshToken = jwtTokenProvider.createRefreshToken(userId);
         RefreshToken token = RefreshToken.create(userId, refreshToken, jwtTokenProvider.getRefreshTokenTTL());
+        System.out.println("token = " + token);
 
         return tokenRepository.save(token).getRefreshToken();
     }
