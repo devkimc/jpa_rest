@@ -27,7 +27,6 @@ public class UserController {
     @PostMapping(name = "로그인", value = "/login")
     public ApiResponse login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {
         TokenDto tokenDto = userService.login(loginDTO);
-        System.out.println("tokenDto = " + tokenDto);
         if (tokenDto != null) {
             CookieUtils.addCookie(response, TokenType.ACCESS_TOKEN.name(), tokenDto.getAccessToken(), domain);
             CookieUtils.addCookie(response, TokenType.REFRESH_TOKEN.name(), tokenDto.getRefreshToken(), domain);

@@ -19,6 +19,14 @@ spring:
     host: localhost
     port: 6379
 
+server:
+  port: 9090
+  ssl:
+    enabled: true
+    key-store-password: 123456
+    key-store: classpath:snackr.p12
+    key-store-type: PKCS12
+
 domain:
   host: 'localhost'
 
