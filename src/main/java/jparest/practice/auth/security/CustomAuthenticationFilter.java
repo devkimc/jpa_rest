@@ -1,7 +1,7 @@
 package jparest.practice.auth.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jparest.practice.auth.security.dto.LoginDTO;
+import jparest.practice.member.dto.LoginDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

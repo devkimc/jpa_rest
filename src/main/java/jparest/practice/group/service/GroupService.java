@@ -4,7 +4,7 @@ import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.GroupMember;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.member.domain.Member;
-import jparest.practice.member.repository.MemberRepository;
+import jparest.practice.member.repository.MemberRepositoryV0;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GroupService {
 
-    private final MemberRepository memberRepository;
+    private final MemberRepositoryV0 memberRepository;
     private final GroupRepository groupRepository;
 
     /**

@@ -1,4 +1,4 @@
-package jparest.practice.auth.security.dto;
+package jparest.practice.member.dto;
 
 import lombok.*;
 

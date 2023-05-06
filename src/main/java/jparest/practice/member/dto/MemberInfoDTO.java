@@ -1,11 +1,11 @@
-package jparest.practice.auth.user.application.dto;
+package jparest.practice.member.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class UserInfoDTO {
+public class MemberInfoDTO {
     private long id;
     private String userId;
     private String email;

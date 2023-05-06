@@ -1,7 +1,7 @@
 package jparest.practice.auth.security;
 
-import jparest.practice.auth.user.domain.User;
-import jparest.practice.auth.user.domain.UserRepository;
+import jparest.practice.member.domain.Member;
+import jparest.practice.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,11 +14,11 @@ import java.util.Collections;
 @RequiredArgsConstructor
 @Service
 public class CustomUserDetailService implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findFirstUserByLoginIdOrderByIdAsc(username).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다"));
+        Member user = userRepository.findFirstUserByLoginIdOrderByIdAsc(username).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다"));
 
         return new UserDetailsImpl(
                 user.getLoginId(),
