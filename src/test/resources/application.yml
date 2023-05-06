@@ -9,13 +9,39 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         show-sql: true
         format_sql: true
+
+  redis:
+    host: localhost
+    port: 6379
+
+server:
+  port: 9090
+  ssl:
+    enabled: true
+    key-store-password: 123456
+    key-store: classpath:snackr.p12
+    key-store-type: PKCS12
+
+domain:
+  host: 'localhost'
+
 logging.level:
   org.hibernate.SQL: debug
 
 jwt:
-  secret-key: "spring-rest-practice"
+  secret: "spring0rest0practice0spring0rest0practice0secret"
+  token:
+    accessTokenTTL: 3600
+    refreshTokenTTL: 1209600
+    issure: "jpa.rest.wskim"
+
+cors:
+  allowed-origins: 'https://localhost:3000'
+  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+  allowed-headers: '*'
+  max-age: 3600

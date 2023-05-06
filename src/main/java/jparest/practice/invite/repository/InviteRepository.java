@@ -1,6 +1,6 @@
-package jparest.practice.repository;
+package jparest.practice.invite.repository;
 
-import jparest.practice.domain.Invite;
+import jparest.practice.invite.domain.Invite;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

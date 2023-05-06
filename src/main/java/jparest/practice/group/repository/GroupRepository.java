@@ -1,13 +1,11 @@
-package jparest.practice.repository;
+package jparest.practice.group.repository;
 
-import jparest.practice.domain.Group;
-import jparest.practice.domain.GroupMember;
-import jparest.practice.domain.Member;
+import jparest.practice.group.domain.Group;
+import jparest.practice.group.domain.GroupMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor

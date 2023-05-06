@@ -1,5 +1,7 @@
-package jparest.practice.domain;
+package jparest.practice.group.domain;
 
+import jparest.practice.invite.domain.Invite;
+import jparest.practice.member.domain.Member;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,10 +1,11 @@
 package jparest.practice.service;
 
-import jparest.practice.domain.Group;
-import jparest.practice.domain.Member;
-import jparest.practice.repository.GroupRepository;
-import jparest.practice.repository.InviteRepository;
-import jparest.practice.repository.MemberRepository;
+import jparest.practice.group.domain.Group;
+import jparest.practice.member.domain.Member;
+import jparest.practice.group.repository.GroupRepository;
+import jparest.practice.group.service.GroupService;
+import jparest.practice.invite.repository.InviteRepository;
+import jparest.practice.invite.service.InviteService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,8 @@ public class InviteServiceTest {
     @Autowired
     InviteRepository inviteRepository;
 
-    @Autowired GroupService groupService;
+    @Autowired
+    GroupService groupService;
     @Autowired
     GroupRepository groupRepository;
 

@@ -1,11 +1,11 @@
 package jparest.practice.service;
 
-import jparest.practice.domain.Group;
-import jparest.practice.domain.Member;
-import jparest.practice.repository.GroupRepository;
+import jparest.practice.group.domain.Group;
+import jparest.practice.member.domain.Member;
+import jparest.practice.group.repository.GroupRepository;
+import jparest.practice.group.service.GroupService;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +23,8 @@ public class GroupServiceTest {
     @PersistenceContext
     EntityManager em;
 
-    @Autowired GroupService groupService;
+    @Autowired
+    GroupService groupService;
     @Autowired
     GroupRepository groupRepository;
 

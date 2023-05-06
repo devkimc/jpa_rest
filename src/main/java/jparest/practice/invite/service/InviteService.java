@@ -1,9 +1,9 @@
-package jparest.practice.service;
+package jparest.practice.invite.service;
 
-import jparest.practice.domain.GroupMember;
-import jparest.practice.domain.Invite;
-import jparest.practice.repository.GroupRepository;
-import jparest.practice.repository.InviteRepository;
+import jparest.practice.group.domain.GroupMember;
+import jparest.practice.group.repository.GroupRepository;
+import jparest.practice.invite.domain.Invite;
+import jparest.practice.invite.repository.InviteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

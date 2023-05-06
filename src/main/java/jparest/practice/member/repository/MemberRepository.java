@@ -1,6 +1,6 @@
-package jparest.practice.repository;
+package jparest.practice.member.repository;
 
-import jparest.practice.domain.Member;
+import jparest.practice.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

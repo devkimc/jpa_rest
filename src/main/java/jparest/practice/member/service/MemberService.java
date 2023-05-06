@@ -1,9 +1,8 @@
-package jparest.practice.service;
+package jparest.practice.member.service;
 
-import jparest.practice.domain.Member;
-import jparest.practice.repository.MemberRepository;
+import jparest.practice.member.domain.Member;
+import jparest.practice.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

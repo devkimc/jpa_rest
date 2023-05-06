@@ -1,7 +1,8 @@
 package jparest.practice.service;
 
-import jparest.practice.domain.Member;
-import jparest.practice.repository.MemberRepository;
+import jparest.practice.member.domain.Member;
+import jparest.practice.member.repository.MemberRepository;
+import jparest.practice.member.service.MemberService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
