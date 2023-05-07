@@ -1,7 +1,10 @@
 package jparest.practice.auth.security.handler;
 
-import jparest.practice.common.ApiResponse;
-import jparest.practice.common.ApiResponseType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jparest.practice.common.error.ErrorCode;
+import jparest.practice.common.error.ErrorResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -10,15 +13,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 
 @Component
+@RequiredArgsConstructor
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
+    private final ObjectMapper objectMapper;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authenticationException) throws IOException, ServletException {
-        System.out.println("request = " + request);
-        System.out.println("authenticationException = " + authenticationException);
-
-        ApiResponse.error(response, ApiResponseType.UNAUTHORIZED_RESPONSE);
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.AUTHENTICATION_ENTRYPOINT);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setStatus(errorResponse.getStatus());
+        try (OutputStream os = response.getOutputStream()) {
+            objectMapper.writeValue(os, errorResponse);
+            os.flush();
+        }
     }
 }
