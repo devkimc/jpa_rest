@@ -1,7 +1,7 @@
 package jparest.practice.auth.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jparest.practice.member.dto.LoginDTO;
+import jparest.practice.member.dto.UserLoginRequest;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,11 +25,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         final UsernamePasswordAuthenticationToken authRequest;
         System.out.println("request = " + request);
 
-        final LoginDTO loginDTO;
+        final UserLoginRequest userLoginRequest;
         try {
             // 사용자 요청 정보로 UserPasswordAuthentication 발급
-            loginDTO = new ObjectMapper().readValue(request.getInputStream(), LoginDTO.class);
-            authRequest = new UsernamePasswordAuthenticationToken(loginDTO.getLoginId(), loginDTO.getPassword());
+            userLoginRequest = new ObjectMapper().readValue(request.getInputStream(), UserLoginRequest.class);
+            authRequest = new UsernamePasswordAuthenticationToken(userLoginRequest.getLoginId(), userLoginRequest.getPassword());
             System.out.println("UsernamePasswordAuthenticationToken 토큰 생성" + authRequest);
         } catch (IOException e) {
             throw new RuntimeException("Token 발급 실패");
