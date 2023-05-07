@@ -7,7 +7,10 @@ public enum ErrorCode {
 
     // COMMON
     AUTHENTICATION_ENTRYPOINT(401, "C01", "로그인 후 사용 가능합니다."),
-    ACCESS_DENIED(403, "C03", "권한이 없습니다."),
+    ACCESS_DENIED(403, "C02", "권한이 없습니다."),
+
+    // USER
+    EXIST_USER_ID(400, "U01", "이미 존재하는 아이디입니다."),
     ;
 
 

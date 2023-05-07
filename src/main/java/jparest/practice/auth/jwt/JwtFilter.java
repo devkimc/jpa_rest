@@ -30,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
     private final JwtTokenProvider jwtProvider;
-    private final List<String> EXCLUDE_URL = List.of("/user", "/login");
+    private final List<String> EXCLUDE_URL = List.of("/api/user/join", "/api/user/login");
 
     /**
      * 토큰 인증 정보를 현재 쓰레드의 SecurityContext 에 저장되는 역할 수행
@@ -101,6 +101,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        System.out.println("request = " + request.getRequestURI());
             for(String url: EXCLUDE_URL) {
                 if(request.getRequestURI().equalsIgnoreCase(url)) {
                     log.info("JwtFilter 에서 제외 : {}", request.getServletPath());

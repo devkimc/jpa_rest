@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 @CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/user")
 public class MemberController {
     @Value("${domain.host}")
     private String domain;
@@ -41,7 +42,7 @@ public class MemberController {
         return ApiUtils.fail(userLoginResponse);
     }
 
-    @PostMapping(name = "회원가입", value = "/user")
+    @PostMapping(name = "회원가입", value = "/join")
     public ApiResult<Boolean> join(@RequestBody UserJoinRequest userJoinRequest) {
         memberService.join(userJoinRequest);
         return ApiUtils.success(Boolean.TRUE);

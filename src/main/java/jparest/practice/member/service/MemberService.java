@@ -7,6 +7,7 @@ import jparest.practice.member.domain.Member;
 import jparest.practice.member.dto.UserInfoResponse;
 import jparest.practice.member.dto.UserJoinRequest;
 import jparest.practice.member.dto.UserLoginResponse;
+import jparest.practice.member.repository.ExistLoginIdException;
 import jparest.practice.member.repository.MemberRepository;
 import jparest.practice.common.util.TokenDto;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class MemberService {
     @Transactional
     public void join(UserJoinRequest userJoinRequest) {
         Member alreadyUser = userRepository.findFirstUserByLoginIdOrderByIdAsc(userJoinRequest.getLoginId()).orElse(null);
-        if (alreadyUser != null) throw new RuntimeException("이미 등록된 아이디입니다.");
+        if (alreadyUser != null) throw new ExistLoginIdException(alreadyUser.getLoginId());
 
         Member saveUser = Member.builder()
                 .loginId(userJoinRequest.getLoginId())

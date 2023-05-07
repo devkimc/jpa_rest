@@ -37,13 +37,12 @@ public class SecurityConfig  {
 
     /**
      * 보안 기능 초기화 및 설정
-     * WebSecurityConfigureAdapter Deprecated 로 인한 수정
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         final String[] POST_WHITELIST = new String[]{
-                "/login",
-                "/user"
+                "/api/user/login",
+                "/api/user/join"
         };
 
         return http
