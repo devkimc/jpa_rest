@@ -1,7 +1,7 @@
 package jparest.practice.group.domain;
 
 import jparest.practice.invite.domain.Invite;
-import jparest.practice.member.domain.Member;
+import jparest.practice.member.domain.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +22,7 @@ public class GroupMember {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
@@ -38,9 +38,9 @@ public class GroupMember {
     }
 
     //==생성 메서드==//
-    public static GroupMember createGroupMember(Member member) {
+    public static GroupMember createGroupMember(User user) {
         GroupMember groupMember = new GroupMember();
-        groupMember.setMember(member);
+        groupMember.setUser(user);
 
         return groupMember;
     }

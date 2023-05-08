@@ -13,11 +13,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
+public class User {
 
     @Id
     @GeneratedValue
-    @Column(name = "member_id")
+    @Column(name = "user_id")
     private Long id;
 
     @Column(length = 100, nullable = false)
@@ -26,12 +26,12 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 200)
     private String email;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String name;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "user")
     private List<GroupMember> groupMembers = new ArrayList<>();
 }

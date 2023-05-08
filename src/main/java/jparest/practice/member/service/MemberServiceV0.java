@@ -1,6 +1,6 @@
 package jparest.practice.member.service;
 
-import jparest.practice.member.domain.Member;
+import jparest.practice.member.domain.User;
 import jparest.practice.member.repository.MemberRepositoryV0;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,15 +19,15 @@ public class MemberServiceV0 {
      * 회원가입
      */
     @Transactional
-    public Long join(Member member) {
-        validateDuplicateMember(member);
-        memberRepository.save(member);
-        return member.getId();
+    public Long join(User user) {
+        validateDuplicateMember(user);
+        memberRepository.save(user);
+        return user.getId();
     }
 
-    private void validateDuplicateMember(Member member) {
-        List<Member> findMembers = memberRepository.findByName(member.getName());
-        if(!findMembers.isEmpty()) {
+    private void validateDuplicateMember(User user) {
+        List<User> findUsers = memberRepository.findByName(user.getName());
+        if(!findUsers.isEmpty()) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
     }
@@ -35,11 +35,11 @@ public class MemberServiceV0 {
     /**
      * 전체 회원 조회
      */
-    public List<Member> findMembers() {
+    public List<User> findMembers() {
         return memberRepository.findAll();
     }
 
-    public Member findOne(Long memberId) {
+    public User findOne(Long memberId) {
         return memberRepository.findOne(memberId);
     }
 }

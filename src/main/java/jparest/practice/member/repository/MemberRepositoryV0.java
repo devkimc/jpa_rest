@@ -1,6 +1,6 @@
 package jparest.practice.member.repository;
 
-import jparest.practice.member.domain.Member;
+import jparest.practice.member.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -13,22 +13,22 @@ public class MemberRepositoryV0 {
 
     private final EntityManager em;
 
-    public void save(Member member) {
-        em.persist(member);
+    public void save(User user) {
+        em.persist(user);
     }
 
-    public Member findOne(Long id) {
-        return em.find(Member.class, id);
+    public User findOne(Long id) {
+        return em.find(User.class, id);
     }
 
-    public List<Member> findAll() {
-        return em.createQuery("select m from Member m", Member.class)
+    public List<User> findAll() {
+        return em.createQuery("select m from Member m", User.class)
                 .getResultList();
     }
 
-    public List<Member> findByName(String username) {
+    public List<User> findByName(String username) {
         return em.createQuery("select m from Member m where m.username = :username",
-                        Member.class)
+                        User.class)
                 .setParameter("username", username)
                 .getResultList();
     }
