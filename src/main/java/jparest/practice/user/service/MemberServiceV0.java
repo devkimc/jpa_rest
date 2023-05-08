@@ -1,7 +1,7 @@
-package jparest.practice.member.service;
+package jparest.practice.user.service;
 
-import jparest.practice.member.domain.User;
-import jparest.practice.member.repository.MemberRepositoryV0;
+import jparest.practice.user.domain.User;
+import jparest.practice.user.repository.MemberRepositoryV0;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

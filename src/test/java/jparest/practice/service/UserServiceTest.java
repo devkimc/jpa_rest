@@ -1,8 +1,9 @@
 package jparest.practice.service;
 
-import jparest.practice.member.domain.User;
-import jparest.practice.member.repository.UserRepository;
-import jparest.practice.member.service.UserService;
+import jparest.practice.user.domain.User;
+import jparest.practice.user.exception.ExistLoginIdException;
+import jparest.practice.user.repository.UserRepository;
+import jparest.practice.user.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class UserServiceTest {
         assertEquals(user.getLoginId(), saveUser.getLoginId());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = ExistLoginIdException.class)
     public void 중복_회원_예외() throws Exception {
 
         //given

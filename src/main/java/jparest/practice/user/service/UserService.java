@@ -1,14 +1,13 @@
-package jparest.practice.member.service;
+package jparest.practice.user.service;
 
 import jparest.practice.auth.config.UserType;
 import jparest.practice.auth.jwt.JwtService;
-import jparest.practice.member.dto.UserLoginRequest;
-import jparest.practice.member.domain.User;
-import jparest.practice.member.dto.UserInfoResponse;
-import jparest.practice.member.dto.UserJoinRequest;
-import jparest.practice.member.dto.UserLoginResponse;
-import jparest.practice.member.exception.ExistLoginIdException;
-import jparest.practice.member.repository.UserRepository;
+import jparest.practice.user.dto.UserLoginRequest;
+import jparest.practice.user.domain.User;
+import jparest.practice.user.dto.UserInfoResponse;
+import jparest.practice.user.dto.UserLoginResponse;
+import jparest.practice.user.exception.ExistLoginIdException;
+import jparest.practice.user.repository.UserRepository;
 import jparest.practice.common.util.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

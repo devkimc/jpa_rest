@@ -1,4 +1,4 @@
-package jparest.practice.member.domain;
+package jparest.practice.user.domain;
 
 import jparest.practice.group.domain.GroupMember;
 import lombok.*;

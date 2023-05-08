@@ -1,14 +1,13 @@
-package jparest.practice.member.controller;
+package jparest.practice.user.controller;
 
 import jparest.practice.auth.jwt.TokenType;
 import jparest.practice.common.util.ApiResult;
 import jparest.practice.common.util.ApiUtils;
-import jparest.practice.member.domain.User;
-import jparest.practice.member.dto.UserLoginRequest;
-import jparest.practice.member.dto.UserLoginResponse;
-import jparest.practice.member.service.UserService;
-import jparest.practice.member.dto.UserInfoResponse;
-import jparest.practice.member.dto.UserJoinRequest;
+import jparest.practice.user.domain.User;
+import jparest.practice.user.dto.UserLoginRequest;
+import jparest.practice.user.dto.UserLoginResponse;
+import jparest.practice.user.service.UserService;
+import jparest.practice.user.dto.UserInfoResponse;
 import jparest.practice.common.util.CookieUtils;
 import jparest.practice.common.util.TokenDto;
 import lombok.RequiredArgsConstructor;
@@ -45,11 +44,6 @@ public class UserController {
 
     @PostMapping(name = "회원가입", value = "/join")
     public ApiResult<Boolean> join(@RequestBody User user) {
-//        User user = new User();
-//        user.setLoginId(userJoinRequest.getLoginId());
-//        user.setPassword(userJoinRequest.getPassword());
-//        user.setName(userJoinRequest.getName());
-//        user.setEmail(userJoinRequest.getEmail());
         userService.join(user);
         return ApiUtils.success(Boolean.TRUE);
     }

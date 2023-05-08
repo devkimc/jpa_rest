@@ -1,4 +1,4 @@
-package jparest.practice.member.exception;
+package jparest.practice.user.exception;
 
 import jparest.practice.common.error.BusinessException;
 import jparest.practice.common.error.ErrorCode;

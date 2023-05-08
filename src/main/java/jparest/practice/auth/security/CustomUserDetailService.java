@@ -1,7 +1,7 @@
 package jparest.practice.auth.security;
 
-import jparest.practice.member.domain.User;
-import jparest.practice.member.repository.UserRepository;
+import jparest.practice.user.domain.User;
+import jparest.practice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

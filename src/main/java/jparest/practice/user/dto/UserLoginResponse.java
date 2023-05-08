@@ -1,4 +1,4 @@
-package jparest.practice.member.dto;
+package jparest.practice.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jparest.practice.common.util.TokenDto;

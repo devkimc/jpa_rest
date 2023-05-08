@@ -1,6 +1,5 @@
-package jparest.practice.member.dto;
+package jparest.practice.user.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
