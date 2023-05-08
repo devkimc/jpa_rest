@@ -28,7 +28,7 @@ public class UserController {
 
     @PostMapping(name = "로그인", value = "/login")
     public ApiResult<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
-        UserLoginResponse userLoginResponse  = userService.login(userLoginRequest);
+        UserLoginResponse userLoginResponse  = userService.login(userLoginRequest.getLoginId(), userLoginRequest.getPassword());
 
         if (userLoginResponse.getTokenDto() != null) {
             TokenDto tokenDto = userLoginResponse.getTokenDto();

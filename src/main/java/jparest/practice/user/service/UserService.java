@@ -40,15 +40,15 @@ public class UserService {
     }
 
     @Transactional
-    public UserLoginResponse login(UserLoginRequest userLoginRequest) {
-        User user = userRepository.findByLoginId(userLoginRequest.getLoginId()).orElseThrow(() -> new IllegalArgumentException("가입되지 않은 아이디입니다."));
-        if(!passwordEncoder.matches(userLoginRequest.getPassword(), user.getPassword())) {
+    public UserLoginResponse login(String loginId, String password) {
+        User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new IllegalArgumentException("가입되지 않은 아이디입니다."));
+        if(!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
 
         TokenDto tokenDto = new TokenDto();
-        tokenDto.setAccessToken(jwtService.createAccessToken(userLoginRequest.getLoginId(), UserType.ROLE_USER.name()));
-        tokenDto.setRefreshToken(jwtService.createRefreshToken(userLoginRequest.getLoginId()));
+        tokenDto.setAccessToken(jwtService.createAccessToken(loginId, UserType.ROLE_USER.name()));
+        tokenDto.setRefreshToken(jwtService.createRefreshToken(loginId));
         return new UserLoginResponse(user.getEmail(), user.getName(), tokenDto);
     }
 
