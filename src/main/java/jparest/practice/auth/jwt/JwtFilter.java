@@ -36,17 +36,21 @@ public class JwtFilter extends OncePerRequestFilter {
      * 토큰 인증 정보를 현재 쓰레드의 SecurityContext 에 저장되는 역할 수행
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         log.info("JWT Filter 실행 시작");
 
         boolean isValidationAccessToken = false;
         boolean isValidationRefreshToken = false;
 
         final Cookie accessTokenCookie = CookieUtils.getCookie(request, TokenType.ACCESS_TOKEN.name()).orElse(null);
-        final Cookie refreshTokenCookie = CookieUtils.getCookie(request, TokenType.ACCESS_TOKEN.name()).orElse(null);
+        final Cookie refreshTokenCookie = CookieUtils.getCookie(request, TokenType.REFRESH_TOKEN.name()).orElse(null);
 
         String accessToken = null;
         String refreshToken = null;
+
+        log.info("액세스 토큰 {()}", accessTokenCookie);
+        log.info("리프레시 토큰 {()}", refreshTokenCookie);
 
         if (accessTokenCookie != null) {
             accessToken = CookieUtils.deserialize(accessTokenCookie, String.class);

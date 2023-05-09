@@ -1,7 +1,7 @@
 package jparest.practice.group.service;
 
 import jparest.practice.group.domain.Group;
-import jparest.practice.group.domain.GroupMember;
+import jparest.practice.group.domain.GroupUser;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.repository.MemberRepositoryV0;
@@ -27,10 +27,10 @@ public class GroupService {
         User user = memberRepository.findOne(memberId);
 
         // 그룹 멤버 생성
-        GroupMember groupMember = GroupMember.createGroupMember(user);
+        GroupUser groupUser = GroupUser.createGroupUser(user);
 
         // 그룹 생성
-        Group group = Group.createGroup(memberId, groupName, groupMember);
+        Group group = Group.createGroup(memberId, groupName, groupUser);
 
         // 그룹 저장
         groupRepository.save(group);

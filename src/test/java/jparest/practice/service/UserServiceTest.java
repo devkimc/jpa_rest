@@ -3,6 +3,7 @@ package jparest.practice.service;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.dto.UserLoginResponse;
 import jparest.practice.user.exception.ExistLoginIdException;
+import jparest.practice.user.exception.LoginFailException;
 import jparest.practice.user.repository.UserRepository;
 import jparest.practice.user.service.UserService;
 import org.junit.Test;
@@ -76,7 +77,7 @@ public class UserServiceTest {
         assertNotNull(loginUser.getTokenDto());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = LoginFailException.class)
     public void 비밀번호_불일치_예외() throws Exception {
 
         //given

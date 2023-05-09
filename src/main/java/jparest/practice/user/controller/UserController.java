@@ -48,7 +48,7 @@ public class UserController {
         return ApiUtils.success(Boolean.TRUE);
     }
 
-    @GetMapping(name = "회원 정보조회", value = "/user/{id}")
+    @GetMapping(name = "회원 정보조회", value = "/{id}")
     public ApiResult<UserInfoResponse> info(@PathVariable long id) {
         UserInfoResponse userInfoResponse = userService.getInfo(id);
         return ApiUtils.success(userInfoResponse);

@@ -10,39 +10,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "group_member")
+@Table(name = "group_user")
 @Getter
 @Setter
-public class GroupMember {
+public class GroupUser {
 
     @Id
     @GeneratedValue
-    @Column(name = "group_member_id")
+    @Column(name = "group_user_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @OneToMany(mappedBy = "groupMember")
+    @OneToMany(mappedBy = "groupUser")
     private List<Invite> invites = new ArrayList<>();
 
     //==연관관계 메서드==//
     public void addInvite(Invite invite) {
         invites.add(invite);
-        invite.setGroupMember(this);
+        invite.setGroupUser(this);
     }
 
     //==생성 메서드==//
-    public static GroupMember createGroupMember(User user) {
-        GroupMember groupMember = new GroupMember();
-        groupMember.setUser(user);
+    public static GroupUser createGroupUser(User user) {
+        GroupUser groupUser = new GroupUser();
+        groupUser.setUser(user);
 
-        return groupMember;
+        return groupUser;
     }
 
 }

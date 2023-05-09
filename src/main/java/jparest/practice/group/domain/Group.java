@@ -22,22 +22,22 @@ public class Group {
     private String groupName;
 
     @OneToMany(mappedBy = "group")
-    private List<GroupMember> groupMembers = new ArrayList<>();
+    private List<GroupUser> groupUsers = new ArrayList<>();
 
     //==연관관계 메서드==//
-    public void addGroupMember(GroupMember groupMember) {
-        groupMembers.add(groupMember);
-        groupMember.setGroup(this);
+    public void addGroupUser(GroupUser groupUser) {
+        groupUsers.add(groupUser);
+        groupUser.setGroup(this);
     }
 
     //==생성 메서드==//
     public static Group createGroup(Long createUserId, String groupName,
-                                    GroupMember groupMember) {
+                                    GroupUser groupUser) {
         Group group = new Group();
         group.setCreateUserId(createUserId);
         group.setGroupName(groupName);
 
-        group.addGroupMember(groupMember);
+        group.addGroupUser(groupUser);
         return group;
     }
 

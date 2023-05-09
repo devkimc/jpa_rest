@@ -14,6 +14,11 @@ public class CookieUtils {
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
 
+        System.out.println("name = " + (name.equals(cookies[0].getName()) ? "access" : ""));
+        System.out.println("name = " + (name.equals(cookies[1].getName()) ? "refresh" : ""));
+        System.out.println("cookies = " + cookies[0].getName());
+        System.out.println("cookies = " + cookies[0].getValue());
+
         if (cookies != null && cookies.length > 0) {
             for (Cookie cookie : cookies) {
                 if (name.equals(cookie.getName())) {

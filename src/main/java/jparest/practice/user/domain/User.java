@@ -1,6 +1,6 @@
 package jparest.practice.user.domain;
 
-import jparest.practice.group.domain.GroupMember;
+import jparest.practice.group.domain.GroupUser;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,5 +33,5 @@ public class User {
     private String name;
 
     @OneToMany(mappedBy = "user")
-    private List<GroupMember> groupMembers = new ArrayList<>();
+    private List<GroupUser> groupUsers = new ArrayList<>();
 }

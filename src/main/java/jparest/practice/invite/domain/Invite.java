@@ -1,6 +1,6 @@
 package jparest.practice.invite.domain;
 
-import jparest.practice.group.domain.GroupMember;
+import jparest.practice.group.domain.GroupUser;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,8 +17,8 @@ public class Invite {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_member_id")
-    private GroupMember groupMember;
+    @JoinColumn(name = "group_user_id")
+    private GroupUser groupUser;
 
     private Long recvUserId;
 
@@ -26,10 +26,10 @@ public class Invite {
     private InviteStatus status;
 
     //==생성 메서드==//
-    public static Invite createInvite(Long recvUserId, GroupMember groupMember) {
+    public static Invite createInvite(Long recvUserId, GroupUser groupUser) {
         Invite invite = new Invite();
         invite.setRecvUserId(recvUserId);
-        invite.setGroupMember(groupMember);
+        invite.setGroupUser(groupUser);
         invite.setStatus(InviteStatus.WAITING);
 
         return invite;

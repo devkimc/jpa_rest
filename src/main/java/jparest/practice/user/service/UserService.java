@@ -2,11 +2,12 @@ package jparest.practice.user.service;
 
 import jparest.practice.auth.config.UserType;
 import jparest.practice.auth.jwt.JwtService;
-import jparest.practice.user.dto.UserLoginRequest;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.dto.UserInfoResponse;
 import jparest.practice.user.dto.UserLoginResponse;
 import jparest.practice.user.exception.ExistLoginIdException;
+import jparest.practice.user.exception.LoginFailException;
+import jparest.practice.user.exception.UserNotFoundException;
 import jparest.practice.user.repository.UserRepository;
 import jparest.practice.common.util.TokenDto;
 import lombok.RequiredArgsConstructor;
@@ -41,9 +42,10 @@ public class UserService {
 
     @Transactional
     public UserLoginResponse login(String loginId, String password) {
-        User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new IllegalArgumentException("가입되지 않은 아이디입니다."));
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new LoginFailException("존재하지 않는 유저 loginID = " + loginId));
         if(!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+            throw new LoginFailException("잘못된 비밀번호 loginID = " + loginId);
         }
 
         TokenDto tokenDto = new TokenDto();
@@ -54,7 +56,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserInfoResponse getInfo(long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("회원 정보가 존재하지 않습니다."));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("존재하지 않는 유저 id = " + id));
         return UserInfoResponse.builder()
                 .id(user.getId())
                 .userId(user.getLoginId())
