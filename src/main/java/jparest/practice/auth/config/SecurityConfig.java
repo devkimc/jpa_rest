@@ -41,8 +41,10 @@ public class SecurityConfig  {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         final String[] POST_WHITELIST = new String[]{
-                "/api/user/login",
-                "/api/user/join"
+                "/api/auth/login",
+                "/api/auth/join",
+                "/api/auth/kakao",
+
         };
 
         return http

@@ -4,8 +4,10 @@ import jparest.practice.auth.jwt.TokenType;
 import jparest.practice.common.util.ApiResult;
 import jparest.practice.common.util.ApiUtils;
 import jparest.practice.user.domain.User;
+import jparest.practice.user.dto.KakaoLoginResponse;
 import jparest.practice.user.dto.UserLoginRequest;
 import jparest.practice.user.dto.UserLoginResponse;
+import jparest.practice.user.service.UserAuthService;
 import jparest.practice.user.service.UserAuthServiceImpl;
 import jparest.practice.user.dto.UserInfoResponse;
 import jparest.practice.common.util.CookieUtils;
@@ -14,21 +16,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/auth")
 public class UserController {
     @Value("${domain.host}")
     private String domain;
 
-    private final UserAuthServiceImpl userAuthServiceImpl;
+    private final UserAuthService userAuthService;
 
     @PostMapping(name = "로그인", value = "/login")
     public ApiResult<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
-        UserLoginResponse userLoginResponse  = userAuthServiceImpl.login(userLoginRequest.getLoginId(), userLoginRequest.getPassword());
+        UserLoginResponse userLoginResponse = userAuthService.login(userLoginRequest.getLoginId(), userLoginRequest.getPassword());
 
         if (userLoginResponse.getTokenDto() != null) {
             TokenDto tokenDto = userLoginResponse.getTokenDto();
@@ -44,8 +47,17 @@ public class UserController {
 
     @PostMapping(name = "회원가입", value = "/join")
     public ApiResult<Boolean> join(@RequestBody User user) {
-        userAuthServiceImpl.join(user);
+        userAuthService.join(user);
         return ApiUtils.success(Boolean.TRUE);
+    }
+
+    @PostMapping("/kakao")
+    public ApiResult<KakaoLoginResponse> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
+        KakaoLoginResponse kakaoLoginResponse = userAuthService.kakaoLogin(code);
+        if (kakaoLoginResponse.getId() != null) {
+            return ApiUtils.success(new KakaoLoginResponse(kakaoLoginResponse.getId()));
+        }
+        return ApiUtils.fail(kakaoLoginResponse);
     }
 
 //    @GetMapping(name = "회원 정보조회", value = "/{id}")

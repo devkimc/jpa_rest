@@ -23,6 +23,9 @@ public class User {
     @Column(length = 20)
     private String loginId;
 
+    @Column(length = 20)
+    private String socialUserId;
+
     @Column(length = 50)
     private String password;
 
