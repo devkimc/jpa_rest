@@ -10,24 +10,26 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-//@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonIgnoreProperties({"connected_at", "id", "kakao_account"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KakaoUserInfoDto {
 
-//    private Long id;
-//    private String connected_at;
-//    private KakaoAccount kakao_account;
+    private Long id;
+    private String connected_at;
+    private KakaoAccount kakao_account;
 
-//    public KakaoUserInfoDto(Long id, String connectedAt, KakaoAccount kakaoAccount) {
-//        this.id = id;
-//        this.connected_at = connectedAt;
-//        this.kakao_account = kakaoAccount;
-//    }
+    public KakaoUserInfoDto(Long id, String connectedAt, KakaoAccount kakaoAccount) {
+        this.id = id;
+        this.connected_at = connectedAt;
+        this.kakao_account = kakaoAccount;
+    }
 
     @Getter
     @NoArgsConstructor
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @ToString
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class KakaoAccount {
         private boolean profile_nickname_needs_agreement;
         private ProFile profile;
@@ -64,7 +66,7 @@ public class KakaoUserInfoDto {
 
         @Getter
         @NoArgsConstructor
-//        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         public static class ProFile {
             private String nickname;
 

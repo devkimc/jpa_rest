@@ -81,7 +81,7 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     @Override
     @Transactional
-    public String kakaoLogin(String code) {
+    public KakaoLoginResponse kakaoLogin(String code) {
         Map<String, Object> token = getKakaoToken(grantType, clientId, code, redirectUri);
 
         log.info("KAKAO TOKEN {}", token);
@@ -92,13 +92,16 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         KakaoUserInfoDto userInfo = kakaoUserInfo.getBody();
 
-        log.info("KAKAO USER INFO {}", kakaoUserInfo);
+        System.out.println("-------------------------------");
+        log.info("KAKAO USER INFO {}", userInfo);
+        log.info("getProfile {}", userInfo.getKakao_account().getProfile().getNickname());
+        System.out.println("-------------------------------");
 
-//        Long socialUserId = userInfo.getId();
+        Long socialUserId = userInfo.getId();
 //        Optional<User> findSocialUser = userRepository.findBySocialUserId(socialUserId);
 
         // TODO: 소셜로그인 이후 회원가입은 구현되지 않음
-        return "pass";
+        return new KakaoLoginResponse(socialUserId);
     }
 
     private Map<String, Object> getKakaoToken(String grantType, String clientId, String code, String redirectUri) {
@@ -113,7 +116,6 @@ public class UserAuthServiceImpl implements UserAuthService {
     private ResponseEntity<KakaoUserInfoDto> getKakaoUserInfo(String token) {
         try {
             ResponseEntity<KakaoUserInfoDto> userInfo = kakaoFeignClient.getUserInfo(new URI("https://kapi.kakao.com/v2/user/me"), token);
-            System.out.println("userInfo = " + userInfo);
             return userInfo;
         } catch (Exception e) {
             log.error("KAKAO USER INFO ERROR - {} ", e.getMessage());

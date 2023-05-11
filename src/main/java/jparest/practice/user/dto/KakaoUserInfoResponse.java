@@ -9,7 +9,6 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-@JsonIgnoreProperties({"connected_at"})
 public class KakaoUserInfoResponse {
 
     private Long id;
