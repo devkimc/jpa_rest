@@ -49,9 +49,6 @@ public class JwtFilter extends OncePerRequestFilter {
         String accessToken = null;
         String refreshToken = null;
 
-        log.info("액세스 토큰 {()}", accessTokenCookie);
-        log.info("리프레시 토큰 {()}", refreshTokenCookie);
-
         if (accessTokenCookie != null) {
             accessToken = CookieUtils.deserialize(accessTokenCookie, String.class);
             isValidationAccessToken = jwtService.validateToken(accessToken);

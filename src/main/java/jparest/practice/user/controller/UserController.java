@@ -6,7 +6,7 @@ import jparest.practice.common.util.ApiUtils;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.dto.UserLoginRequest;
 import jparest.practice.user.dto.UserLoginResponse;
-import jparest.practice.user.service.UserService;
+import jparest.practice.user.service.UserAuthServiceImpl;
 import jparest.practice.user.dto.UserInfoResponse;
 import jparest.practice.common.util.CookieUtils;
 import jparest.practice.common.util.TokenDto;
@@ -24,11 +24,11 @@ public class UserController {
     @Value("${domain.host}")
     private String domain;
 
-    private final UserService userService;
+    private final UserAuthServiceImpl userAuthServiceImpl;
 
     @PostMapping(name = "로그인", value = "/login")
     public ApiResult<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
-        UserLoginResponse userLoginResponse  = userService.login(userLoginRequest.getLoginId(), userLoginRequest.getPassword());
+        UserLoginResponse userLoginResponse  = userAuthServiceImpl.login(userLoginRequest.getLoginId(), userLoginRequest.getPassword());
 
         if (userLoginResponse.getTokenDto() != null) {
             TokenDto tokenDto = userLoginResponse.getTokenDto();
@@ -44,14 +44,14 @@ public class UserController {
 
     @PostMapping(name = "회원가입", value = "/join")
     public ApiResult<Boolean> join(@RequestBody User user) {
-        userService.join(user);
+        userAuthServiceImpl.join(user);
         return ApiUtils.success(Boolean.TRUE);
     }
 
-    @GetMapping(name = "회원 정보조회", value = "/{id}")
-    public ApiResult<UserInfoResponse> info(@PathVariable long id) {
-        UserInfoResponse userInfoResponse = userService.getInfo(id);
-        return ApiUtils.success(userInfoResponse);
-    }
+//    @GetMapping(name = "회원 정보조회", value = "/{id}")
+//    public ApiResult<UserInfoResponse> info(@PathVariable long id) {
+//        UserInfoResponse userInfoResponse = userAuthServiceImpl.getInfo(id);
+//        return ApiUtils.success(userInfoResponse);
+//    }
 
 }

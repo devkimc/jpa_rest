@@ -5,7 +5,8 @@ import jparest.practice.user.dto.UserLoginResponse;
 import jparest.practice.user.exception.ExistLoginIdException;
 import jparest.practice.user.exception.LoginFailException;
 import jparest.practice.user.repository.UserRepository;
-import jparest.practice.user.service.UserService;
+import jparest.practice.user.service.UserAuthService;
+import jparest.practice.user.service.UserAuthServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserServiceTest {
 
     @Autowired
-    UserService userService;
+    UserAuthService userAuthService;
     @Autowired
     UserRepository userRepository;
 
@@ -35,7 +36,7 @@ public class UserServiceTest {
         user.setEmail("test@test.com");
 
         //when
-        User saveUser = userService.join(user);
+        User saveUser = userAuthService.join(user);
 
         //then
         assertEquals(user.getLoginId(), saveUser.getLoginId());
@@ -54,8 +55,8 @@ public class UserServiceTest {
         user2.setPassword("4321");
 
         //when
-        userService.join(user1);
-        userService.join(user2);
+        userAuthService.join(user1);
+        userAuthService.join(user2);
 
         //then
         fail("중복_회원_예외가 발생해야 한다.");
@@ -68,10 +69,10 @@ public class UserServiceTest {
         User user = new User();
         user.setLoginId("loginId");
         user.setPassword("real_password");
-        userService.join(user);
+        userAuthService.join(user);
 
         //when
-        UserLoginResponse loginUser = userService.login(user.getLoginId(), user.getPassword());
+        UserLoginResponse loginUser = userAuthService.login(user.getLoginId(), user.getPassword());
 
         //then
         assertNotNull(loginUser.getTokenDto());
@@ -84,10 +85,10 @@ public class UserServiceTest {
         User user = new User();
         user.setLoginId("loginId");
         user.setPassword("real_password");
-        userService.join(user);
+        userAuthService.join(user);
 
         //when
-        userService.login("loginId", "fake_password");
+        userAuthService.login("loginId", "fake_password");
 
         //then
         fail("비밀번호_불일치_예외가 발생해야 한다.");

@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "group_user")
@@ -38,9 +39,9 @@ public class GroupUser {
     }
 
     //==생성 메서드==//
-    public static GroupUser createGroupUser(User user) {
+    public static GroupUser createGroupUser(Optional<User> user) {
         GroupUser groupUser = new GroupUser();
-        groupUser.setUser(user);
+//        groupUser.setUser(user);
 
         return groupUser;
     }

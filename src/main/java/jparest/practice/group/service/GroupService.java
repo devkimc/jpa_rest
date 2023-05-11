@@ -4,17 +4,19 @@ import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.GroupUser;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.user.domain.User;
-import jparest.practice.user.repository.MemberRepositoryV0;
+import jparest.practice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GroupService {
 
-    private final MemberRepositoryV0 memberRepository;
+    private final UserRepository userRepository;
     private final GroupRepository groupRepository;
 
     /**
@@ -24,7 +26,7 @@ public class GroupService {
     public Long makeGroup(Long memberId, String groupName) {
 
         // 엔티티 조회
-        User user = memberRepository.findOne(memberId);
+        Optional<User> user = userRepository.findById(memberId);
 
         // 그룹 멤버 생성
         GroupUser groupUser = GroupUser.createGroupUser(user);

@@ -40,5 +40,4 @@ public class Group {
         group.addGroupUser(groupUser);
         return group;
     }
-
 }

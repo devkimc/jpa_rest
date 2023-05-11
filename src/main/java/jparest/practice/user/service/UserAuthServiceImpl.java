@@ -1,13 +1,10 @@
 package jparest.practice.user.service;
 
-import jparest.practice.auth.config.UserType;
 import jparest.practice.auth.jwt.JwtService;
 import jparest.practice.user.domain.User;
-import jparest.practice.user.dto.UserInfoResponse;
 import jparest.practice.user.dto.UserLoginResponse;
 import jparest.practice.user.exception.ExistLoginIdException;
 import jparest.practice.user.exception.LoginFailException;
-import jparest.practice.user.exception.UserNotFoundException;
 import jparest.practice.user.repository.UserRepository;
 import jparest.practice.common.util.TokenDto;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jparest.practice.user.domain.UserType;
+
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserAuthServiceImpl implements UserAuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
@@ -33,6 +32,7 @@ public class UserService {
                 .password(passwordEncoder.encode(user.getPassword()))
                 .email(user.getEmail())
                 .name(user.getName())
+                .userType(UserType.ROLE_GENERAL)
                 .build();
 
         userRepository.save(saveUser);
@@ -49,19 +49,19 @@ public class UserService {
         }
 
         TokenDto tokenDto = new TokenDto();
-        tokenDto.setAccessToken(jwtService.createAccessToken(loginId, UserType.ROLE_USER.name()));
+        tokenDto.setAccessToken(jwtService.createAccessToken(loginId, UserType.ROLE_GENERAL.name()));
         tokenDto.setRefreshToken(jwtService.createRefreshToken(loginId));
         return new UserLoginResponse(user.getEmail(), user.getName(), tokenDto);
     }
 
-    @Transactional(readOnly = true)
-    public UserInfoResponse getInfo(long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("존재하지 않는 유저 id = " + id));
-        return UserInfoResponse.builder()
-                .id(user.getId())
-                .userId(user.getLoginId())
-                .email(user.getEmail())
-                .name(user.getName())
-                .build();
-    }
+//    @Transactional(readOnly = true)
+//    public UserInfoResponse getInfo(long id) {
+//        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("존재하지 않는 유저 id = " + id));
+//        return UserInfoResponse.builder()
+//                .id(user.getId())
+//                .userId(user.getLoginId())
+//                .email(user.getEmail())
+//                .name(user.getName())
+//                .build();
+//    }
 }

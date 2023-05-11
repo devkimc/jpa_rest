@@ -20,10 +20,10 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 20)
     private String loginId;
 
-    @Column(nullable = false)
+    @Column(length = 50)
     private String password;
 
     @Column(length = 200)
@@ -31,6 +31,12 @@ public class User {
 
     @Column(length = 50)
     private String name;
+
+    @Column(length = 20)
+    private String nickname;
+
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
 
     @OneToMany(mappedBy = "user")
     private List<GroupUser> groupUsers = new ArrayList<>();
