@@ -52,12 +52,13 @@ public class UserController {
     }
 
     @PostMapping("/kakao")
-    public ApiResult<KakaoLoginResponse> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
-        KakaoLoginResponse kakaoLoginResponse = userAuthService.kakaoLogin(code);
-        if (kakaoLoginResponse.getId() != null) {
-            return ApiUtils.success(new KakaoLoginResponse(kakaoLoginResponse.getId()));
-        }
-        return ApiUtils.fail(kakaoLoginResponse);
+    // TODO: 테스트를 위해 임시로 문자 결과 반환, 수정 필요
+    public ApiResult<String> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
+        String kakaoLoginResponse = userAuthService.kakaoLogin(code);
+//        if (kakaoLoginResponse.getId() != null) {
+            return ApiUtils.success("success");
+//        }
+//        return ApiUtils.fail("fail");
     }
 
 //    @GetMapping(name = "회원 정보조회", value = "/{id}")

@@ -9,5 +9,6 @@ public interface UserAuthService {
 
     UserLoginResponse login(String loginId, String password);
 
-    KakaoLoginResponse kakaoLogin(String code);
+//    KakaoLoginResponse kakaoLogin(String code);
+    String kakaoLogin(String code);
 }

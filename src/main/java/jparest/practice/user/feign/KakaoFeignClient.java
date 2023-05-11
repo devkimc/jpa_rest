@@ -1,9 +1,7 @@
 package jparest.practice.user.feign;
 
 import jparest.practice.user.config.KakaoFeignConfig;
-import jparest.practice.user.dto.KakaoLoginResponse;
 import jparest.practice.user.dto.KakaoUserInfoDto;
-import jparest.practice.user.dto.KakaoUserInfoResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

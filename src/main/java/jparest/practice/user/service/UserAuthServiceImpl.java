@@ -81,10 +81,10 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     @Override
     @Transactional
-    public KakaoLoginResponse kakaoLogin(String code) {
+    public String kakaoLogin(String code) {
         Map<String, Object> token = getKakaoToken(grantType, clientId, code, redirectUri);
 
-        log.info("KAKAO USER INFO {}", token);
+        log.info("KAKAO TOKEN {}", token);
 
         String accessToken = BEARER + token.get("access_token");
 
@@ -94,11 +94,11 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         log.info("KAKAO USER INFO {}", kakaoUserInfo);
 
-        Long socialUserId = userInfo.getId();
+//        Long socialUserId = userInfo.getId();
 //        Optional<User> findSocialUser = userRepository.findBySocialUserId(socialUserId);
 
         // TODO: 소셜로그인 이후 회원가입은 구현되지 않음
-        return new KakaoLoginResponse(socialUserId);
+        return "pass";
     }
 
     private Map<String, Object> getKakaoToken(String grantType, String clientId, String code, String redirectUri) {
