@@ -7,7 +7,7 @@ import jparest.practice.user.dto.UserLoginResponse;
 public interface UserAuthService {
     User join(User user);
 
-    UserLoginResponse login(String loginId, String password);
+//    UserLoginResponse login(String loginId, String password);
 
     KakaoLoginResponse kakaoLogin(String code);
 }

@@ -1,13 +1,12 @@
 package jparest.practice.user.repository;
 
 import jparest.practice.user.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserRepository {
-    Optional<User> findFirstUserByLoginIdOrderByIdAsc(String username);
-    Optional<User> findById(long id);
-    Optional<User> findByLoginId(String loginId);
+public interface UserRepository extends JpaRepository<User, Long> {
+//    Optional<User> findFirstUserByLoginIdOrderByIdAsc(String username);
     Optional<User> findBySocialUserId(String socialUserId);
     User save(User saveUser);
 }

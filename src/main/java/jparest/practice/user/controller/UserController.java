@@ -29,22 +29,6 @@ public class UserController {
 
     private final UserAuthService userAuthService;
 
-    @PostMapping(name = "로그인", value = "/login")
-    public ApiResult<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
-        UserLoginResponse userLoginResponse = userAuthService.login(userLoginRequest.getLoginId(), userLoginRequest.getPassword());
-
-        if (userLoginResponse.getTokenDto() != null) {
-            TokenDto tokenDto = userLoginResponse.getTokenDto();
-
-            CookieUtils.addCookie(response, TokenType.ACCESS_TOKEN.name(), tokenDto.getAccessToken(), domain);
-            CookieUtils.addCookie(response, TokenType.REFRESH_TOKEN.name(), tokenDto.getRefreshToken(), domain);
-
-            return ApiUtils.success(new UserLoginResponse(userLoginResponse.getEmail(), userLoginResponse.getName()));
-        }
-
-        return ApiUtils.fail(userLoginResponse);
-    }
-
     @PostMapping(name = "회원가입", value = "/join")
     public ApiResult<Boolean> join(@RequestBody User user) {
         userAuthService.join(user);
@@ -60,10 +44,27 @@ public class UserController {
         return ApiUtils.fail(kakaoLoginResponse);
     }
 
+// 아이디, 비밀번호 로그인 시
 //    @GetMapping(name = "회원 정보조회", value = "/{id}")
 //    public ApiResult<UserInfoResponse> info(@PathVariable long id) {
 //        UserInfoResponse userInfoResponse = userAuthServiceImpl.getInfo(id);
 //        return ApiUtils.success(userInfoResponse);
+//    }
+
+//    @PostMapping(name = "로그인", value = "/login")
+//    public ApiResult<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
+//        UserLoginResponse userLoginResponse = userAuthService.login(userLoginRequest.getLoginId(), userLoginRequest.getPassword());
+//
+//        if (userLoginResponse.getTokenDto() != null) {
+//            TokenDto tokenDto = userLoginResponse.getTokenDto();
+//
+//            CookieUtils.addCookie(response, TokenType.ACCESS_TOKEN.name(), tokenDto.getAccessToken(), domain);
+//            CookieUtils.addCookie(response, TokenType.REFRESH_TOKEN.name(), tokenDto.getRefreshToken(), domain);
+//
+//            return ApiUtils.success(new UserLoginResponse(userLoginResponse.getEmail(), userLoginResponse.getName()));
+//        }
+//
+//        return ApiUtils.fail(userLoginResponse);
 //    }
 
 }
