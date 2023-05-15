@@ -38,8 +38,8 @@ public class UserController {
     @PostMapping("/kakao")
     public ApiResult<KakaoLoginResponse> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
         KakaoLoginResponse kakaoLoginResponse = userAuthService.kakaoLogin(code);
-        if (kakaoLoginResponse.getId() != null) {
-            return ApiUtils.success(new KakaoLoginResponse(kakaoLoginResponse.getId()));
+        if (kakaoLoginResponse.getSocialUserId() != null) {
+            return ApiUtils.success(kakaoLoginResponse);
         }
         return ApiUtils.fail(kakaoLoginResponse);
     }

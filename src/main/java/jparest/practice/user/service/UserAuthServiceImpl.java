@@ -69,24 +69,20 @@ public class UserAuthServiceImpl implements UserAuthService {
     public KakaoLoginResponse kakaoLogin(String code) {
         Map<String, Object> token = getKakaoToken(grantType, clientId, code, redirectUri);
 
-        log.info("KAKAO TOKEN {}", token);
-
         String accessToken = BEARER + token.get("access_token");
 
         ResponseEntity<KakaoUserInfoDto> kakaoUserInfo = getKakaoUserInfo(accessToken);
 
         KakaoUserInfoDto userInfo = kakaoUserInfo.getBody();
 
-        System.out.println("-------------------------------");
-        log.info("KAKAO USER INFO {}", userInfo.getKakao_account().getEmail());
-        log.info("getProfile {}", userInfo.getKakao_account().getProfile().getNickname());
-        System.out.println("-------------------------------");
-
         Long socialUserId = userInfo.getId();
+        String email = userInfo.getKakao_account().getEmail();
+        String nickname = userInfo.getKakao_account().getProfile().getNickname();
+        KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse();
 //        Optional<User> findSocialUser = userRepository.findBySocialUserId(socialUserId);
 
         // TODO: 소셜로그인 이후 회원가입은 구현되지 않음
-        return new KakaoLoginResponse(socialUserId);
+        return new KakaoLoginResponse(socialUserId, email, nickname);
     }
 
     private Map<String, Object> getKakaoToken(String grantType, String clientId, String code, String redirectUri) {

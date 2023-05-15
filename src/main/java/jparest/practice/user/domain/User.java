@@ -29,7 +29,7 @@ public class User {
     @Column(length = 20)
     private String nickname;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
     @Enumerated(EnumType.STRING)

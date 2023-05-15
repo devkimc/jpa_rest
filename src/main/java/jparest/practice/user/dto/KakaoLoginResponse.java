@@ -1,19 +1,14 @@
 package jparest.practice.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
 public class KakaoLoginResponse {
-
-    private Long id;
-
-    public KakaoLoginResponse(Long id) {
-        this.id = id;
-    }
+    private Long socialUserId;
+    private String email;
+    private String nickname;
 }
