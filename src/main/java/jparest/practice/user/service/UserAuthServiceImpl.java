@@ -1,16 +1,15 @@
 package jparest.practice.user.service;
 
 import jparest.practice.auth.jwt.JwtService;
+import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
-import jparest.practice.user.dto.KakaoLoginResponse;
-import jparest.practice.user.dto.KakaoUserInfoDto;
-import jparest.practice.user.dto.KakaoUserInfoResponse;
-import jparest.practice.user.dto.UserLoginResponse;
-import jparest.practice.user.exception.ExistLoginIdException;
+import jparest.practice.user.dto.SocialJoinRequest;
+import jparest.practice.user.dto.SocialJoinResponse;
+import jparest.practice.user.dto.SocialLoginResponse;
+import jparest.practice.user.dto.SocialUserInfoDto;
 import jparest.practice.user.exception.LoginFailException;
 import jparest.practice.user.feign.KakaoFeignClient;
 import jparest.practice.user.repository.UserRepository;
-import jparest.practice.common.util.TokenDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,23 +65,55 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     @Override
     @Transactional
-    public KakaoLoginResponse kakaoLogin(String code) {
+    public SocialJoinResponse socialJoin(SocialJoinRequest socialJoinRequest) {
+        Optional<User> findSocialUser = userRepository.findBySocialUserId(socialJoinRequest.getSocialUserId());
+        User user = findSocialUser.orElseGet(() -> join(socialJoinRequest));
+        return new SocialJoinResponse(user.getNickname());
+    }
+
+    private User join(SocialJoinRequest socialJoinRequest) {
+        System.out.println("join call!");
+
+        User user = User.builder()
+                .socialUserId(socialJoinRequest.getSocialUserId())
+                .email(socialJoinRequest.getEmail())
+                .nickname(socialJoinRequest.getNickname())
+                .loginType(socialJoinRequest.getLoginType())
+                .userType(UserType.ROLE_GENERAL)
+                .build()
+                ;
+
+        System.out.println("user = " + user);
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public SocialLoginResponse kakaoLogin(String code) {
         Map<String, Object> token = getKakaoToken(grantType, clientId, code, redirectUri);
 
         String accessToken = BEARER + token.get("access_token");
 
-        ResponseEntity<KakaoUserInfoDto> kakaoUserInfo = getKakaoUserInfo(accessToken);
+        ResponseEntity<SocialUserInfoDto> kakaoUserInfo = getKakaoUserInfo(accessToken);
 
-        KakaoUserInfoDto userInfo = kakaoUserInfo.getBody();
+        SocialUserInfoDto userInfo = kakaoUserInfo.getBody();
 
-        Long socialUserId = userInfo.getId();
+        String socialUserId = String.valueOf(userInfo.getId());
         String email = userInfo.getKakao_account().getEmail();
         String nickname = userInfo.getKakao_account().getProfile().getNickname();
-        KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse();
+
+        System.out.println("socialUserId = " + socialUserId);
+
+        Optional<User> findSocialUser = userRepository.findBySocialUserId(socialUserId);
+
+        System.out.println("findSocialUser = " + findSocialUser);
+        findSocialUser.orElseGet(() -> join(new SocialJoinRequest(socialUserId, email, nickname, LoginType.KAKAO)));
+
+        SocialLoginResponse socialLoginResponse = new SocialLoginResponse();
 //        Optional<User> findSocialUser = userRepository.findBySocialUserId(socialUserId);
 
-        // TODO: 소셜로그인 이후 회원가입은 구현되지 않음
-        return new KakaoLoginResponse(socialUserId, email, nickname);
+        return new SocialLoginResponse(socialUserId, email, nickname, LoginType.KAKAO);
     }
 
     private Map<String, Object> getKakaoToken(String grantType, String clientId, String code, String redirectUri) {
@@ -94,9 +125,9 @@ public class UserAuthServiceImpl implements UserAuthService {
         }
     }
 
-    private ResponseEntity<KakaoUserInfoDto> getKakaoUserInfo(String token) {
+    private ResponseEntity<SocialUserInfoDto> getKakaoUserInfo(String token) {
         try {
-            ResponseEntity<KakaoUserInfoDto> userInfo = kakaoFeignClient.getUserInfo(new URI("https://kapi.kakao.com/v2/user/me"), token);
+            ResponseEntity<SocialUserInfoDto> userInfo = kakaoFeignClient.getUserInfo(new URI("https://kapi.kakao.com/v2/user/me"), token);
             return userInfo;
         } catch (Exception e) {
             log.error("KAKAO USER INFO ERROR - {} ", e.getMessage());

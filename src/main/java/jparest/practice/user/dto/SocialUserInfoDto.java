@@ -13,13 +13,13 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 //@JsonIgnoreProperties({"connected_at", "id", "kakao_account"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class KakaoUserInfoDto {
+public class SocialUserInfoDto {
 
     private Long id;
     private String connected_at;
     private KakaoAccount kakao_account;
 
-    public KakaoUserInfoDto(Long id, String connectedAt, KakaoAccount kakaoAccount) {
+    public SocialUserInfoDto(Long id, String connectedAt, KakaoAccount kakaoAccount) {
         this.id = id;
         this.connected_at = connectedAt;
         this.kakao_account = kakaoAccount;

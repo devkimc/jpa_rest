@@ -1,22 +1,16 @@
 package jparest.practice.user.controller;
 
-import jparest.practice.auth.jwt.TokenType;
 import jparest.practice.common.util.ApiResult;
 import jparest.practice.common.util.ApiUtils;
 import jparest.practice.user.domain.User;
-import jparest.practice.user.dto.KakaoLoginResponse;
-import jparest.practice.user.dto.UserLoginRequest;
-import jparest.practice.user.dto.UserLoginResponse;
+import jparest.practice.user.dto.SocialJoinRequest;
+import jparest.practice.user.dto.SocialJoinResponse;
+import jparest.practice.user.dto.SocialLoginResponse;
 import jparest.practice.user.service.UserAuthService;
-import jparest.practice.user.service.UserAuthServiceImpl;
-import jparest.practice.user.dto.UserInfoResponse;
-import jparest.practice.common.util.CookieUtils;
-import jparest.practice.common.util.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @CrossOrigin("*")
@@ -29,26 +23,32 @@ public class UserController {
 
     private final UserAuthService userAuthService;
 
-    @PostMapping(name = "회원가입", value = "/join")
-    public ApiResult<Boolean> join(@RequestBody User user) {
-        userAuthService.join(user);
-        return ApiUtils.success(Boolean.TRUE);
+    @PostMapping(value = "/join")
+    public ApiResult<SocialJoinResponse> join(@RequestBody SocialJoinRequest socialJoinRequest) {
+        SocialJoinResponse socialJoinResponse = userAuthService.socialJoin(socialJoinRequest);
+        return ApiUtils.success(socialJoinResponse);
     }
 
     @PostMapping("/kakao")
-    public ApiResult<KakaoLoginResponse> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
-        KakaoLoginResponse kakaoLoginResponse = userAuthService.kakaoLogin(code);
-        if (kakaoLoginResponse.getSocialUserId() != null) {
-            return ApiUtils.success(kakaoLoginResponse);
+    public ApiResult<SocialLoginResponse> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
+        SocialLoginResponse socialLoginResponse = userAuthService.kakaoLogin(code);
+        if (socialLoginResponse.getSocialUserId() != null) {
+            return ApiUtils.success(socialLoginResponse);
         }
-        return ApiUtils.fail(kakaoLoginResponse);
+        return ApiUtils.fail(socialLoginResponse);
     }
+
+//    @PostMapping(name = "회원가입", value = "/join")
+//    public ApiResult<Boolean> join(@RequestBody User user) {
+//        userAuthService.join(user);
+//        return ApiUtils.success(Boolean.TRUE);
+//    }
 
 // 아이디, 비밀번호 로그인 시
 //    @GetMapping(name = "회원 정보조회", value = "/{id}")
 //    public ApiResult<UserInfoResponse> info(@PathVariable long id) {
 //        UserInfoResponse userInfoResponse = userAuthServiceImpl.getInfo(id);
-//        return ApiUtils.success(userInfoResponse);
+//        return ApiUtils.success(userInfoResponse);환
 //    }
 
 //    @PostMapping(name = "로그인", value = "/login")

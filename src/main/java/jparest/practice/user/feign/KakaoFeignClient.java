@@ -1,7 +1,7 @@
 package jparest.practice.user.feign;
 
 import jparest.practice.user.config.KakaoFeignConfig;
-import jparest.practice.user.dto.KakaoUserInfoDto;
+import jparest.practice.user.dto.SocialUserInfoDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +24,7 @@ public interface KakaoFeignClient {
     );
 
     @GetMapping(consumes = {"application/x-www-form-urlencoded;charset=utf-8"})
-    ResponseEntity<KakaoUserInfoDto> getUserInfo(
+    ResponseEntity<SocialUserInfoDto> getUserInfo(
             URI uri,
             @RequestHeader("Authorization") String accessToken);
 }
