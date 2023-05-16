@@ -1,0 +1,6 @@
+jwt:
+  secret: "spring0rest0practice0spring0rest0practice0secret"
+  token:
+    accessTokenTTL: 3600
+    refreshTokenTTL: 1209600
+    issure: "jpa.rest.wskim"

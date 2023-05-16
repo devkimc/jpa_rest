@@ -53,7 +53,7 @@ public class UserController {
     @DeleteMapping("/logout")
     public ApiResult<Boolean> logout(HttpServletRequest request, HttpServletResponse response,
                                      @CurrentUser User user) {
-        userAuthService.logout(request, response, user.getSocialUserId());
+        userAuthService.logout(request, response, String.valueOf(user.getId()));
         return ApiUtils.success(Boolean.TRUE);
     }
 

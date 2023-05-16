@@ -1,0 +1,4 @@
+app:
+  kakao:
+    client-id: "5bf998e62879725b75f063c3945f715c"
+    redirect-uri: "https://localhost:3000/oauth"

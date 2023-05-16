@@ -59,7 +59,7 @@ public class SecurityConfig  {
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers(HttpMethod.POST, POST_WHITELIST).permitAll() // 해당 POST URL은 모두 허용
-                .antMatchers("**").hasAnyRole("USER") // 권한 적용
+                .antMatchers("**").hasAnyRole("GENERAL") // 권한 적용
                 .anyRequest().authenticated() // 나머지 요청에 대해서는 인증을 요구
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

@@ -26,16 +26,17 @@ public class GroupService {
     public Long makeGroup(Long memberId, String groupName) {
 
         // 엔티티 조회
-        Optional<User> user = userRepository.findById(memberId);
-
-        // 그룹 멤버 생성
-        GroupUser groupUser = GroupUser.createGroupUser(user);
-
-        // 그룹 생성
-        Group group = Group.createGroup(memberId, groupName, groupUser);
-
-        // 그룹 저장
-        groupRepository.save(group);
-        return group.getId();
+//        Optional<User> user = userRepository.findById(memberId);
+//
+//        // 그룹 멤버 생성
+//        GroupUser groupUser = GroupUser.createGroupUser(user);
+//
+//        // 그룹 생성
+//        Group group = Group.createGroup(memberId, groupName, groupUser);
+//
+//        // 그룹 저장
+//        groupRepository.save(group);
+//        return group.getId();
+        return 1L;
     }
 }

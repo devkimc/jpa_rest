@@ -2,10 +2,13 @@ package jparest.practice.user.domain;
 
 import jparest.practice.group.domain.GroupUser;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -16,9 +19,12 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+//    @Column(name = "user_id", columnDefinition = "BINARY(16)")
     @Column(name = "user_id")
-    private Long id;
+    @Type(type = "uuid-char")
+    private UUID id;
 
     @Column(length = 20, nullable = false)
     private String socialUserId;

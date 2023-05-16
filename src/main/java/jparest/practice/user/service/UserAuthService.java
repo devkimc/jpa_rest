@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface UserAuthService {
-    User join(User user);
+    // 임시 테스트 용
+    User join(SocialJoinRequest socialJoinRequest);
 
     SocialJoinResponse socialJoin(SocialJoinRequest socialJoinRequest);
 

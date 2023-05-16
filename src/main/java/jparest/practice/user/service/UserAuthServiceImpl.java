@@ -51,25 +51,6 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     @Override
     @Transactional
-    public User join(User user) {
-//        User alreadyUser = userRepository.findFirstUserByLoginIdOrderByIdAsc(user.getLoginId()).orElse(null);
-//        if (alreadyUser != null) throw new ExistLoginIdException(alreadyUser.getLoginId());
-
-        User saveUser = User.builder()
-                .socialUserId(user.getSocialUserId())
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .loginType(user.getLoginType())
-                .userType(UserType.ROLE_GENERAL)
-                .build();
-
-        userRepository.save(saveUser);
-
-        return saveUser;
-    }
-
-    @Override
-    @Transactional
     public SocialJoinResponse socialJoin(SocialJoinRequest socialJoinRequest) {
         Optional<User> findSocialUser = userRepository.findBySocialUserId(socialJoinRequest.getSocialUserId());
         User user = findSocialUser.orElseGet(() -> join(socialJoinRequest));
@@ -81,21 +62,6 @@ public class UserAuthServiceImpl implements UserAuthService {
         CookieUtils.deleteCookie(request, response, TokenType.ACCESS_TOKEN.name());
         CookieUtils.deleteCookie(request, response, TokenType.REFRESH_TOKEN.name());
         jwtService.deleteRefreshTokenByUserId(userId);
-    }
-
-    private User join(SocialJoinRequest socialJoinRequest) {
-        System.out.println("join call!");
-
-        User user = User.builder()
-                .socialUserId(socialJoinRequest.getSocialUserId())
-                .email(socialJoinRequest.getEmail())
-                .nickname(socialJoinRequest.getNickname())
-                .loginType(socialJoinRequest.getLoginType())
-                .userType(UserType.ROLE_GENERAL)
-                .build()
-                ;
-
-        return userRepository.save(user);
     }
 
     @Override
@@ -116,12 +82,30 @@ public class UserAuthServiceImpl implements UserAuthService {
         Optional<User> findSocialUser = userRepository.findBySocialUserId(socialUserId);
 
         User joinUser = findSocialUser.orElseGet(() -> join(new SocialJoinRequest(socialUserId, email, nickname, LoginType.KAKAO)));
+        String joinUserId = String.valueOf(joinUser.getId());
 
         TokenDto tokenDto = new TokenDto();
-        tokenDto.setAccessToken(jwtService.createAccessToken(socialUserId, UserType.ROLE_GENERAL.name()));
-        tokenDto.setRefreshToken(jwtService.createRefreshToken(socialUserId));
+        tokenDto.setAccessToken(jwtService.createAccessToken(joinUserId, UserType.ROLE_GENERAL.name()));
+        tokenDto.setRefreshToken(jwtService.createRefreshToken(joinUserId));
 
         return new SocialLoginResponse(socialUserId, email, nickname, LoginType.KAKAO, tokenDto);
+    }
+
+    @Override
+    @Transactional
+    public User join(SocialJoinRequest socialJoinRequest) {
+        System.out.println("join call!");
+
+        User user = User.builder()
+                .socialUserId(socialJoinRequest.getSocialUserId())
+                .email(socialJoinRequest.getEmail())
+                .nickname(socialJoinRequest.getNickname())
+                .loginType(socialJoinRequest.getLoginType())
+                .userType(UserType.ROLE_GENERAL)
+                .build()
+                ;
+
+        return userRepository.save(user);
     }
 
     private Map<String, Object> getKakaoToken(String grantType, String clientId, String code, String redirectUri) {
