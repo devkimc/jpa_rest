@@ -21,8 +21,7 @@ public class User {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-//    @Column(name = "user_id", columnDefinition = "BINARY(16)")
-    @Column(name = "user_id")
+    @Column(name = "user_id", columnDefinition = "varchar(36)")
     @Type(type = "uuid-char")
     private UUID id;
 
