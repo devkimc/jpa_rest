@@ -1,5 +1,6 @@
 package jparest.practice.user.dto;
 
+import jparest.practice.common.util.TokenDto;
 import jparest.practice.user.domain.LoginType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,4 +14,5 @@ public class SocialLoginResponse {
     private String email;
     private String nickname;
     private LoginType loginType;
+    private TokenDto tokenDto;
 }

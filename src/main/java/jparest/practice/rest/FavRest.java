@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class FavRest {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "fav_rest_id")
     private Long id;
 

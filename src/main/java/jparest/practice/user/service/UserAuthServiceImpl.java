@@ -1,6 +1,9 @@
 package jparest.practice.user.service;
 
 import jparest.practice.auth.jwt.JwtService;
+import jparest.practice.auth.jwt.TokenType;
+import jparest.practice.common.util.CookieUtils;
+import jparest.practice.common.util.TokenDto;
 import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.dto.SocialJoinRequest;
@@ -20,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jparest.practice.user.domain.UserType;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
@@ -71,6 +76,13 @@ public class UserAuthServiceImpl implements UserAuthService {
         return new SocialJoinResponse(user.getNickname());
     }
 
+    @Override
+    public void logout(HttpServletRequest request, HttpServletResponse response, String userId) {
+        CookieUtils.deleteCookie(request, response, TokenType.ACCESS_TOKEN.name());
+        CookieUtils.deleteCookie(request, response, TokenType.REFRESH_TOKEN.name());
+        jwtService.deleteRefreshTokenByUserId(userId);
+    }
+
     private User join(SocialJoinRequest socialJoinRequest) {
         System.out.println("join call!");
 
@@ -82,8 +94,6 @@ public class UserAuthServiceImpl implements UserAuthService {
                 .userType(UserType.ROLE_GENERAL)
                 .build()
                 ;
-
-        System.out.println("user = " + user);
 
         return userRepository.save(user);
     }
@@ -103,17 +113,15 @@ public class UserAuthServiceImpl implements UserAuthService {
         String email = userInfo.getKakao_account().getEmail();
         String nickname = userInfo.getKakao_account().getProfile().getNickname();
 
-        System.out.println("socialUserId = " + socialUserId);
-
         Optional<User> findSocialUser = userRepository.findBySocialUserId(socialUserId);
 
-        System.out.println("findSocialUser = " + findSocialUser);
-        findSocialUser.orElseGet(() -> join(new SocialJoinRequest(socialUserId, email, nickname, LoginType.KAKAO)));
+        User joinUser = findSocialUser.orElseGet(() -> join(new SocialJoinRequest(socialUserId, email, nickname, LoginType.KAKAO)));
 
-        SocialLoginResponse socialLoginResponse = new SocialLoginResponse();
-//        Optional<User> findSocialUser = userRepository.findBySocialUserId(socialUserId);
+        TokenDto tokenDto = new TokenDto();
+        tokenDto.setAccessToken(jwtService.createAccessToken(socialUserId, UserType.ROLE_GENERAL.name()));
+        tokenDto.setRefreshToken(jwtService.createRefreshToken(socialUserId));
 
-        return new SocialLoginResponse(socialUserId, email, nickname, LoginType.KAKAO);
+        return new SocialLoginResponse(socialUserId, email, nickname, LoginType.KAKAO, tokenDto);
     }
 
     private Map<String, Object> getKakaoToken(String grantType, String clientId, String code, String redirectUri) {

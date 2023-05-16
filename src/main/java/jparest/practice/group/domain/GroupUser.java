@@ -17,7 +17,7 @@ import java.util.Optional;
 public class GroupUser {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "group_user_id")
     private Long id;
 

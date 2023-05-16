@@ -5,12 +5,15 @@ import jparest.practice.user.dto.SocialJoinRequest;
 import jparest.practice.user.dto.SocialJoinResponse;
 import jparest.practice.user.dto.SocialLoginResponse;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public interface UserAuthService {
     User join(User user);
 
     SocialJoinResponse socialJoin(SocialJoinRequest socialJoinRequest);
 
-//    UserLoginResponse login(String loginId, String password);
+    void logout(HttpServletRequest request, HttpServletResponse response, String userId);
 
     SocialLoginResponse kakaoLogin(String code);
 }
