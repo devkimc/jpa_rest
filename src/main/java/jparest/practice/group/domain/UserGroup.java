@@ -11,39 +11,36 @@ import java.util.List;
 import java.util.Optional;
 
 @Entity
-@Table(name = "group_user")
+@Table(name = "user_group")
 @Getter
 @Setter
-public class GroupUser {
+public class UserGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "group_user_id")
+    @Column(name = "user_group_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 
-    @OneToMany(mappedBy = "groupUser")
-    private List<Invite> invites = new ArrayList<>();
-
     //==연관관계 메서드==//
-    public void addInvite(Invite invite) {
-        invites.add(invite);
-        invite.setGroupUser(this);
-    }
+//    public void addInvite(Invite invite) {
+//        invites.add(invite);
+//        invite.setUserGroup(this);
+//    }
 
     //==생성 메서드==//
-    public static GroupUser createGroupUser(Optional<User> user) {
-        GroupUser groupUser = new GroupUser();
+    public static UserGroup createGroupUser(Optional<User> user) {
+        UserGroup userGroup = new UserGroup();
 //        groupUser.setUser(user);
 
-        return groupUser;
+        return userGroup;
     }
 
 }

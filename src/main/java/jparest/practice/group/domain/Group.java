@@ -18,26 +18,25 @@ public class Group {
     @Column(name = "group_id")
     private Long id;
 
-    private Long createUserId;
+    @Column(nullable = false)
     private String groupName;
 
     @OneToMany(mappedBy = "group")
-    private List<GroupUser> groupUsers = new ArrayList<>();
+    private List<UserGroup> userGroups = new ArrayList<>();
 
     //==연관관계 메서드==//
-    public void addGroupUser(GroupUser groupUser) {
-        groupUsers.add(groupUser);
-        groupUser.setGroup(this);
-    }
+//    public void addGroupUser(GroupUser groupUser) {
+//        groupUsers.add(groupUser);
+//        groupUser.setGroup(this);
+//    }
 
     //==생성 메서드==//
-    public static Group createGroup(Long createUserId, String groupName,
-                                    GroupUser groupUser) {
-        Group group = new Group();
-        group.setCreateUserId(createUserId);
-        group.setGroupName(groupName);
-
-        group.addGroupUser(groupUser);
-        return group;
-    }
+//    public static Group createGroup(String groupName,
+//                                    GroupUser groupUser) {
+//        Group group = new Group();
+//        group.setGroupName(groupName);
+//
+//        group.addGroupUser(groupUser);
+//        return group;
+//    }
 }

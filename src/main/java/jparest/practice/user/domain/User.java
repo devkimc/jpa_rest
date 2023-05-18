@@ -1,6 +1,7 @@
 package jparest.practice.user.domain;
 
-import jparest.practice.group.domain.GroupUser;
+import jparest.practice.group.domain.UserGroup;
+import jparest.practice.invite.domain.Invite;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -25,7 +26,7 @@ public class User {
     @Type(type = "uuid-char")
     private UUID id;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 20)
     private String socialUserId;
 
     @Column(length = 200)
@@ -41,7 +42,10 @@ public class User {
     private UserType userType;
 
     @OneToMany(mappedBy = "user")
-    private List<GroupUser> groupUsers = new ArrayList<>();
+    private List<UserGroup> userGroups = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recvUser")
+    private List<Invite> invites = new ArrayList<>();
 
 // 아이디, 비밀번호 로그인 시
 //    @Column(length = 20)

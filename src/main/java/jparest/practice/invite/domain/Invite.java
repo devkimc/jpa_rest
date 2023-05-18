@@ -1,10 +1,13 @@
 package jparest.practice.invite.domain;
 
-import jparest.practice.group.domain.GroupUser;
+import jparest.practice.group.domain.Group;
+import jparest.practice.group.domain.UserGroup;
+import jparest.practice.user.domain.User;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -16,22 +19,27 @@ public class Invite {
     @Column(name = "invite_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_user_id")
-    private GroupUser groupUser;
+    @Column(nullable = false)
+    private User sendUser;
 
-    private Long recvUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User recvUser;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group;
 
     @Enumerated(EnumType.STRING)
     private InviteStatus status;
 
     //==생성 메서드==//
-    public static Invite createInvite(Long recvUserId, GroupUser groupUser) {
-        Invite invite = new Invite();
-        invite.setRecvUserId(recvUserId);
-        invite.setGroupUser(groupUser);
-        invite.setStatus(InviteStatus.WAITING);
-
-        return invite;
-    }
+//    public static Invite createInvite(Long recvUserId, UserGroup userGroup) {
+//        Invite invite = new Invite();
+//        invite.setRecvUserId(recvUserId);
+//        invite.setUserGroup(userGroup);
+//        invite.setStatus(InviteStatus.WAITING);
+//
+//        return invite;
+//    }
 }

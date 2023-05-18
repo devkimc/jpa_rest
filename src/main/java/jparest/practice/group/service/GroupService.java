@@ -1,15 +1,10 @@
 package jparest.practice.group.service;
 
-import jparest.practice.group.domain.Group;
-import jparest.practice.group.domain.GroupUser;
 import jparest.practice.group.repository.GroupRepository;
-import jparest.practice.user.domain.User;
 import jparest.practice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
