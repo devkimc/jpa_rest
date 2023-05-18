@@ -29,12 +29,6 @@ public class UserGroup {
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 
-    //==연관관계 메서드==//
-//    public void addInvite(Invite invite) {
-//        invites.add(invite);
-//        invite.setUserGroup(this);
-//    }
-
     //==생성 메서드==//
     public static UserGroup createGroupUser(Optional<User> user) {
         UserGroup userGroup = new UserGroup();

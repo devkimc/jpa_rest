@@ -25,10 +25,10 @@ public class Group {
     private List<UserGroup> userGroups = new ArrayList<>();
 
     //==연관관계 메서드==//
-//    public void addGroupUser(GroupUser groupUser) {
-//        groupUsers.add(groupUser);
-//        groupUser.setGroup(this);
-//    }
+    public void addUserGroup(UserGroup userGroup) {
+        userGroups.add(userGroup);
+        userGroup.setGroup(this);
+    }
 
     //==생성 메서드==//
 //    public static Group createGroup(String groupName,

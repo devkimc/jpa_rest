@@ -47,6 +47,12 @@ public class User {
     @OneToMany(mappedBy = "recvUser")
     private List<Invite> invites = new ArrayList<>();
 
+    //==연관관계 메서드==//
+    public void addInvite(Invite invite) {
+        invites.add(invite);
+        invite.setRecvUser(this);
+    }
+
 // 아이디, 비밀번호 로그인 시
 //    @Column(length = 20)
 //    private String loginId;
