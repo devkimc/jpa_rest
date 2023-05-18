@@ -9,11 +9,11 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class FavRest {
+public class GroupRest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "fav_rest_id")
+    @Column(name = "group_rest_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

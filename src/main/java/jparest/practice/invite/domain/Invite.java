@@ -19,19 +19,16 @@ public class Invite {
     @Column(name = "invite_id")
     private Long id;
 
-    @Column(nullable = false)
-    private User sendUser;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_group_id", nullable = false)
+    private UserGroup sendUserGroup;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User recvUser;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
-    private Group group;
-
     @Enumerated(EnumType.STRING)
-    private InviteStatus status;
+    private InviteStatus inviteStatus;
 
     //==생성 메서드==//
 //    public static Invite createInvite(Long recvUserId, UserGroup userGroup) {
