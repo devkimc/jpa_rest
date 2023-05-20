@@ -1,6 +1,7 @@
 package jparest.practice.group.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,6 @@ import java.util.List;
 @Entity
 @Table(name = "groups")
 @Getter
-@AllArgsConstructor
 public class Group {
 
     @Id
@@ -23,12 +23,16 @@ public class Group {
     private String groupName;
 
     @OneToMany(mappedBy = "group")
-    private List<UserGroup> userGroups = new ArrayList<>();
+    private List<UserGroup> userGroups = new ArrayList<UserGroup>();
 
     //==연관관계 메서드==//
     public void addUserGroup(UserGroup userGroup) {
         userGroups.add(userGroup);
         userGroup.setGroup(this);
+    }
+
+    public Group(String groupName) {
+        this.groupName = groupName;
     }
 
     //==생성 메서드==//

@@ -2,24 +2,16 @@ package jparest.practice.service;
 
 import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
-import jparest.practice.user.domain.UserType;
 import jparest.practice.user.dto.SocialJoinRequest;
-import jparest.practice.user.dto.UserLoginResponse;
-import jparest.practice.user.exception.ExistLoginIdException;
-import jparest.practice.user.exception.LoginFailException;
 import jparest.practice.user.repository.UserRepository;
 import jparest.practice.user.service.UserAuthService;
-import jparest.practice.user.service.UserAuthServiceImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
 public class UserServiceTest {
@@ -37,6 +29,7 @@ public class UserServiceTest {
         String email = "eee@www.aaaa";
         String nickname = "닉네임";
         LoginType loginType = LoginType.KAKAO;
+
         SocialJoinRequest socialJoinRequest = new SocialJoinRequest(socialUserId, email, nickname, loginType);
 
         //when
@@ -44,8 +37,7 @@ public class UserServiceTest {
         System.out.println("joinUser.getId() = " + joinUser.getId());
 
         //then
-        assertEquals(socialUserId, joinUser.getSocialUserId());
-
+        assertEquals(socialUserId, joinUser.getSocialUserId(), "가입한 유저의 소셜 ID 가 일치해야 한다.");
     }
             
 

@@ -13,6 +13,9 @@ public enum ErrorCode {
     EXIST_USER_ID(400, "U01", "이미 존재하는 아이디입니다."),
     LOGIN_FAIL(400, "U02", "로그인에 실패했습니다."),
     USER_NOT_FOUND(404, "U03", "존재하지 않는 유저입니다."),
+
+    //GROUP
+    GROUP_NOT_FOUND(404, "G01", "존재하지 않는 그룹입니다,")
     ;
 
 

@@ -3,6 +3,7 @@ package jparest.practice.group.domain;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.user.domain.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +32,11 @@ public class UserGroup {
     private Group group;
 
     public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public UserGroup(User user, Group group) {
+        this.user = user;
         this.group = group;
     }
 
