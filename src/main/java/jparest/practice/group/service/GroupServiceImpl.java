@@ -2,6 +2,7 @@ package jparest.practice.group.service;
 
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
+import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.user.domain.User;
@@ -40,13 +41,29 @@ public class GroupServiceImpl implements GroupService {
         return saveGroup.getId();
     }
 
+    /**
+     * 그룹 탈퇴
+     */
     @Override
-    public List<Group> getJoinGroupList(User user) {
-        return null;
-    }
+    @Transactional
+    public Boolean withdrawGroup(User user, Long groupId) {
+        Optional<UserGroup> findUserGroup = userGroupRepository.findAllByUserIdAndGroupId(user.getId(), groupId);
 
-    @Override
-    public Boolean withdrawGroup(User user) {
-        return null;
+        userGroupRepository.delete(findUserGroup.get());
+
+        Group group = findUserGroup.get().getGroup();
+        int countUserOfGroup = group.getUserGroups().size();
+
+        System.out.println("countUserOfGroup = " + countUserOfGroup);
+
+        // 그룹의 마지막 멤버인지 확인
+        if(countUserOfGroup == 1) {
+            groupRepository.delete(group);
+            return true;
+        }
+
+        if(countUserOfGroup > 2) return  true;
+
+        return false;
     }
 }

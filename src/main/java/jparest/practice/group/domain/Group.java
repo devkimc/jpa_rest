@@ -31,6 +31,10 @@ public class Group {
         userGroup.setGroup(this);
     }
 
+    public void deleteUserGroup(UserGroup userGroup) {
+
+    }
+
     public Group(String groupName) {
         this.groupName = groupName;
     }

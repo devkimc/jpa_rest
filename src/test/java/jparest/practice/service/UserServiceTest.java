@@ -30,11 +30,8 @@ public class UserServiceTest {
         String nickname = "닉네임";
         LoginType loginType = LoginType.KAKAO;
 
-        SocialJoinRequest socialJoinRequest = new SocialJoinRequest(socialUserId, email, nickname, loginType);
-
         //when
-        User joinUser = userAuthService.join(socialJoinRequest);
-        System.out.println("joinUser.getId() = " + joinUser.getId());
+        User joinUser = userAuthService.join(new SocialJoinRequest(socialUserId, email, nickname, loginType));
 
         //then
         assertEquals(socialUserId, joinUser.getSocialUserId(), "가입한 유저의 소셜 ID 가 일치해야 한다.");

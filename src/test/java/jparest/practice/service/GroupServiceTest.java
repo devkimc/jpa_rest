@@ -5,11 +5,13 @@ import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.group.service.GroupService;
+import jparest.practice.group.service.UserGroupService;
 import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.dto.SocialJoinRequest;
 import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,12 +31,15 @@ public class GroupServiceTest {
 
     @Autowired
     UserAuthService userAuthService;
+
     @Autowired
     GroupService groupService;
     @Autowired
     GroupRepository groupRepository;
     @Autowired
     UserGroupRepository userGroupRepository;
+//    @Autowired
+//    UserGroupService userGroupService;
 
     @Test
     public void 그룹생성() throws Exception {
@@ -52,10 +57,10 @@ public class GroupServiceTest {
         //when
         Long saveGroupId = groupService.addGroup(joinUser, groupName);
         Optional<Group> findGroup = groupRepository.findById(saveGroupId);
-        System.out.println(findGroup.get().getUserGroups().toString());
 
         //then
         findGroup.orElseThrow(() -> new GroupNotFoundException("groupId = " + saveGroupId));
+        System.out.println(findGroup.get().getUserGroups().toString());
         String saveGroupName = findGroup.get().getGroupName();
 
         assertEquals(groupName, saveGroupName,"생성한 그룹의 이름이 일치해야 한다.");
@@ -84,6 +89,34 @@ public class GroupServiceTest {
 //                member.getId(), getGroup.getCreateUserId());
 
     }
+
+    @Test
+    @DisplayName("마지막 유저가 탈퇴시 그룹은 삭제되어야 한다.")
+    public void 그룹탈퇴_마지막_유저() throws Exception {
+
+        //given
+        String groupName = "첫 그룹";
+        String socialUserId = "123123";
+        String email = "eee@www.aaaa";
+        String nickname = "닉네임";
+        LoginType loginType = LoginType.KAKAO;
+
+        SocialJoinRequest socialJoinRequest = new SocialJoinRequest(socialUserId, email, nickname, loginType);
+        User joinUser = userAuthService.join(socialJoinRequest);
+
+        //when
+        Long saveGroupId = groupService.addGroup(joinUser, groupName);
+
+        groupService.withdrawGroup(joinUser, saveGroupId);
+
+        Optional<Group> findGroup = groupRepository.findById(saveGroupId);
+
+        //then
+        assertThrows(GroupNotFoundException.class, () -> {
+            findGroup.orElseThrow(() -> new GroupNotFoundException("groupId = " + saveGroupId));
+        });
+    }
+
 
 
 }

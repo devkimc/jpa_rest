@@ -11,9 +11,6 @@ public interface GroupService {
     // 그룹 생성
     Long addGroup(User user, String groupName);
 
-    // 가입된 그룹 조회
-    List<Group> getJoinGroupList(User user);
-
     // 그룹 탈퇴
-    Boolean withdrawGroup(User user);
+    Boolean withdrawGroup(User user, Long groupId);
 }
