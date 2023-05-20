@@ -11,7 +11,6 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@Setter
 public class Invite {
 
     @Id
@@ -29,6 +28,10 @@ public class Invite {
 
     @Enumerated(EnumType.STRING)
     private InviteStatus inviteStatus;
+
+    public void setRecvUser(User user) {
+        this.recvUser = user;
+    }
 
     //==생성 메서드==//
 //    public static Invite createInvite(Long recvUserId, UserGroup userGroup) {

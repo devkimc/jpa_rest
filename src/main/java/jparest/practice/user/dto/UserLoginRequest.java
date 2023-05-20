@@ -3,7 +3,6 @@ package jparest.practice.user.dto;
 import lombok.*;
 
 @Getter
-@Setter
 @Builder
 @ToString
 @AllArgsConstructor

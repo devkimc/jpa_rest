@@ -2,6 +2,7 @@ package jparest.practice.group.domain;
 
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.user.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
 @Entity
 @Table(name = "user_group")
 @Getter
-@Setter
+@AllArgsConstructor
 public class UserGroup {
 
     @Id
@@ -29,12 +30,15 @@ public class UserGroup {
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 
-    //==생성 메서드==//
-    public static UserGroup createGroupUser(Optional<User> user) {
-        UserGroup userGroup = new UserGroup();
-//        groupUser.setUser(user);
-
-        return userGroup;
+    public void setGroup(Group group) {
+        this.group = group;
     }
+
+    //==생성 메서드==//
+//    public static UserGroup createGroupUser(Optional<User> user) {
+//        UserGroup userGroup = new UserGroup();
+//        groupUser.setUser(user);
+//        return userGroup;
+//    }
 
 }
