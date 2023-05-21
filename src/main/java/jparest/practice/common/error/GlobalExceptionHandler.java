@@ -1,6 +1,9 @@
 package jparest.practice.common.error;
 
+import jparest.practice.group.exception.ExistUserGroupException;
 import jparest.practice.group.exception.GroupNotFoundException;
+import jparest.practice.group.exception.UserGroupNotFoundException;
+import jparest.practice.invite.exception.ExistInviteForUserException;
 import jparest.practice.user.exception.ExistLoginIdException;
 import jparest.practice.user.exception.LoginFailException;
 import jparest.practice.user.exception.UserNotFoundException;
@@ -36,6 +39,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(GroupNotFoundException.class)
     ResponseEntity<ErrorResponse> groupNotFoundHandler(GroupNotFoundException e) {
         return getErrorResponseEntity(e, ErrorCode.GROUP_NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserGroupNotFoundException.class)
+    ResponseEntity<ErrorResponse> userGroupNotFoundHandler(UserGroupNotFoundException e) {
+        return getErrorResponseEntity(e, ErrorCode.USER_GROUP_NOT_FOUND);
+    }
+
+    @ExceptionHandler(ExistUserGroupException.class)
+    ResponseEntity<ErrorResponse> existUserGroupHandler(ExistUserGroupException e) {
+        return getErrorResponseEntity(e, ErrorCode.EXIST_USER_GROUP);
+    }
+
+    // INVITE
+    @ExceptionHandler(ExistInviteForUserException.class)
+    ResponseEntity<ErrorResponse> existInviteForUserException(ExistInviteForUserException e) {
+        return getErrorResponseEntity(e, ErrorCode.EXIST_INVITE_FOR_USER);
     }
 
     private static ResponseEntity<ErrorResponse> getErrorResponseEntity(BusinessException e, ErrorCode errorCode) {

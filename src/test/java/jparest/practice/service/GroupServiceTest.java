@@ -3,28 +3,22 @@ package jparest.practice.service;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
-import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.group.service.GroupService;
-import jparest.practice.group.service.UserGroupService;
 import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.dto.SocialJoinRequest;
 import jparest.practice.user.service.UserAuthService;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//@RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
 public class GroupServiceTest {
@@ -34,25 +28,29 @@ public class GroupServiceTest {
 
     @Autowired
     GroupService groupService;
+
     @Autowired
     GroupRepository groupRepository;
-    @Autowired
-    UserGroupRepository userGroupRepository;
-//    @Autowired
-//    UserGroupService userGroupService;
 
-    @Test
-    public void 그룹생성() throws Exception {
+    User joinUser;
 
-        //given
-        String groupName = "첫 그룹";
+    @BeforeEach
+    void setUp() {
         String socialUserId = "123123";
         String email = "eee@www.aaaa";
         String nickname = "닉네임";
         LoginType loginType = LoginType.KAKAO;
 
         SocialJoinRequest socialJoinRequest = new SocialJoinRequest(socialUserId, email, nickname, loginType);
-        User joinUser = userAuthService.join(socialJoinRequest);
+        joinUser = userAuthService.join(socialJoinRequest);
+    }
+
+
+    @Test
+    public void 그룹생성() throws Exception {
+
+        //given
+        String groupName = "첫 그룹";
 
         //when
         Long saveGroupId = groupService.addGroup(joinUser, groupName);
@@ -60,7 +58,6 @@ public class GroupServiceTest {
 
         //then
         findGroup.orElseThrow(() -> new GroupNotFoundException("groupId = " + saveGroupId));
-        System.out.println(findGroup.get().getUserGroups().toString());
         String saveGroupName = findGroup.get().getGroupName();
 
         assertEquals(groupName, saveGroupName,"생성한 그룹의 이름이 일치해야 한다.");
@@ -96,24 +93,15 @@ public class GroupServiceTest {
 
         //given
         String groupName = "첫 그룹";
-        String socialUserId = "123123";
-        String email = "eee@www.aaaa";
-        String nickname = "닉네임";
-        LoginType loginType = LoginType.KAKAO;
-
-        SocialJoinRequest socialJoinRequest = new SocialJoinRequest(socialUserId, email, nickname, loginType);
-        User joinUser = userAuthService.join(socialJoinRequest);
-
-        //when
         Long saveGroupId = groupService.addGroup(joinUser, groupName);
 
+        //when
         groupService.withdrawGroup(joinUser, saveGroupId);
-
-        Optional<Group> findGroup = groupRepository.findById(saveGroupId);
 
         //then
         assertThrows(GroupNotFoundException.class, () -> {
-            findGroup.orElseThrow(() -> new GroupNotFoundException("groupId = " + saveGroupId));
+            groupRepository.findById(saveGroupId)
+                    .orElseThrow(() -> new GroupNotFoundException("groupId = " + saveGroupId));
         });
     }
 

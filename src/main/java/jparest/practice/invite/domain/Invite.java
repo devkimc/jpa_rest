@@ -3,7 +3,9 @@ package jparest.practice.invite.domain;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.user.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -31,6 +33,12 @@ public class Invite {
 
     public void setRecvUser(User user) {
         this.recvUser = user;
+    }
+
+    public Invite(UserGroup sendUserGroup, User recvUser, InviteStatus inviteStatus) {
+        this.sendUserGroup = sendUserGroup;
+        this.recvUser = recvUser;
+        this.inviteStatus = inviteStatus;
     }
 
     //==생성 메서드==//

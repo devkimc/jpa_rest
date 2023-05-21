@@ -3,6 +3,7 @@ package jparest.practice.group.service;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.exception.GroupNotFoundException;
+import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.user.domain.User;
@@ -19,10 +20,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
 
-    private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final UserGroupRepository userGroupRepository;
-
 
     /**
      * 그룹 생성
@@ -47,11 +46,12 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public Boolean withdrawGroup(User user, Long groupId) {
-        Optional<UserGroup> findUserGroup = userGroupRepository.findAllByUserIdAndGroupId(user.getId(), groupId);
 
-        userGroupRepository.delete(findUserGroup.get());
+        UserGroup findUserGroup = getFindUserGroup(user.getId(), groupId);
 
-        Group group = findUserGroup.get().getGroup();
+        userGroupRepository.delete(findUserGroup);
+
+        Group group = findUserGroup.getGroup();
         int countUserOfGroup = group.getUserGroups().size();
 
         System.out.println("countUserOfGroup = " + countUserOfGroup);
@@ -65,5 +65,10 @@ public class GroupServiceImpl implements GroupService {
         if(countUserOfGroup > 2) return  true;
 
         return false;
+    }
+
+    private UserGroup getFindUserGroup(UUID userId, Long groupId) {
+        return userGroupRepository.findByUserIdAndGroupId(userId, groupId)
+                .orElseThrow(() -> new UserGroupNotFoundException("userId = " + userId + ", groupId = " + groupId));
     }
 }
