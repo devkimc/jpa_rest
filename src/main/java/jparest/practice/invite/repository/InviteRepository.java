@@ -3,6 +3,7 @@ package jparest.practice.invite.repository;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -16,9 +17,10 @@ public interface InviteRepository extends JpaRepository<Invite, Long> {
                                                                        @Param("recvUserId") UUID recvUserId,
                                                                        @Param("inviteStatus") InviteStatus inviteStatus);
 
-    @Query("update Invite i set i.inviteStatus = :inviteStatus" +
-            "where i.inviteId = :inviteId and i.recvUser.id = :recvUserId and i.inviteStatus = Invites.WAITING")
-    Optional<Boolean> updateWaitingInviteStatus(@Param("inviteId") Long inviteId,
+    @Modifying
+    @Query("update Invite i set i.inviteStatus = :inviteStatus " +
+            "where i.id = :inviteId and i.recvUser.id = :recvUserId and i.inviteStatus = 'WAITING'")
+    Integer updateWaitingInviteStatus(@Param("inviteId") Long inviteId,
                                                 @Param("recvUserId") UUID recvUserId,
                                                 @Param("inviteStatus") InviteStatus inviteStatus);
 }

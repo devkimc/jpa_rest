@@ -5,6 +5,8 @@ import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.service.GroupService;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
+import jparest.practice.invite.exception.ExistInviteForUserException;
+import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.invite.service.InviteService;
 import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
@@ -43,6 +45,9 @@ public class InviteServiceTest {
     InviteService inviteService;
 
     @Autowired
+    InviteRepository inviteRepository;
+
+    @Autowired
     GroupService groupService;
 
     User joinUser1;
@@ -75,13 +80,59 @@ public class InviteServiceTest {
         );
     }
 
+    @Test
+    public void 그룹초대_승낙() throws Exception {
+        //given
+        Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+
+        //when
+        Group group = inviteService.agreeInvitation(invite.getId(), joinUser2);
+        groupService.addUserGroup(joinUser2, group.getId());
+
+        //then
+        assertAll(
+                ()-> assertEquals(InviteStatus.ACCEPT, invite.getInviteStatus()), // 초대 승낙
+                ()-> assertEquals(group.getUserGroups().get(1).getUser(), joinUser2) // 그룹원 추가
+        );
+    }
+
+    @Test
+    public void 그룹초대_거절() throws Exception {
+        //given
+        Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+
+        //when
+        inviteService.rejectInvitation(invite.getId(), joinUser2);
+
+        //then
+        assertEquals(InviteStatus.REJECT, invite.getInviteStatus());
+    }
+
+    @Test
+    public void 그룹초대_취소() throws Exception {
+        //given
+        Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+
+        //when
+        inviteService.cancelInvitation(invite.getId(), joinUser1);
+
+        //then
+        assertEquals(InviteStatus.CANCEL, invite.getInviteStatus());
+    }
+
+    @Test
+    public void 그룹초대_중복() throws Exception {
+        //given
+
+        //when
+        inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+
+        //then
+        assertThrows(ExistInviteForUserException.class, () ->
+                inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId()));
+    }
+
     private User joinSetup(SocialJoinRequest socialJoinRequest) {
         return userAuthService.join(socialJoinRequest);
     }
-
-//    private UserGroup findUserGroup() {
-//        return userGroupRepository
-//                .findByUserIdAndGroupId(joinUser1.getId(), groupOfUser1.getId())
-//                .orElseThrow(() -> new UserGroupNotFoundException(""));
-//    }
 }

@@ -61,30 +61,6 @@ public class GroupServiceTest {
         String saveGroupName = findGroup.get().getGroupName();
 
         assertEquals(groupName, saveGroupName,"생성한 그룹의 이름이 일치해야 한다.");
-
-//        assertAll("userGroup",
-//                () -> assertEquals(saveGroupId, )
-//                );
-
-//        Assert.assertEquals("생성한 그룹의 이름이 일치해야 한다.", saveGroupName, groupName);
-
-//        findGroup.orElseGet(() -> findGroup.get().)
-
-//        //given
-//        Member member = createMember();
-//
-//        //when
-//        Long groupId = groupService.makeGroup(member.getId(), "반민초파");
-//
-//        //then
-//        Group getGroup = groupRepository.findOne(groupId);
-//
-//        Assert.assertEquals("생성한 그룹 수가 정확해야 한다.",
-//                1, getGroup.getGroupMembers().size());
-//
-//        Assert.assertEquals("그룹 생성자가 정확해야 한다..",
-//                member.getId(), getGroup.getCreateUserId());
-
     }
 
     @Test
@@ -104,7 +80,4 @@ public class GroupServiceTest {
                     .orElseThrow(() -> new GroupNotFoundException("groupId = " + saveGroupId));
         });
     }
-
-
-
 }

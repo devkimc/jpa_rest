@@ -18,5 +18,5 @@ public interface InviteService {
     boolean rejectInvitation(Long inviteId, User recvUser);
 
     // 초대 취소
-    boolean cancelInvitation(Long inviteId, User recvUser);
+    boolean cancelInvitation(Long inviteId, User sendUser);
 }

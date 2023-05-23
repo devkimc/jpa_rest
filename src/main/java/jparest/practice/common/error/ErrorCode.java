@@ -21,7 +21,8 @@ public enum ErrorCode {
 
     // INVITE
     EXIST_INVITE_FOR_USER(400, "I01", "이미 초대한 유저입니다."),
-    INVITE_NOT_FOUND(404, "I02", "존재하지 않는 초대입니다")
+    INVITE_NOT_FOUND(404, "I02", "존재하지 않는 초대입니다"),
+    ALREADY_PROCESSED_INVITE(400, "I03", "이미 처리된 초대입니다."),
     ;
 
 

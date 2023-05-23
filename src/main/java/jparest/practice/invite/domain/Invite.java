@@ -41,6 +41,10 @@ public class Invite {
         this.inviteStatus = inviteStatus;
     }
 
+    public void updateStatus(InviteStatus inviteStatus) {
+        this.inviteStatus = inviteStatus;
+    }
+
     //==생성 메서드==//
 //    public static Invite createInvite(Long recvUserId, UserGroup userGroup) {
 //        Invite invite = new Invite();

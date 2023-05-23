@@ -9,6 +9,7 @@ import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
+import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.ExistInviteForUserException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.invite.repository.InviteRepository;
@@ -63,21 +64,44 @@ public class InviteServiceImpl implements InviteService {
     @Override
     @Transactional
     public Group agreeInvitation(Long inviteId, User recvUser) {
-        inviteRepository.updateWaitingInviteStatus(inviteId, recvUser.getId(), InviteStatus.ACCEPT)
-                .orElseThrow(() -> new InviteNotFoundException("inviteId = " + inviteId));
-
         Invite invite = findInvite(inviteId);
+
+        if(!invite.getRecvUser().equals(recvUser)) {
+            throw new InviteNotFoundException("승낙 요청한 유저의 초대가 아닙니다.");
+        }
+
+        if (invite.getInviteStatus() != InviteStatus.WAITING) {
+            throw new AlreadyProcessedInviteException("inviteId = " + inviteId);
+        }
+
+        updateStatus(invite, InviteStatus.ACCEPT);
 
         return invite.getSendUserGroup().getGroup();
     }
 
     @Override
     public boolean rejectInvitation(Long inviteId, User recvUser) {
+        Invite invite = findInvite(inviteId);
+
+        if(!invite.getRecvUser().equals(recvUser)) {
+            throw new InviteNotFoundException("거절 요청한 유저의 초대가 아닙니다.");
+        }
+        
+        updateStatus(invite, InviteStatus.REJECT);
+        
         return false;
     }
 
     @Override
-    public boolean cancelInvitation(Long inviteId, User recvUser) {
+    public boolean cancelInvitation(Long inviteId, User sendUser) {
+        Invite invite = findInvite(inviteId);
+
+        if(!invite.getSendUserGroup().getUser().equals(sendUser)) {
+            throw new InviteNotFoundException("취소 요청한 유저의 초대가 아닙니다.");
+        }
+        
+        updateStatus(invite, InviteStatus.CANCEL);
+        
         return false;
     }
 
@@ -97,5 +121,10 @@ public class InviteServiceImpl implements InviteService {
     private UserGroup findUserGroup(UUID userId, Long groupId) {
         return userGroupRepository.findByUserIdAndGroupId(userId, groupId)
                 .orElseThrow(() -> new UserGroupNotFoundException("userId = " + userId + ", groupId = " + groupId));
+    }
+    
+    private void updateStatus(Invite invite, InviteStatus inviteStatus) {
+        invite.updateStatus(inviteStatus);
+        inviteRepository.save(invite);
     }
 }

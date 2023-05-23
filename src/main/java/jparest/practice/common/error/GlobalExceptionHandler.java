@@ -3,6 +3,7 @@ package jparest.practice.common.error;
 import jparest.practice.group.exception.ExistUserGroupException;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.exception.UserGroupNotFoundException;
+import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.ExistInviteForUserException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.user.exception.ExistLoginIdException;
@@ -54,13 +55,18 @@ public class GlobalExceptionHandler {
 
     // INVITE
     @ExceptionHandler(ExistInviteForUserException.class)
-    ResponseEntity<ErrorResponse> existInviteForUserException(ExistInviteForUserException e) {
+    ResponseEntity<ErrorResponse> existInviteForUserHandler(ExistInviteForUserException e) {
         return getErrorResponseEntity(e, ErrorCode.EXIST_INVITE_FOR_USER);
     }
 
     @ExceptionHandler(InviteNotFoundException.class)
-    ResponseEntity<ErrorResponse> inviteNotFoundException(InviteNotFoundException e) {
+    ResponseEntity<ErrorResponse> inviteNotFoundHandler(InviteNotFoundException e) {
         return getErrorResponseEntity(e, ErrorCode.INVITE_NOT_FOUND);
+    }
+
+    @ExceptionHandler(AlreadyProcessedInviteException.class)
+    ResponseEntity<ErrorResponse> AlreadyProcessedInviteHandler(AlreadyProcessedInviteException e) {
+        return getErrorResponseEntity(e, ErrorCode.ALREADY_PROCESSED_INVITE);
     }
 
     private static ResponseEntity<ErrorResponse> getErrorResponseEntity(BusinessException e, ErrorCode errorCode) {
