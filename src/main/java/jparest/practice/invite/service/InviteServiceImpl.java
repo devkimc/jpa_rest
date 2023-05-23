@@ -30,30 +30,9 @@ public class InviteServiceImpl implements InviteService {
     private final UserGroupRepository userGroupRepository;
     private final InviteRepository inviteRepository;
 
-
-    /**
-     * 그룹 초대
-     */
-    @Transactional
-    public Long invite(Long memberId, Long groupId, Long recvUserId) {
-
-        // 엔티티 조회
-//        GroupMember groupMember = groupRepository.findByGroupIdAndMemberId(groupId, memberId);
-
-        // 그룹 초대 생성
-//        Invite invite = Invite.createInvite(recvUserId, groupMember);
-
-        // 초대 저장
-//        inviteRepository.save(invite);
-//        return invite.getId();
-
-        // TODO: 로직 수정후 변경하기
-        return 1L;
-    }
-
     @Override
     @Transactional
-    public boolean inviteToGroup(Long groupId, UUID sendUserId, UUID recvUserId) {
+    public Invite inviteToGroup(Long groupId, UUID sendUserId, UUID recvUserId) {
 
         // 1. 초대한 사람이 그룹의 회원이 맞는지 확인
         UserGroup sendUserGroup = getFindUserGroup(sendUserId, groupId);
@@ -75,9 +54,9 @@ public class InviteServiceImpl implements InviteService {
         }
 
         User recvUser = getFindUser(recvUserId);
-        inviteRepository.save(new Invite(sendUserGroup, recvUser, InviteStatus.WAITING));
+        Invite invite = inviteRepository.save(new Invite(sendUserGroup, recvUser, InviteStatus.WAITING));
 
-        return true;
+        return invite;
     }
 
     @Override

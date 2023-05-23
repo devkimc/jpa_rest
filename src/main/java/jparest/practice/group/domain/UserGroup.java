@@ -40,6 +40,12 @@ public class UserGroup {
         this.group = group;
     }
 
+    //==연관관계 메서드==//
+    public void addUserGroup() {
+        this.user.getUserGroups().add(this);
+        this.group.getUserGroups().add(this);
+    }
+
     //==생성 메서드==//
 //    public static UserGroup createGroupUser(Optional<User> user) {
 //        UserGroup userGroup = new UserGroup();

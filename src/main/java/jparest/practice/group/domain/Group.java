@@ -25,16 +25,6 @@ public class Group {
     @OneToMany(mappedBy = "group")
     private List<UserGroup> userGroups = new ArrayList<UserGroup>();
 
-    //==연관관계 메서드==//
-    public void addUserGroup(UserGroup userGroup) {
-        userGroups.add(userGroup);
-        userGroup.setGroup(this);
-    }
-
-    public void deleteUserGroup(UserGroup userGroup) {
-
-    }
-
     public Group(String groupName) {
         this.groupName = groupName;
     }

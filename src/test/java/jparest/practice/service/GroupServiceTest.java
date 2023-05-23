@@ -53,11 +53,11 @@ public class GroupServiceTest {
         String groupName = "첫 그룹";
 
         //when
-        Long saveGroupId = groupService.addGroup(joinUser, groupName);
-        Optional<Group> findGroup = groupRepository.findById(saveGroupId);
+        Group saveGroup = groupService.createGroup(joinUser, groupName);
+        Optional<Group> findGroup = groupRepository.findById(saveGroup.getId());
 
         //then
-        findGroup.orElseThrow(() -> new GroupNotFoundException("groupId = " + saveGroupId));
+        findGroup.orElseThrow(() -> new GroupNotFoundException("groupId = " + saveGroup.getId()));
         String saveGroupName = findGroup.get().getGroupName();
 
         assertEquals(groupName, saveGroupName,"생성한 그룹의 이름이 일치해야 한다.");
@@ -93,7 +93,7 @@ public class GroupServiceTest {
 
         //given
         String groupName = "첫 그룹";
-        Long saveGroupId = groupService.addGroup(joinUser, groupName);
+        Long saveGroupId = groupService.createGroup(joinUser, groupName).getId();
 
         //when
         groupService.withdrawGroup(joinUser, saveGroupId);

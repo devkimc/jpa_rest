@@ -28,16 +28,15 @@ public class GroupServiceImpl implements GroupService {
      */
     @Override
     @Transactional
-    public Long addGroup(User user, String groupName) {
+    public Group createGroup(User user, String groupName) {
         Group newGroup = new Group(groupName);
         Group saveGroup = groupRepository.save(newGroup);
 
         UserGroup newUserGroup = new UserGroup(user, saveGroup);
         UserGroup saveUserGroup = userGroupRepository.save(newUserGroup);
+        saveUserGroup.addUserGroup();
 
-        saveGroup.addUserGroup(saveUserGroup);
-
-        return saveGroup.getId();
+        return saveGroup;
     }
 
     /**

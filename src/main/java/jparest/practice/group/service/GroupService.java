@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface GroupService {
 
     // 그룹 생성
-    Long addGroup(User user, String groupName);
+    Group createGroup(User user, String groupName);
 
     // 그룹 탈퇴
     Boolean withdrawGroup(User user, Long groupId);

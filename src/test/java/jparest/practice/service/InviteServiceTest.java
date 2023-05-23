@@ -1,64 +1,99 @@
-//package jparest.practice.service;
-//
-//import jparest.practice.group.domain.Group;
-//import jparest.practice.member.domain.Member;
-//import jparest.practice.group.repository.GroupRepository;
-//import jparest.practice.group.service.GroupService;
-//import jparest.practice.invite.repository.InviteRepository;
-//import jparest.practice.invite.service.InviteService;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.test.context.junit4.SpringRunner;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import javax.persistence.EntityManager;
-//import javax.persistence.PersistenceContext;
-//
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
-//@Transactional
-//public class InviteServiceTest {
-//
-//    @PersistenceContext
-//    EntityManager em;
-//
-//    @Autowired
-//    InviteService inviteService;
-//    @Autowired
-//    InviteRepository inviteRepository;
-//
-//    @Autowired
-//    GroupService groupService;
-//    @Autowired
-//    GroupRepository groupRepository;
-//
-//    @Test
-//    public void 그룹_초대() throws Exception {
-//
-//        //given
-//        Member member = createMember();
-//        Group group = createGroup(member.getId());
-//        System.out.println("group = " + group.getGroupMembers());
-//
-//        //when
-//
-//        //then
+package jparest.practice.service;
+
+import jparest.practice.group.domain.Group;
+import jparest.practice.group.domain.UserGroup;
+import jparest.practice.group.exception.UserGroupNotFoundException;
+import jparest.practice.group.repository.GroupRepository;
+import jparest.practice.group.repository.UserGroupRepository;
+import jparest.practice.group.service.GroupService;
+import jparest.practice.invite.domain.Invite;
+import jparest.practice.invite.domain.InviteStatus;
+import jparest.practice.invite.repository.InviteRepository;
+import jparest.practice.invite.service.InviteService;
+import jparest.practice.user.domain.LoginType;
+import jparest.practice.user.domain.User;
+import jparest.practice.user.dto.SocialJoinRequest;
+import jparest.practice.user.service.UserAuthService;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+@Transactional
+public class InviteServiceTest {
+
+    private final String socialUserId1 = "123123";
+    private final String email1 = "eee@www.aaaa";
+    private final String nickname1 = "유저1";
+    private final LoginType loginType1 = LoginType.KAKAO;
+
+    private final String socialUserId2 = "234234";
+    private final String email2 = "eee@www.bbb";
+    private final String nickname2 = "유저2";
+    private final LoginType loginType2 = LoginType.KAKAO;
+
+    private final String groupName = "유저 1의 나라";
+
+    @Autowired
+    UserAuthService userAuthService;
+
+    @Autowired
+    InviteService inviteService;
+    @Autowired
+    InviteRepository inviteRepository;
+
+    @Autowired
+    GroupService groupService;
+    @Autowired
+    GroupRepository groupRepository;
+    @Autowired
+    UserGroupRepository userGroupRepository;
+
+    User joinUser1;
+    User joinUser2;
+
+    Group group1;
+
+    @BeforeEach
+    void setUp() {
+        joinUser1 = joinSetup(new SocialJoinRequest(socialUserId1, email1, nickname1, loginType1));
+        joinUser2 = joinSetup(new SocialJoinRequest(socialUserId2, email2, nickname2, loginType2));
+
+        group1 = groupService.createGroup(joinUser1, groupName);
+    }
+
+    @Test
+    public void 그룹초대() throws Exception {
+
+        //given
+        List<UserGroup> userGroups = joinUser1.getUserGroups();
+
+        //when
+        Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1.getId(), joinUser2.getId());
+
+        //then
+        assertAll(
+                () -> assertEquals(InviteStatus.WAITING, invite.getInviteStatus()), // 초대 상태
+                () -> assertEquals(userGroups.get(0), invite.getSendUserGroup()), // 초대한 유저
+                () -> assertEquals(joinUser2, invite.getRecvUser()) // 초대받은 유저
+        );
+    }
+
+    private User joinSetup(SocialJoinRequest socialJoinRequest) {
+        return userAuthService.join(socialJoinRequest);
+    }
+
+//    private UserGroup getFindUserGroup() {
+//        return userGroupRepository
+//                .findByUserIdAndGroupId(joinUser1.getId(), groupOfUser1.getId())
+//                .orElseThrow(() -> new UserGroupNotFoundException(""));
 //    }
-//
-//    private Member createMember() {
-//        Member member = new Member();
-//        member.setUsername("회원1");
-//        em.persist(member);
-//        return member;
-//    }
-//
-//    private Group createGroup(Long memberId) {
-//        Group group = new Group();
-//        group.setGroupName("반민초파");
-//        group.setCreateUserId(memberId);
-//        em.persist(group);
-//        return group;
-//    }
-//}
+}

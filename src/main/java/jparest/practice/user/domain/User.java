@@ -39,11 +39,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
-    private List<UserGroup> userGroups = new ArrayList<>();
+    private List<UserGroup> userGroups = new ArrayList<UserGroup>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recvUser")
-    private List<Invite> invites = new ArrayList<>();
+    private List<Invite> invites = new ArrayList<Invite>();
 
     //==연관관계 메서드==//
     public void addInvite(Invite invite) {
