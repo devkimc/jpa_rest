@@ -80,7 +80,6 @@ public class UserAuthServiceImpl implements UserAuthService {
         String nickname = userInfo.getKakao_account().getProfile().getNickname();
 
         Optional<User> findSocialUser = userRepository.findBySocialUserId(socialUserId);
-        System.out.println("findSocialUser = " + findSocialUser);
 
         User joinUser = findSocialUser.orElseGet(() -> join(new SocialJoinRequest(socialUserId, email, nickname, LoginType.KAKAO)));
         String joinUserId = String.valueOf(joinUser.getId());
@@ -95,7 +94,6 @@ public class UserAuthServiceImpl implements UserAuthService {
     @Override
     @Transactional
     public User join(SocialJoinRequest socialJoinRequest) {
-        System.out.println("join call!");
 
         User user = User.builder()
                 .socialUserId(socialJoinRequest.getSocialUserId())

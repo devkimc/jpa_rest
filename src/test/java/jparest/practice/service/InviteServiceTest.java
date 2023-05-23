@@ -2,19 +2,14 @@ package jparest.practice.service;
 
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
-import jparest.practice.group.exception.UserGroupNotFoundException;
-import jparest.practice.group.repository.GroupRepository;
-import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.group.service.GroupService;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
-import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.invite.service.InviteService;
 import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.dto.SocialJoinRequest;
 import jparest.practice.user.service.UserAuthService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,15 +41,9 @@ public class InviteServiceTest {
 
     @Autowired
     InviteService inviteService;
-    @Autowired
-    InviteRepository inviteRepository;
 
     @Autowired
     GroupService groupService;
-    @Autowired
-    GroupRepository groupRepository;
-    @Autowired
-    UserGroupRepository userGroupRepository;
 
     User joinUser1;
     User joinUser2;
@@ -77,7 +65,7 @@ public class InviteServiceTest {
         List<UserGroup> userGroups = joinUser1.getUserGroups();
 
         //when
-        Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1.getId(), joinUser2.getId());
+        Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
 
         //then
         assertAll(
@@ -91,7 +79,7 @@ public class InviteServiceTest {
         return userAuthService.join(socialJoinRequest);
     }
 
-//    private UserGroup getFindUserGroup() {
+//    private UserGroup findUserGroup() {
 //        return userGroupRepository
 //                .findByUserIdAndGroupId(joinUser1.getId(), groupOfUser1.getId())
 //                .orElseThrow(() -> new UserGroupNotFoundException(""));

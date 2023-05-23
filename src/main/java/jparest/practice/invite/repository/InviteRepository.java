@@ -15,4 +15,10 @@ public interface InviteRepository extends JpaRepository<Invite, Long> {
     Optional<Invite> findBySendUserGroupIdAndRecvUserIdAndInviteStatus(@Param("sendUserGroupId") Long sendUserGroupId,
                                                                        @Param("recvUserId") UUID recvUserId,
                                                                        @Param("inviteStatus") InviteStatus inviteStatus);
+
+    @Query("update Invite i set i.inviteStatus = :inviteStatus" +
+            "where i.inviteId = :inviteId and i.recvUser.id = :recvUserId and i.inviteStatus = Invites.WAITING")
+    Optional<Boolean> updateWaitingInviteStatus(@Param("inviteId") Long inviteId,
+                                                @Param("recvUserId") UUID recvUserId,
+                                                @Param("inviteStatus") InviteStatus inviteStatus);
 }

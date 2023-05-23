@@ -23,21 +23,18 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         final UsernamePasswordAuthenticationToken authRequest;
-        System.out.println("request = " + request);
 
         final UserLoginRequest userLoginRequest;
         try {
             // 사용자 요청 정보로 UserPasswordAuthentication 발급
             userLoginRequest = new ObjectMapper().readValue(request.getInputStream(), UserLoginRequest.class);
             authRequest = new UsernamePasswordAuthenticationToken(userLoginRequest.getLoginId(), userLoginRequest.getPassword());
-            System.out.println("UsernamePasswordAuthenticationToken 토큰 생성" + authRequest);
         } catch (IOException e) {
             throw new RuntimeException("Token 발급 실패");
         }
         setDetails(request, authRequest);
 
         // AuthenticationManager 에게 전달 -> AuthenticationProvider 의 인증 메서드 실행
-        System.out.println("AuthenticationManager 에게 전달 -> AuthenticationProvider");
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 }

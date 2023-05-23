@@ -32,11 +32,21 @@ public class GroupServiceImpl implements GroupService {
         Group newGroup = new Group(groupName);
         Group saveGroup = groupRepository.save(newGroup);
 
-        UserGroup newUserGroup = new UserGroup(user, saveGroup);
-        UserGroup saveUserGroup = userGroupRepository.save(newUserGroup);
-        saveUserGroup.addUserGroup();
+        saveUserGroup(user, saveGroup);
 
         return saveGroup;
+    }
+
+
+    /**
+     * 그룹 유저 추가
+     * ex) 초대 수락
+     */
+    @Override
+    @Transactional
+    public UserGroup addUserGroup(User user, Long groupId) {
+        Group group = findGroup(groupId);
+        return saveUserGroup(user, group);
     }
 
     /**
@@ -46,14 +56,12 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public Boolean withdrawGroup(User user, Long groupId) {
 
-        UserGroup findUserGroup = getFindUserGroup(user.getId(), groupId);
+        UserGroup findUserGroup = findUserGroup(user.getId(), groupId);
 
         userGroupRepository.delete(findUserGroup);
 
         Group group = findUserGroup.getGroup();
         int countUserOfGroup = group.getUserGroups().size();
-
-        System.out.println("countUserOfGroup = " + countUserOfGroup);
 
         // 그룹의 마지막 멤버인지 확인
         if(countUserOfGroup == 1) {
@@ -66,8 +74,19 @@ public class GroupServiceImpl implements GroupService {
         return false;
     }
 
-    private UserGroup getFindUserGroup(UUID userId, Long groupId) {
+    private Group findGroup(Long groupId) {
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
+    }
+
+    private UserGroup findUserGroup(UUID userId, Long groupId) {
         return userGroupRepository.findByUserIdAndGroupId(userId, groupId)
                 .orElseThrow(() -> new UserGroupNotFoundException("userId = " + userId + ", groupId = " + groupId));
+    }
+
+    private UserGroup saveUserGroup(User user, Group group) {
+        UserGroup userGroup = userGroupRepository.save(new UserGroup(user, group));
+        userGroup.addUserGroup();
+        return userGroup;
     }
 }

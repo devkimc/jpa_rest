@@ -10,6 +10,7 @@ import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.exception.ExistInviteForUserException;
+import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.exception.UserNotFoundException;
@@ -32,10 +33,10 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     @Transactional
-    public Invite inviteToGroup(Long groupId, UUID sendUserId, UUID recvUserId) {
+    public Invite inviteToGroup(Long groupId, User sendUser, UUID recvUserId) {
 
         // 1. 초대한 사람이 그룹의 회원이 맞는지 확인
-        UserGroup sendUserGroup = getFindUserGroup(sendUserId, groupId);
+        UserGroup sendUserGroup = findUserGroup(sendUser.getId(), groupId);
         Long findUserGroupId = sendUserGroup.getId();
 
         // 2. 그룹에 속한 유저를 초대했는지 확인
@@ -53,7 +54,7 @@ public class InviteServiceImpl implements InviteService {
             throw new ExistInviteForUserException("대기중인 inviteId = " + waitingInvite.get().getId());
         }
 
-        User recvUser = getFindUser(recvUserId);
+        User recvUser = findUser(recvUserId);
         Invite invite = inviteRepository.save(new Invite(sendUserGroup, recvUser, InviteStatus.WAITING));
 
         return invite;
@@ -61,29 +62,39 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     @Transactional
-    public boolean agreeInvitation(Long inviteId, UUID recvUserId) {
+    public Group agreeInvitation(Long inviteId, User recvUser) {
+        inviteRepository.updateWaitingInviteStatus(inviteId, recvUser.getId(), InviteStatus.ACCEPT)
+                .orElseThrow(() -> new InviteNotFoundException("inviteId = " + inviteId));
+
+        Invite invite = findInvite(inviteId);
+
+        return invite.getSendUserGroup().getGroup();
+    }
+
+    @Override
+    public boolean rejectInvitation(Long inviteId, User recvUser) {
         return false;
     }
 
     @Override
-    public boolean rejectInvitation(Long inviteId, UUID recvUserId) {
+    public boolean cancelInvitation(Long inviteId, User recvUser) {
         return false;
     }
 
-    @Override
-    public boolean cancelInvitation(Long inviteId, UUID recvUserId) {
-        return false;
+
+    private Invite findInvite(Long inviteId) {
+        return inviteRepository.findById(inviteId).orElseThrow(() -> new InviteNotFoundException("inviteId = " + inviteId));
     }
 
-    private User getFindUser(UUID userId) {
+    private User findUser(UUID userId) {
         return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("userId = " + userId));
     }
 
-    private Group getFindGroup(Long groupId) {
+    private Group findGroup(Long groupId) {
         return groupRepository.findById(groupId).orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
     }
 
-    private UserGroup getFindUserGroup(UUID userId, Long groupId) {
+    private UserGroup findUserGroup(UUID userId, Long groupId) {
         return userGroupRepository.findByUserIdAndGroupId(userId, groupId)
                 .orElseThrow(() -> new UserGroupNotFoundException("userId = " + userId + ", groupId = " + groupId));
     }
