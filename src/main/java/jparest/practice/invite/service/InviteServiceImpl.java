@@ -9,6 +9,7 @@ import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
+import jparest.practice.invite.dto.InviteStatusPatchRequest;
 import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.ExistInviteForUserException;
 import jparest.practice.invite.exception.InviteNotFoundException;
@@ -63,48 +64,40 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     @Transactional
-    public Group agreeInvitation(Long inviteId, User recvUser) {
+    public boolean procInvitation(Long inviteId, User user, InviteStatusPatchRequest inviteStatusPatchRequest) {
+        Invite invite = findInvite(inviteId);
+        InviteStatus requestStatus = inviteStatusPatchRequest.getInviteStatus();
+
+        chkAuthorizationOfInvitation(inviteId, user, requestStatus);
+
+        if (requestStatus == InviteStatus.ACCEPT) {
+            Group group = invite.getSendUserGroup().getGroup();
+            saveUserGroup(user, group);
+        }
+
+        updateStatus(invite, requestStatus);
+        return true;
+    }
+
+    private void chkAuthorizationOfInvitation(Long inviteId, User user, InviteStatus requestStatus) {
         Invite invite = findInvite(inviteId);
 
-        if(!invite.getRecvUser().equals(recvUser)) {
+        if(requestStatus == InviteStatus.ACCEPT && !invite.getRecvUser().equals(user)) {
             throw new InviteNotFoundException("승낙 요청한 유저의 초대가 아닙니다.");
         }
 
-        if (invite.getInviteStatus() != InviteStatus.WAITING) {
+        if (requestStatus == InviteStatus.ACCEPT && invite.getInviteStatus() != InviteStatus.WAITING) {
             throw new AlreadyProcessedInviteException("inviteId = " + inviteId);
         }
 
-        updateStatus(invite, InviteStatus.ACCEPT);
-
-        return invite.getSendUserGroup().getGroup();
-    }
-
-    @Override
-    public boolean rejectInvitation(Long inviteId, User recvUser) {
-        Invite invite = findInvite(inviteId);
-
-        if(!invite.getRecvUser().equals(recvUser)) {
+        if(requestStatus == InviteStatus.REJECT && !invite.getRecvUser().equals(user)) {
             throw new InviteNotFoundException("거절 요청한 유저의 초대가 아닙니다.");
         }
-        
-        updateStatus(invite, InviteStatus.REJECT);
-        
-        return false;
-    }
 
-    @Override
-    public boolean cancelInvitation(Long inviteId, User sendUser) {
-        Invite invite = findInvite(inviteId);
-
-        if(!invite.getSendUserGroup().getUser().equals(sendUser)) {
+        if(requestStatus == InviteStatus.CANCEL && !invite.getSendUserGroup().getUser().equals(user)) {
             throw new InviteNotFoundException("취소 요청한 유저의 초대가 아닙니다.");
         }
-        
-        updateStatus(invite, InviteStatus.CANCEL);
-        
-        return false;
     }
-
 
     private Invite findInvite(Long inviteId) {
         return inviteRepository.findById(inviteId).orElseThrow(() -> new InviteNotFoundException("inviteId = " + inviteId));
@@ -126,5 +119,11 @@ public class InviteServiceImpl implements InviteService {
     private void updateStatus(Invite invite, InviteStatus inviteStatus) {
         invite.updateStatus(inviteStatus);
         inviteRepository.save(invite);
+    }
+
+    private UserGroup saveUserGroup(User user, Group group) {
+        UserGroup userGroup = userGroupRepository.save(new UserGroup(user, group));
+        userGroup.addUserGroup();
+        return userGroup;
     }
 }

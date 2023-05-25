@@ -3,8 +3,7 @@ package jparest.practice.invite.controller;
 import jparest.practice.auth.security.CurrentUser;
 import jparest.practice.common.util.ApiResult;
 import jparest.practice.common.util.ApiUtils;
-import jparest.practice.group.domain.Group;
-import jparest.practice.group.service.GroupService;
+import jparest.practice.invite.dto.InviteStatusPatchRequest;
 import jparest.practice.invite.service.InviteService;
 import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -15,17 +14,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/invite")
 public class InviteController {
 
-    private final GroupService groupService;
     private final InviteService inviteService;
 
-    @PatchMapping(value = "/{inviteId}/agree")
-    public ApiResult<Boolean> agreeInvite(@CurrentUser User user,
-                                          @PathVariable Long inviteId
+    @PatchMapping(value = "/{inviteId}/status")
+    public ApiResult<Boolean> procInvite(@CurrentUser User user,
+                                         @PathVariable Long inviteId,
+                                         @RequestBody InviteStatusPatchRequest inviteStatusPatchRequest
     ) {
-
-        Group invitedGroup = inviteService.agreeInvitation(inviteId, user);
-        groupService.addUserGroup(user, invitedGroup.getId());
-
+        inviteService.procInvitation(inviteId, user, inviteStatusPatchRequest);
         return ApiUtils.success(Boolean.TRUE);
     }
+
 }

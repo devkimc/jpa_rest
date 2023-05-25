@@ -12,8 +12,6 @@ public interface GroupService {
     // 그룹 생성
     Group createGroup(User user, String groupName);
 
-    UserGroup addUserGroup(User user, Long groupId);
-
     // 그룹 탈퇴
     Boolean withdrawGroup(User user, Long groupId);
 }

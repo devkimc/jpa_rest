@@ -5,6 +5,7 @@ import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.service.GroupService;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
+import jparest.practice.invite.dto.InviteStatusPatchRequest;
 import jparest.practice.invite.exception.ExistInviteForUserException;
 import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.invite.service.InviteService;
@@ -45,9 +46,6 @@ public class InviteServiceTest {
     InviteService inviteService;
 
     @Autowired
-    InviteRepository inviteRepository;
-
-    @Autowired
     GroupService groupService;
 
     User joinUser1;
@@ -84,10 +82,11 @@ public class InviteServiceTest {
     public void 그룹초대_승낙() throws Exception {
         //given
         Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+        InviteStatusPatchRequest inviteStatusPatchRequest = new InviteStatusPatchRequest(InviteStatus.ACCEPT);
 
         //when
-        Group group = inviteService.agreeInvitation(invite.getId(), joinUser2);
-        groupService.addUserGroup(joinUser2, group.getId());
+        inviteService.procInvitation(invite.getId(), joinUser2, inviteStatusPatchRequest);
+        Group group = invite.getSendUserGroup().getGroup();
 
         //then
         assertAll(
@@ -100,9 +99,10 @@ public class InviteServiceTest {
     public void 그룹초대_거절() throws Exception {
         //given
         Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+        InviteStatusPatchRequest inviteStatusPatchRequest = new InviteStatusPatchRequest(InviteStatus.REJECT);
 
         //when
-        inviteService.rejectInvitation(invite.getId(), joinUser2);
+        inviteService.procInvitation(invite.getId(), joinUser2, inviteStatusPatchRequest);
 
         //then
         assertEquals(InviteStatus.REJECT, invite.getInviteStatus());
@@ -112,9 +112,10 @@ public class InviteServiceTest {
     public void 그룹초대_취소() throws Exception {
         //given
         Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+        InviteStatusPatchRequest inviteStatusPatchRequest = new InviteStatusPatchRequest(InviteStatus.CANCEL);
 
         //when
-        inviteService.cancelInvitation(invite.getId(), joinUser1);
+        inviteService.procInvitation(invite.getId(), joinUser1, inviteStatusPatchRequest);
 
         //then
         assertEquals(InviteStatus.CANCEL, invite.getInviteStatus());

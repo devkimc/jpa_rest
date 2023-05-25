@@ -37,18 +37,6 @@ public class GroupServiceImpl implements GroupService {
         return saveGroup;
     }
 
-
-    /**
-     * 그룹 유저 추가
-     * ex) 초대 수락
-     */
-    @Override
-    @Transactional
-    public UserGroup addUserGroup(User user, Long groupId) {
-        Group group = findGroup(groupId);
-        return saveUserGroup(user, group);
-    }
-
     /**
      * 그룹 탈퇴
      */
