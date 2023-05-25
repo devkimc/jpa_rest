@@ -107,8 +107,8 @@ public class InviteControllerTest {
         joinUser2 = joinSetup(new SocialJoinRequest(socialUserId2, email2, nickname2, loginType2));
         System.out.println("joinUser1 = " + joinUser1);
 
-        group1 = groupService.createGroup(joinUser1, groupName);
-        System.out.println("group1 = " + group1);
+//        group1 = groupService.createGroup(joinUser1, groupName);
+//        System.out.println("group1 = " + group1);
 
     }
 

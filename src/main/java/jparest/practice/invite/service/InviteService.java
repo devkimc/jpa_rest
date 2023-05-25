@@ -13,5 +13,5 @@ public interface InviteService {
     Invite inviteToGroup(Long groupId, User sendUser, UUID recvUserId);
 
     // 초대 처리(수락, 거절, 취소 등)
-    boolean procInvitation(Long inviteId, User user, InviteStatusPatchRequest inviteStatusPatchRequest);
+    boolean procInvitation(Long inviteId, User user, InviteStatus requestStatus);
 }

@@ -1,6 +1,7 @@
 package jparest.practice.service;
 
 import jparest.practice.group.domain.Group;
+import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.service.GroupService;
@@ -14,8 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,12 +52,10 @@ public class GroupServiceTest {
         String groupName = "첫 그룹";
 
         //when
-        Group saveGroup = groupService.createGroup(joinUser, groupName);
-        Optional<Group> findGroup = groupRepository.findById(saveGroup.getId());
+        Group group = groupService.createGroup(joinUser, groupName);
 
         //then
-        findGroup.orElseThrow(() -> new GroupNotFoundException("groupId = " + saveGroup.getId()));
-        String saveGroupName = findGroup.get().getGroupName();
+        String saveGroupName = group.getGroupName();
 
         assertEquals(groupName, saveGroupName,"생성한 그룹의 이름이 일치해야 한다.");
     }
@@ -79,5 +76,9 @@ public class GroupServiceTest {
             groupRepository.findById(saveGroupId)
                     .orElseThrow(() -> new GroupNotFoundException("groupId = " + saveGroupId));
         });
+    }
+
+    private Group findGroup(Long groupId) {
+        return groupRepository.findById(groupId).orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
     }
 }

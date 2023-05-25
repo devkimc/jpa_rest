@@ -2,6 +2,9 @@ package jparest.practice.service;
 
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
+import jparest.practice.group.dto.CreateGroupResponse;
+import jparest.practice.group.exception.GroupNotFoundException;
+import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.service.GroupService;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
@@ -48,6 +51,9 @@ public class InviteServiceTest {
     @Autowired
     GroupService groupService;
 
+    @Autowired
+    GroupRepository groupRepository;
+
     User joinUser1;
     User joinUser2;
 
@@ -55,10 +61,10 @@ public class InviteServiceTest {
 
     @BeforeEach
     void setUp() {
-        joinUser1 = joinSetup(new SocialJoinRequest(socialUserId1, email1, nickname1, loginType1));
-        joinUser2 = joinSetup(new SocialJoinRequest(socialUserId2, email2, nickname2, loginType2));
+        this.joinUser1 = joinSetup(new SocialJoinRequest(socialUserId1, email1, nickname1, loginType1));
+        this.joinUser2 = joinSetup(new SocialJoinRequest(socialUserId2, email2, nickname2, loginType2));
 
-        group1 = groupService.createGroup(joinUser1, groupName);
+        this.group1 = groupService.createGroup(joinUser1, groupName);
     }
 
     @Test
@@ -82,16 +88,14 @@ public class InviteServiceTest {
     public void 그룹초대_승낙() throws Exception {
         //given
         Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
-        InviteStatusPatchRequest inviteStatusPatchRequest = new InviteStatusPatchRequest(InviteStatus.ACCEPT);
 
         //when
-        inviteService.procInvitation(invite.getId(), joinUser2, inviteStatusPatchRequest);
-        Group group = invite.getSendUserGroup().getGroup();
+        inviteService.procInvitation(invite.getId(), joinUser2, InviteStatus.ACCEPT);
 
         //then
         assertAll(
                 ()-> assertEquals(InviteStatus.ACCEPT, invite.getInviteStatus()), // 초대 승낙
-                ()-> assertEquals(group.getUserGroups().get(1).getUser(), joinUser2) // 그룹원 추가
+                ()-> assertEquals(group1.getUserGroups().get(1).getUser(), joinUser2) // 그룹원 추가
         );
     }
 
@@ -99,10 +103,9 @@ public class InviteServiceTest {
     public void 그룹초대_거절() throws Exception {
         //given
         Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
-        InviteStatusPatchRequest inviteStatusPatchRequest = new InviteStatusPatchRequest(InviteStatus.REJECT);
 
         //when
-        inviteService.procInvitation(invite.getId(), joinUser2, inviteStatusPatchRequest);
+        inviteService.procInvitation(invite.getId(), joinUser2, InviteStatus.REJECT);
 
         //then
         assertEquals(InviteStatus.REJECT, invite.getInviteStatus());
@@ -112,10 +115,9 @@ public class InviteServiceTest {
     public void 그룹초대_취소() throws Exception {
         //given
         Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
-        InviteStatusPatchRequest inviteStatusPatchRequest = new InviteStatusPatchRequest(InviteStatus.CANCEL);
 
         //when
-        inviteService.procInvitation(invite.getId(), joinUser1, inviteStatusPatchRequest);
+        inviteService.procInvitation(invite.getId(), joinUser1, InviteStatus.CANCEL);
 
         //then
         assertEquals(InviteStatus.CANCEL, invite.getInviteStatus());
@@ -131,6 +133,10 @@ public class InviteServiceTest {
         //then
         assertThrows(ExistInviteForUserException.class, () ->
                 inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId()));
+    }
+
+    private Group findGroup(Long groupId) {
+        return groupRepository.findById(groupId).orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
     }
 
     private User joinSetup(SocialJoinRequest socialJoinRequest) {

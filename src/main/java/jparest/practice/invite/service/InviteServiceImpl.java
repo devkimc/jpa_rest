@@ -64,9 +64,8 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     @Transactional
-    public boolean procInvitation(Long inviteId, User user, InviteStatusPatchRequest inviteStatusPatchRequest) {
+    public boolean procInvitation(Long inviteId, User user, InviteStatus requestStatus) {
         Invite invite = findInvite(inviteId);
-        InviteStatus requestStatus = inviteStatusPatchRequest.getInviteStatus();
 
         chkAuthorizationOfInvitation(inviteId, user, requestStatus);
 
@@ -105,10 +104,6 @@ public class InviteServiceImpl implements InviteService {
 
     private User findUser(UUID userId) {
         return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("userId = " + userId));
-    }
-
-    private Group findGroup(Long groupId) {
-        return groupRepository.findById(groupId).orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
     }
 
     private UserGroup findUserGroup(UUID userId, Long groupId) {
