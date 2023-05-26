@@ -29,7 +29,6 @@ import java.util.UUID;
 public class InviteServiceImpl implements InviteService {
 
     private final UserRepository userRepository;
-    private final GroupRepository groupRepository;
     private final UserGroupRepository userGroupRepository;
     private final InviteRepository inviteRepository;
 

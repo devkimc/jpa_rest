@@ -1,4 +1,4 @@
-package jparest.practice.rest;
+package jparest.practice.rest.domain;
 
 import jparest.practice.group.domain.Group;
 import lombok.Getter;
