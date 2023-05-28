@@ -29,6 +29,10 @@ public class Group {
         this.groupName = groupName;
     }
 
+    public int getUserCount() {
+        return this.getUserGroups().size();
+    }
+
     //==생성 메서드==//
 //    public static Group createGroup(String groupName,
 //                                    GroupUser groupUser) {

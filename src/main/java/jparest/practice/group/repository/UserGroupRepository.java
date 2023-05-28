@@ -13,5 +13,7 @@ import java.util.UUID;
 public interface UserGroupRepository extends JpaRepository<UserGroup, Long> {
 
     Optional<UserGroup> findByUserIdAndGroupId(UUID userId, Long groupId);
+
+    Optional<List<UserGroup>> findAllByUserId(UUID userId);
 }
 

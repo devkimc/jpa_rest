@@ -3,6 +3,7 @@ package jparest.practice.group.service;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.dto.CreateGroupResponse;
+import jparest.practice.group.dto.GetUserGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,22 +52,35 @@ public class GroupServiceImpl implements GroupService {
         userGroupRepository.delete(findUserGroup);
 
         Group group = findUserGroup.getGroup();
-        int countUserOfGroup = group.getUserGroups().size();
 
         // 그룹의 마지막 멤버인지 확인
-        if(countUserOfGroup == 1) {
+        if(group.getUserCount() == 1) {
             groupRepository.delete(group);
             return true;
         }
 
-        if(countUserOfGroup > 2) return  true;
+        if(group.getUserCount() > 2) return  true;
 
         return false;
     }
 
-    private Group findGroup(Long groupId) {
-        return groupRepository.findById(groupId)
-                .orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
+    /**
+     * 그룹 리스트 조회
+     */
+    @Override
+    @Transactional
+    public List<GetUserGroupResponse> getUserGroupList(User user) {
+        List<UserGroup> userGroups = user.getUserGroups();
+
+        List<GetUserGroupResponse> getUserGroupResponse = new ArrayList<>(userGroups.size());
+
+        for (UserGroup userGroup: userGroups) {
+            Group group = userGroup.getGroup();
+            GetUserGroupResponse res = new GetUserGroupResponse(group.getId(), group.getGroupName(), group.getUserCount());
+            getUserGroupResponse.add(res);
+        }
+
+        return getUserGroupResponse;
     }
 
     private UserGroup findUserGroup(UUID userId, Long groupId) {

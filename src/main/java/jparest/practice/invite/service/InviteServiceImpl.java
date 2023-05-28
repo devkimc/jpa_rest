@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
+import static jparest.practice.invite.domain.InviteStatus.*;
+
 @Service
 @RequiredArgsConstructor
 public class InviteServiceImpl implements InviteService {
@@ -49,14 +51,14 @@ public class InviteServiceImpl implements InviteService {
 
         // 3. 대기중인 요청이 존재하는지 확인
         Optional<Invite> waitingInvite = inviteRepository.
-                findBySendUserGroupIdAndRecvUserIdAndInviteStatus(findUserGroupId, recvUserId, InviteStatus.WAITING);
+                findBySendUserGroupIdAndRecvUserIdAndInviteStatus(findUserGroupId, recvUserId, WAITING);
 
         if(waitingInvite.isPresent()) {
             throw new ExistInviteForUserException("대기중인 inviteId = " + waitingInvite.get().getId());
         }
 
         User recvUser = findUser(recvUserId);
-        Invite invite = inviteRepository.save(new Invite(sendUserGroup, recvUser, InviteStatus.WAITING));
+        Invite invite = inviteRepository.save(new Invite(sendUserGroup, recvUser, WAITING));
 
         return invite;
     }
@@ -66,35 +68,15 @@ public class InviteServiceImpl implements InviteService {
     public boolean procInvitation(Long inviteId, User user, InviteStatus requestStatus) {
         Invite invite = findInvite(inviteId);
 
-        chkAuthorizationOfInvitation(inviteId, user, requestStatus);
+        invite.chkAuthorizationOfInvitation(user, requestStatus);
 
-        if (requestStatus == InviteStatus.ACCEPT) {
+        if (requestStatus == ACCEPT) {
             Group group = invite.getSendUserGroup().getGroup();
             saveUserGroup(user, group);
         }
 
         updateStatus(invite, requestStatus);
         return true;
-    }
-
-    private void chkAuthorizationOfInvitation(Long inviteId, User user, InviteStatus requestStatus) {
-        Invite invite = findInvite(inviteId);
-
-        if(requestStatus == InviteStatus.ACCEPT && !invite.getRecvUser().equals(user)) {
-            throw new InviteNotFoundException("승낙 요청한 유저의 초대가 아닙니다.");
-        }
-
-        if (requestStatus == InviteStatus.ACCEPT && invite.getInviteStatus() != InviteStatus.WAITING) {
-            throw new AlreadyProcessedInviteException("inviteId = " + inviteId);
-        }
-
-        if(requestStatus == InviteStatus.REJECT && !invite.getRecvUser().equals(user)) {
-            throw new InviteNotFoundException("거절 요청한 유저의 초대가 아닙니다.");
-        }
-
-        if(requestStatus == InviteStatus.CANCEL && !invite.getSendUserGroup().getUser().equals(user)) {
-            throw new InviteNotFoundException("취소 요청한 유저의 초대가 아닙니다.");
-        }
     }
 
     private Invite findInvite(Long inviteId) {
