@@ -23,6 +23,11 @@ public enum ErrorCode {
     EXIST_INVITE_FOR_USER(400, "I01", "이미 초대한 유저입니다."),
     INVITE_NOT_FOUND(404, "I02", "존재하지 않는 초대입니다"),
     ALREADY_PROCESSED_INVITE(400, "I03", "이미 처리된 초대입니다."),
+
+    // REST
+    REST_NOT_FOUND(404, "R01", "존재하지 않는 식당입니다."),
+    GROUP_REST_NOT_FOUND(404, "R02", "존재하지 않는 그룹식당입니다."),
+    EXIST_GROUP_REST(400, "R03", "존재하는 그룹식당입니다."),
     ;
 
 

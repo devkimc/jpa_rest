@@ -22,9 +22,14 @@ public class GroupRest {
     @JoinColumn(name = "rest_id")
     private Rest rest;
 
+    public GroupRest(Group group, Rest rest) {
+        this.group = group;
+        this.rest = rest;
+    }
+
     //==연관관계 편의 메서드==//
     public void addGroupRest(Rest rest) {
-//        this.rest = rest;
-//        group.getGroupRests()
+        this.rest = rest;
+        group.getGroupRests().add(this);
     }
 }

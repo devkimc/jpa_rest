@@ -1,12 +1,14 @@
 package jparest.practice.rest.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
+@Builder
 public class Rest {
 
     @Id
@@ -17,8 +19,12 @@ public class Rest {
     private String restname;
 
     @Column(nullable = false)
-    private double latCdnt;
+    private double latitude;
 
     @Column(nullable = false)
-    private double lngCdnt;
+    private double longitude;
+
+    // TODO : 왜 매핑이 안될까?
+//    @OneToMany(mappedBy = "rest")
+//    private List<Rest> rests = new ArrayList<Rest>();
 }

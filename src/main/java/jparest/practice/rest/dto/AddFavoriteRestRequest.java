@@ -5,6 +5,6 @@ import lombok.Getter;
 @Getter
 public class AddFavoriteRestRequest {
     private String restName;
-    private double latCdnt;
-    private double lngCdnt;
+    private double latitude;
+    private double longitude;
 }

@@ -6,7 +6,7 @@ import jparest.practice.user.domain.User;
 import java.util.List;
 
 public interface RestService {
-    Boolean addFavRest(User user, Long groupId, String restId, String restName, double latCdnt, double lngCdnt);
+    Boolean addFavRest(User user, Long groupId, String restId, String restName, double latitude, double longitude);
 
     Boolean deleteFavRest(User user, Long groupId, String restId);
 

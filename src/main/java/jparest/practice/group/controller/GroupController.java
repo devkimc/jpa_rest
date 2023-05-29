@@ -23,13 +23,7 @@ public class GroupController {
 
     @PostMapping("/group")
     public ApiResult<CreateGroupResponse> createGroup(@CurrentUser User user, @RequestBody CreateGroupRequest createGroupRequest) {
-        Group group = groupService.createGroup(user, createGroupRequest.getGroupName());
-        CreateGroupResponse response = CreateGroupResponse.builder()
-                .id(group.getId())
-                .groupName(group.getGroupName())
-                .build();
-
-        return ApiUtils.success(response);
+        return ApiUtils.success(groupService.createGroup(user, createGroupRequest.getGroupName()));
     }
 
     @DeleteMapping("/group/{groupId}/user")

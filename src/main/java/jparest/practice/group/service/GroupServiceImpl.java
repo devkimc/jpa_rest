@@ -32,13 +32,16 @@ public class GroupServiceImpl implements GroupService {
      */
     @Override
     @Transactional
-    public Group createGroup(User user, String groupName) {
+    public CreateGroupResponse createGroup(User user, String groupName) {
         Group newGroup = new Group(groupName);
         Group saveGroup = groupRepository.save(newGroup);
 
         saveUserGroup(user, saveGroup);
 
-        return saveGroup;
+        return CreateGroupResponse.builder()
+                .id(saveGroup.getId())
+                .groupName(saveGroup.getGroupName())
+                .build();
     }
 
     /**

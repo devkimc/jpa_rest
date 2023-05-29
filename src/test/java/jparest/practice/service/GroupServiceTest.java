@@ -1,14 +1,12 @@
 package jparest.practice.service;
 
+import jparest.practice.common.MockUserJoin;
 import jparest.practice.group.domain.Group;
+import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.dto.GetUserGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.service.GroupService;
-import jparest.practice.user.domain.LoginType;
-import jparest.practice.user.domain.User;
-import jparest.practice.user.dto.SocialJoinRequest;
-import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,26 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-public class GroupServiceTest {
-    private final String socialUserId1 = "123123";
-    private final String email1 = "eee@www.aaaa";
-    private final String nickname1 = "유저1";
-    private final LoginType loginType1 = LoginType.KAKAO;
-
-    private final String socialUserId2 = "234234";
-    private final String email2 = "eee@www.bbb";
-    private final String nickname2 = "유저2";
-    private final LoginType loginType2 = LoginType.KAKAO;
-
-    @Autowired
-    UserAuthService userAuthService;
+public class GroupServiceTest extends MockUserJoin {
 
     @Autowired
     GroupService groupService;
@@ -43,15 +28,10 @@ public class GroupServiceTest {
     @Autowired
     GroupRepository groupRepository;
 
-    User joinUser1;
-    User joinUser2;
-
     @BeforeEach
     void setUp() {
-        this.joinUser1 = joinSetup(new SocialJoinRequest(socialUserId1, email1, nickname1, loginType1));
-//        this.joinUser2 = joinSetup(new SocialJoinRequest(socialUserId2, email2, nickname2, loginType2));
+        joinSetUp();
     }
-
 
     @Test
     public void 그룹생성() throws Exception {
@@ -60,12 +40,12 @@ public class GroupServiceTest {
         String groupName = "첫 그룹";
 
         //when
-        Group group = groupService.createGroup(joinUser1, groupName);
+        CreateGroupResponse response = groupService.createGroup(joinUser1, groupName);
 
         //then
-        String saveGroupName = group.getGroupName();
+        String saveGroupName = response.getGroupName();
 
-        assertEquals(groupName, saveGroupName,"생성한 그룹의 이름이 일치해야 한다.");
+        assertEquals(groupName, saveGroupName, "생성한 그룹의 이름이 일치해야 한다.");
     }
 
     @Test
@@ -117,9 +97,5 @@ public class GroupServiceTest {
 
     private Group findGroup(Long groupId) {
         return groupRepository.findById(groupId).orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
-    }
-
-    private User joinSetup(SocialJoinRequest socialJoinRequest) {
-        return userAuthService.join(socialJoinRequest);
     }
 }

@@ -6,6 +6,6 @@ import lombok.Getter;
 public class GetFavRestListResponse {
     private String restId;
     private String groupName;
-    private double latCdnt;
-    private double lngCdnt;
+    private double latitude;
+    private double longitude;
 }

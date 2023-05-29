@@ -6,6 +6,9 @@ import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.ExistInviteForUserException;
 import jparest.practice.invite.exception.InviteNotFoundException;
+import jparest.practice.rest.exception.ExistGroupRestException;
+import jparest.practice.rest.exception.GroupRestNotFoundException;
+import jparest.practice.rest.exception.RestNotFoundException;
 import jparest.practice.user.exception.ExistLoginIdException;
 import jparest.practice.user.exception.LoginFailException;
 import jparest.practice.user.exception.UserNotFoundException;
@@ -67,6 +70,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AlreadyProcessedInviteException.class)
     ResponseEntity<ErrorResponse> AlreadyProcessedInviteHandler(AlreadyProcessedInviteException e) {
         return getErrorResponseEntity(e, ErrorCode.ALREADY_PROCESSED_INVITE);
+    }
+
+    // REST
+    @ExceptionHandler(ExistGroupRestException.class)
+    ResponseEntity<ErrorResponse> existGroupRestHandler(ExistGroupRestException e) {
+        return getErrorResponseEntity(e, ErrorCode.EXIST_GROUP_REST);
+    }
+
+    @ExceptionHandler(GroupRestNotFoundException.class)
+    ResponseEntity<ErrorResponse> groupRestNotFoundHandler(GroupRestNotFoundException e) {
+        return getErrorResponseEntity(e, ErrorCode.GROUP_REST_NOT_FOUND);
+    }
+
+    @ExceptionHandler(RestNotFoundException.class)
+    ResponseEntity<ErrorResponse> restNotFoundHandler(RestNotFoundException e) {
+        return getErrorResponseEntity(e, ErrorCode.REST_NOT_FOUND);
     }
 
     private static ResponseEntity<ErrorResponse> getErrorResponseEntity(BusinessException e, ErrorCode errorCode) {

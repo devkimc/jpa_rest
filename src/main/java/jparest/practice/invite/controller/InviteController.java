@@ -30,9 +30,7 @@ public class InviteController {
 
     @PostMapping
     public ApiResult<InviteUserResponse> inviteUser(@CurrentUser User user, InviteUserRequest inviteUserRequest) {
-        Invite invite = inviteService.inviteToGroup(inviteUserRequest.getGroupId(), user, inviteUserRequest.getRecvUserId());
-        InviteUserResponse response = InviteUserResponse.builder().inviteId(invite.getId()).build();
-        return ApiUtils.success(response);
+        return ApiUtils.success(inviteService.inviteToGroup(inviteUserRequest.getGroupId(), user, inviteUserRequest.getRecvUserId()));
     }
 
 

@@ -11,6 +11,7 @@ import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
 import jparest.practice.invite.dto.InviteStatusPatchRequest;
+import jparest.practice.invite.dto.InviteUserResponse;
 import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.ExistInviteForUserException;
 import jparest.practice.invite.exception.InviteNotFoundException;
@@ -39,7 +40,7 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     @Transactional
-    public Invite inviteToGroup(Long groupId, User sendUser, UUID recvUserId) {
+    public InviteUserResponse inviteToGroup(Long groupId, User sendUser, UUID recvUserId) {
 
         // 1. 초대한 사람이 그룹의 회원이 맞는지 확인
         UserGroup sendUserGroup = findUserGroup(sendUser.getId(), groupId);
@@ -66,7 +67,7 @@ public class InviteServiceImpl implements InviteService {
         User recvUser = findUser(recvUserId);
         Invite invite = inviteRepository.save(new Invite(sendUserGroup, recvUser, WAITING));
 
-        return invite;
+        return InviteUserResponse.builder().inviteId(invite.getId()).build();
     }
 
     @Override
