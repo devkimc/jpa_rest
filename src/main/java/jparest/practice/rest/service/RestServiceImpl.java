@@ -11,7 +11,7 @@ public class RestServiceImpl implements RestService {
     @Override
     @Transactional
     public Boolean addFavRest(User user, Long groupId, String restId, String restName, double latCdnt, double lngCdnt) {
-
+        return null;
     }
 
     @Override

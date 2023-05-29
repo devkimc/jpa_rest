@@ -37,6 +37,10 @@ public class Group {
         return this.getUserGroups().size();
     }
 
+    public int getRestCount() {
+        return this.getGroupRests().size();
+    }
+
     //==생성 메서드==//
 //    public static Group createGroup(String groupName,
 //                                    GroupUser groupUser) {

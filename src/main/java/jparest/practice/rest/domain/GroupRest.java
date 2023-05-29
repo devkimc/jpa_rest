@@ -21,4 +21,10 @@ public class GroupRest {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rest_id")
     private Rest rest;
+
+    //==연관관계 편의 메서드==//
+    public void addGroupRest(Rest rest) {
+//        this.rest = rest;
+//        group.getGroupRests()
+    }
 }

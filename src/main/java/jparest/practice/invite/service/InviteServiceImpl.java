@@ -9,6 +9,7 @@ import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
+import jparest.practice.invite.dto.GetWaitingInviteResponse;
 import jparest.practice.invite.dto.InviteStatusPatchRequest;
 import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.ExistInviteForUserException;
@@ -21,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,9 +46,12 @@ public class InviteServiceImpl implements InviteService {
         Long findUserGroupId = sendUserGroup.getId();
 
         // 2. 그룹에 속한 유저를 초대했는지 확인
-        Optional<UserGroup> existUserGroup = userGroupRepository.findByUserIdAndGroupId(recvUserId, groupId);
+        Long existUserCount = sendUserGroup.getGroup().getUserGroups()
+                .stream()
+                .filter(e -> e.getUser().getId().equals(recvUserId))
+                .count();
 
-        if (existUserGroup.isPresent()) {
+        if (existUserCount > 0) {
             throw new ExistUserGroupException("groupId = " + groupId);
         }
 
@@ -77,6 +83,32 @@ public class InviteServiceImpl implements InviteService {
 
         updateStatus(invite, requestStatus);
         return true;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<GetWaitingInviteResponse> getWaitingInviteList(User user) {
+        List<Invite> invites = findInviteAllByUserIdAndStatus(user.getId(), WAITING);
+
+        if(invites == null) {
+            return new ArrayList<>(0);
+        }
+
+        List<GetWaitingInviteResponse> result = new ArrayList<GetWaitingInviteResponse>(invites.size());
+
+        for (Invite invite : invites
+        ) {
+            result.add(GetWaitingInviteResponse.builder()
+                    .inviteId(invite.getId())
+                    .nickName(invite.getSendUserGroup().getUser().getNickname())
+                    .groupName(invite.getSendUserGroup().getGroup().getGroupName())
+                    .build());
+        }
+        return result;
+    }
+
+    private List<Invite> findInviteAllByUserIdAndStatus(UUID userId, InviteStatus status) {
+        return inviteRepository.findAllByRecvUserIdAndInviteStatus(userId, status).get();
     }
 
     private Invite findInvite(Long inviteId) {

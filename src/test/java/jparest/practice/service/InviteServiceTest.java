@@ -2,15 +2,14 @@ package jparest.practice.service;
 
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
-import jparest.practice.group.dto.CreateGroupResponse;
+import jparest.practice.group.exception.ExistUserGroupException;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.service.GroupService;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
-import jparest.practice.invite.dto.InviteStatusPatchRequest;
+import jparest.practice.invite.dto.GetWaitingInviteResponse;
 import jparest.practice.invite.exception.ExistInviteForUserException;
-import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.invite.service.InviteService;
 import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,8 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 public class InviteServiceTest {
-
-
 
     private final String socialUserId1 = "123123";
     private final String email1 = "eee@www.aaaa";
@@ -127,15 +123,59 @@ public class InviteServiceTest {
     }
 
     @Test
-    public void 그룹초대_중복() throws Exception {
+    public void 그룹에_존재하는_유저를_초대시_에러() throws Exception {
+
+        //given
+        Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+
+        //when
+        inviteService.procInvitation(invite.getId(), joinUser2, InviteStatus.ACCEPT);
+
+        //then
+        assertThrows(ExistUserGroupException.class,
+                () -> inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId()));
+    }
+
+    @Test
+    public void 그룹에_대기중인_초대가_존재하는_유저를_초대시_에러() throws Exception {
+
         //given
 
         //when
         inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
 
         //then
-        assertThrows(ExistInviteForUserException.class, () ->
-                inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId()));
+        assertThrows(ExistInviteForUserException.class,
+                () -> inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId()));
+    }
+
+    @Test
+    public void 대기중인_초대리스트_조회() throws Exception {
+
+        //given
+        Invite invite = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+
+        //when
+        List<GetWaitingInviteResponse> inviteList = inviteService.getWaitingInviteList(joinUser2);
+
+        //then
+        assertAll(
+                () -> assertEquals(invite.getId(), inviteList.get(0).getInviteId()),
+                () -> assertEquals(nickname1, inviteList.get(0).getNickName()),
+                () -> assertEquals(groupName, inviteList.get(0).getGroupName())
+        );
+    }
+
+    @Test
+    public void 초대리스트가_존재하지_않을_경우_조회하면_길이0() throws Exception {
+
+        //given
+
+        //when
+        List<GetWaitingInviteResponse> inviteList = inviteService.getWaitingInviteList(joinUser2);
+
+        //then
+        assertEquals(inviteList.size(), 0);
     }
 
     private Group findGroup(Long groupId) {
