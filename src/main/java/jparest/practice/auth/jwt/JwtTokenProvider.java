@@ -15,6 +15,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider implements InitializingBean {
 
+
     private static final String AUTHORITIES_KEY = "auth";
     private final String secret;
     private final long accessTokenTTL;

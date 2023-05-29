@@ -12,6 +12,7 @@ import jparest.practice.user.domain.User;
 import jparest.practice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class GroupServiceImpl implements GroupService {
      * 그룹 리스트 조회
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<GetUserGroupResponse> getUserGroupList(User user) {
         List<UserGroup> userGroups = user.getUserGroups();
 

@@ -1,7 +1,6 @@
 package jparest.practice.service;
 
 import jparest.practice.group.domain.Group;
-import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.dto.GetUserGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
@@ -34,9 +33,6 @@ public class GroupServiceTest {
     private final String email2 = "eee@www.bbb";
     private final String nickname2 = "유저2";
     private final LoginType loginType2 = LoginType.KAKAO;
-
-    @Autowired
-    EntityManager entityManager;
 
     @Autowired
     UserAuthService userAuthService;

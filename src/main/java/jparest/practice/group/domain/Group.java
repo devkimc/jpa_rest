@@ -1,5 +1,6 @@
 package jparest.practice.group.domain;
 
+import jparest.practice.rest.domain.GroupRest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +25,9 @@ public class Group {
 
     @OneToMany(mappedBy = "group")
     private List<UserGroup> userGroups = new ArrayList<UserGroup>();
+
+    @OneToMany(mappedBy = "group")
+    private List<GroupRest> groupRests = new ArrayList<GroupRest>();
 
     public Group(String groupName) {
         this.groupName = groupName;

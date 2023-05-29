@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface UserAuthService {
-    // 임시 테스트 용
     User join(SocialJoinRequest socialJoinRequest);
-
     SocialJoinResponse socialJoin(SocialJoinRequest socialJoinRequest);
 
     void logout(HttpServletRequest request, HttpServletResponse response, String userId);
 
     SocialLoginResponse kakaoLogin(String code);
+
+    User testKakaoLogin(SocialJoinRequest socialJoinRequest);
 }

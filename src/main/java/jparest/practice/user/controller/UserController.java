@@ -6,6 +6,7 @@ import jparest.practice.common.util.ApiResult;
 import jparest.practice.common.util.ApiUtils;
 import jparest.practice.common.util.CookieUtils;
 import jparest.practice.common.util.TokenDto;
+import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.dto.SocialJoinRequest;
 import jparest.practice.user.dto.SocialJoinResponse;
@@ -48,6 +49,22 @@ public class UserController {
         }
 
         return ApiUtils.fail(socialLoginResponse);
+    }
+
+    @PostMapping("/kakao/test")
+    public ApiResult<User> kakaoTestLogin() {
+        User user = userAuthService.testKakaoLogin(new SocialJoinRequest("12313213", "aaaa@bbb.ccc", "kemooosuk", LoginType.KAKAO));
+
+//        if (socialLoginResponse.getTokenDto() != null) {
+//            TokenDto tokenDto = socialLoginResponse.getTokenDto();
+//
+//            CookieUtils.addCookie(response, TokenType.ACCESS_TOKEN.name(), tokenDto.getAccessToken(), domain);
+//            CookieUtils.addCookie(response, TokenType.REFRESH_TOKEN.name(), tokenDto.getRefreshToken(), domain);
+
+            return ApiUtils.success(user);
+//        }
+
+//        return ApiUtils.fail(socialLoginResponse);
     }
 
     @DeleteMapping("/logout")

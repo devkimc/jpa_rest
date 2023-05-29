@@ -92,7 +92,6 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
     @Override
-    @Transactional
     public User join(SocialJoinRequest socialJoinRequest) {
 
         User user = User.builder()
@@ -105,6 +104,32 @@ public class UserAuthServiceImpl implements UserAuthService {
                 ;
 
         return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public User testKakaoLogin(SocialJoinRequest socialJoinRequest) {
+
+        User user = User.builder()
+                .socialUserId(socialJoinRequest.getSocialUserId())
+                .email(socialJoinRequest.getEmail())
+                .nickname(socialJoinRequest.getNickname())
+                .loginType(socialJoinRequest.getLoginType())
+                .userType(UserType.ROLE_GENERAL)
+                .build()
+                ;
+        String socialUserId = socialJoinRequest.getSocialUserId();
+        String email = socialJoinRequest.getEmail();
+        String nickname = socialJoinRequest.getNickname();
+
+        User joinUser = join(new SocialJoinRequest(socialUserId, email, nickname, LoginType.KAKAO));
+        String joinUserId = String.valueOf(joinUser.getId());
+
+        TokenDto tokenDto = new TokenDto();
+        tokenDto.setAccessToken(jwtService.createAccessToken(joinUserId, UserType.ROLE_GENERAL.name()));
+        tokenDto.setRefreshToken(jwtService.createRefreshToken(joinUserId));
+
+        return user;
     }
 
     private Map<String, Object> getKakaoToken(String grantType, String clientId, String code, String redirectUri) {
