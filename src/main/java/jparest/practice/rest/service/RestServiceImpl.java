@@ -30,16 +30,22 @@ public class RestServiceImpl implements RestService {
     @Override
     @Transactional
     public Boolean addFavRest(User user, Long groupId, String restId, String restName, double latitude, double longitude) {
+
+        // 1. 그룹에 가입됐는지 확인
+        if (!user.isJoinGroup(groupId)) {
+            throw new GroupNotFoundException("groupId = " + groupId);
+        }
+
         Optional<GroupRest> existGroupRest = groupRestRepository.findByGroupIdAndRestId(groupId, restId);
 
-        // 1. 추가하려는 맛집이 그룹 맛집에 존재하면 에러
+        // 2. 추가하려는 맛집이 그룹 맛집에 존재하면 에러
         if (existGroupRest.isPresent()) {
             throw new ExistGroupRestException("이미 존재하는 맛집 = " + existGroupRest.get().getId());
         }
 
         Optional<Rest> findRest = restRepository.findById(restId);
 
-        // 2. REST DB 에 존재하지 않는 맛집이면 저장
+        // 3. 식당 테이블에 존재하지 않는 맛집이면 식당, 맛집 저장
         if (findRest.isEmpty()) {
             Rest rest = Rest.builder().id(restId)
                     .restname(restName)
@@ -47,24 +53,42 @@ public class RestServiceImpl implements RestService {
                     .longitude(longitude)
                     .build();
 
-            restRepository.save(rest);
+            Rest saveRest = restRepository.save(rest);
+
+            saveGroupRest(groupId, saveRest);
+            return true;
         }
 
-        // 3. GROUP_REST DB 에 저장
-        GroupRest groupRest = new GroupRest(findGroupById(groupId), findRest.get());
-        groupRestRepository.save(groupRest);
+        // 4. REST DB 에 존재하면, 맛집 저장
+        saveGroupRest(groupId, findRest.get());
 
         return true;
     }
 
     @Override
+    @Transactional
     public Boolean deleteFavRest(User user, Long groupId, String restId) {
-        return null;
+
+        // 1. 그룹에 가입됐는지 확인
+        if (!user.isJoinGroup(groupId)) {
+            throw new GroupNotFoundException("groupId = " + groupId);
+        }
+
+        GroupRest existGroupRest = findByGroupIdAndRestId(groupId, restId);
+
+        groupRestRepository.delete(existGroupRest);
+
+        return true;
     }
 
     @Override
     public List<GetFavRestListResponse> getFavRestList(User user, Long groupId) {
         return null;
+    }
+
+    private void saveGroupRest(Long groupId, Rest rest) {
+        GroupRest groupRest = new GroupRest(findGroupById(groupId), rest);
+        groupRestRepository.save(groupRest);
     }
 
     private Group findGroupById(Long groupId) {

@@ -5,11 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+@Slf4j
 @Entity
 @Table(name = "groups")
 @Getter
@@ -39,6 +42,19 @@ public class Group {
 
     public int getRestCount() {
         return this.getGroupRests().size();
+    }
+
+    public boolean isJoinUser(UUID userId) {
+        long matchUserCount = this.getUserGroups()
+                .stream()
+                .filter(e -> e.getUser().getId().equals(userId))
+                .count();
+
+        if (matchUserCount == 1) {
+            return true;
+        }
+
+        return false;
     }
 
     //==생성 메서드==//

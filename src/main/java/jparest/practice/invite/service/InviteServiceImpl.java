@@ -44,21 +44,15 @@ public class InviteServiceImpl implements InviteService {
 
         // 1. 초대한 사람이 그룹의 회원이 맞는지 확인
         UserGroup sendUserGroup = findUserGroup(sendUser.getId(), groupId);
-        Long findUserGroupId = sendUserGroup.getId();
 
         // 2. 그룹에 속한 유저를 초대했는지 확인
-        Long existUserCount = sendUserGroup.getGroup().getUserGroups()
-                .stream()
-                .filter(e -> e.getUser().getId().equals(recvUserId))
-                .count();
-
-        if (existUserCount > 0) {
+        if (sendUserGroup.getGroup().isJoinUser(recvUserId)) {
             throw new ExistUserGroupException("groupId = " + groupId);
         }
 
         // 3. 대기중인 요청이 존재하는지 확인
         Optional<Invite> waitingInvite = inviteRepository.
-                findBySendUserGroupIdAndRecvUserIdAndInviteStatus(findUserGroupId, recvUserId, WAITING);
+                findBySendUserGroupIdAndRecvUserIdAndInviteStatus(sendUserGroup.getId(), recvUserId, WAITING);
 
         if(waitingInvite.isPresent()) {
             throw new ExistInviteForUserException("대기중인 inviteId = " + waitingInvite.get().getId());

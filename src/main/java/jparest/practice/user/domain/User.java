@@ -3,6 +3,7 @@ package jparest.practice.user.domain;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.invite.domain.Invite;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Entity
 @Getter
 @Builder
@@ -52,6 +54,20 @@ public class User {
         invites.add(invite);
         invite.setRecvUser(this);
     }
+
+    public boolean isJoinGroup(Long groupId) {
+        long matchGroupCount = this.getUserGroups()
+                .stream()
+                .filter(e -> e.getGroup().getId().equals(groupId))
+                .count();
+
+        if (matchGroupCount == 1) {
+            return true;
+        }
+
+        return false;
+    }
+
 
 // 아이디, 비밀번호 로그인 시
 //    @Column(length = 20)

@@ -8,12 +8,14 @@ import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.service.GroupService;
 import jparest.practice.invite.domain.Invite;
+import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.InviteUserResponse;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.invite.service.InviteService;
 import jparest.practice.rest.domain.GroupRest;
 import jparest.practice.rest.domain.Rest;
+import jparest.practice.rest.exception.ExistGroupRestException;
 import jparest.practice.rest.exception.GroupRestNotFoundException;
 import jparest.practice.rest.exception.RestNotFoundException;
 import jparest.practice.rest.repository.GroupRestRepository;
@@ -26,9 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-import static jparest.practice.invite.domain.InviteStatus.ACCEPT;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -75,11 +74,11 @@ public class RestServiceTest extends MockUserJoin {
 
         // 3. 그룹 초대, 초대 승낙
         InviteUserResponse inviteResponse = inviteService.inviteToGroup(groupResponse.getId(), joinUser1, joinUser2.getId());
-        inviteService.procInvitation(inviteResponse.getInviteId(), joinUser2, ACCEPT);
+        inviteService.procInvitation(inviteResponse.getInviteId(), joinUser2, InviteStatus.ACCEPT);
     }
 
     @Test
-    public void 맛집_추가() throws Exception {
+    public void 식당테이블에_존재하지_않는_맛집_추가() throws Exception {
 
         //given
 
@@ -87,7 +86,6 @@ public class RestServiceTest extends MockUserJoin {
         restService.addFavRest(joinUser1, group1.getId(), restId, restName, latitude, longitude);
 
         GroupRest groupRest = findByGroupIdAndRestId(group1.getId(), restId);
-        System.out.println("groupRest.getRest().getId() = " + groupRest.getRest().getId());
 
         //then
         assertAll(
@@ -96,9 +94,56 @@ public class RestServiceTest extends MockUserJoin {
         );
     }
 
+    @Test
+    public void 맛집테이블에_존재하는_맛집_추가시_에러() throws Exception {
+
+        //given
+        restService.addFavRest(joinUser1, group1.getId(), restId, restName, latitude, longitude);
+
+        //when
+        //then
+        assertThrows(
+                ExistGroupRestException.class,
+                () -> restService.addFavRest(joinUser1, group1.getId(), restId, restName, latitude, longitude)
+        );
+    }
+
+    @Test
+    public void 맛집테이블에_존재하는_맛집_삭제후_조회시_에러() throws Exception {
+        
+        //given
+        restService.addFavRest(joinUser1, group1.getId(), restId, restName, latitude, longitude);
+
+        GroupRest groupRest = findByGroupIdAndRestId(group1.getId(), restId);
+
+        //when
+        restService.deleteFavRest(joinUser1, group1.getId(), restId);
+
+        //then
+        assertThrows(
+                GroupRestNotFoundException.class, () -> findGroupRestById(groupRest.getId())
+        );
+    }
+
+    @Test
+    public void 맛집테이블에_존재하지_않는_맛집_삭제시_에러() throws Exception {
+
+        //given 맛집이 하나도 추가되지 않은 상태
+        //when
+        //then
+
+        assertThrows(
+                GroupRestNotFoundException.class, () -> restService.deleteFavRest(joinUser1, group1.getId(), restId)
+        );
+    }
+
 
     private Group findGroupById(Long groupId) {
         return groupRepository.findById(groupId).orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
+    }
+
+    private GroupRest findGroupRestById(Long groupRestId) {
+        return groupRestRepository.findById(groupRestId).orElseThrow(() -> new GroupRestNotFoundException("groupRestId = " + groupRestId));
     }
 
     private GroupRest findByGroupIdAndRestId(Long groupId, String restId) {
