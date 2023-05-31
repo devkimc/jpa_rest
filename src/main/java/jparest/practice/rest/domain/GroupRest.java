@@ -14,11 +14,11 @@ public class GroupRest {
     @Column(name = "group_rest_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "rest_id")
     private Rest rest;
 

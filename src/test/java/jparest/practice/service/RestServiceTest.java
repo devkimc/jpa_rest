@@ -3,9 +3,12 @@ package jparest.practice.service;
 
 import jparest.practice.common.MockUserJoin;
 import jparest.practice.group.domain.Group;
+import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
+import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
+import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.group.service.GroupService;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
@@ -29,6 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,7 +56,7 @@ public class RestServiceTest extends MockUserJoin {
     GroupRepository groupRepository;
 
     @Autowired
-    InviteRepository inviteRepository;
+    UserGroupRepository userGroupRepository;
 
     @Autowired
     RestService restService;
@@ -157,7 +161,6 @@ public class RestServiceTest extends MockUserJoin {
         );
     }
 
-
     private Group findGroupById(Long groupId) {
         return groupRepository.findById(groupId).orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
     }
@@ -172,9 +175,5 @@ public class RestServiceTest extends MockUserJoin {
 
     private Rest findRestById(String restId) {
         return restRepository.findById(restId).orElseThrow(() -> new RestNotFoundException("restId = " + restId));
-    }
-
-    private Invite findInviteById(Long inviteId) {
-        return inviteRepository.findById(inviteId).orElseThrow(() -> new InviteNotFoundException("inviteId = " + inviteId));
     }
 }

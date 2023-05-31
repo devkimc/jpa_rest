@@ -8,6 +8,7 @@ import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
+import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
     private final UserGroupRepository userGroupRepository;
+    private final InviteRepository inviteRepository;
 
     /**
      * 그룹 생성
@@ -53,17 +55,13 @@ public class GroupServiceImpl implements GroupService {
 
         UserGroup findUserGroup = findUserGroup(user.getId(), groupId);
 
+//        inviteRepository.de
+
         userGroupRepository.delete(findUserGroup);
 
         Group group = findUserGroup.getGroup();
 
-        // 그룹의 마지막 멤버인지 확인
-        if(group.getUserCount() == 1) {
-            groupRepository.delete(group);
-            return true;
-        }
-
-        if(group.getUserCount() > 2) return  true;
+        if(group.getUserCount() >= 1) return  true;
 
         return false;
     }

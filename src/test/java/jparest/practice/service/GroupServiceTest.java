@@ -2,19 +2,22 @@ package jparest.practice.service;
 
 import jparest.practice.common.MockUserJoin;
 import jparest.practice.group.domain.Group;
+import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.dto.GetUserGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
+import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
+import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.group.service.GroupService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,6 +30,9 @@ public class GroupServiceTest extends MockUserJoin {
 
     @Autowired
     GroupRepository groupRepository;
+
+    @Autowired
+    UserGroupRepository userGroupRepository;
 
     @BeforeEach
     void setUp() {
@@ -49,8 +55,7 @@ public class GroupServiceTest extends MockUserJoin {
     }
 
     @Test
-    @DisplayName("마지막 유저가 탈퇴시 그룹은 삭제되어야 한다.")
-    public void 그룹탈퇴_마지막_유저() throws Exception {
+    public void 그룹탈퇴() throws Exception {
 
         //given
         String groupName = "첫 그룹";
@@ -60,10 +65,8 @@ public class GroupServiceTest extends MockUserJoin {
         groupService.withdrawGroup(joinUser1, saveGroupId);
 
         //then
-        assertThrows(GroupNotFoundException.class, () -> {
-            groupRepository.findById(saveGroupId)
-                    .orElseThrow(() -> new GroupNotFoundException("groupId = " + saveGroupId));
-        });
+        assertThrows(UserGroupNotFoundException.class, () -> findUserGroup(joinUser1.getId(), saveGroupId));
+
     }
 
     @Test
@@ -97,5 +100,10 @@ public class GroupServiceTest extends MockUserJoin {
 
     private Group findGroup(Long groupId) {
         return groupRepository.findById(groupId).orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
+    }
+
+    private UserGroup findUserGroup(UUID userId, Long groupId) {
+        return userGroupRepository.findByUserIdAndGroupId(userId, groupId)
+                .orElseThrow(() -> new UserGroupNotFoundException("userId = " + userId + ", groupId = " + groupId));
     }
 }
