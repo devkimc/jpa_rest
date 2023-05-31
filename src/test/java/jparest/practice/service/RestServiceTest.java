@@ -15,18 +15,20 @@ import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.invite.service.InviteService;
 import jparest.practice.rest.domain.GroupRest;
 import jparest.practice.rest.domain.Rest;
+import jparest.practice.rest.dto.GetFavRestListResponse;
 import jparest.practice.rest.exception.ExistGroupRestException;
 import jparest.practice.rest.exception.GroupRestNotFoundException;
 import jparest.practice.rest.exception.RestNotFoundException;
 import jparest.practice.rest.repository.GroupRestRepository;
 import jparest.practice.rest.repository.RestRepository;
 import jparest.practice.rest.service.RestService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -128,12 +130,30 @@ public class RestServiceTest extends MockUserJoin {
     @Test
     public void 맛집테이블에_존재하지_않는_맛집_삭제시_에러() throws Exception {
 
-        //given 맛집이 하나도 추가되지 않은 상태
+        //given
         //when
-        //then
+        //맛집이 하나도 추가되지 않은 상태
 
+        //then
         assertThrows(
                 GroupRestNotFoundException.class, () -> restService.deleteFavRest(joinUser1, group1.getId(), restId)
+        );
+    }
+
+    @Test
+    public void 그룹맛집_리스트_조회() throws Exception {
+
+        //given
+        restService.addFavRest(joinUser1, group1.getId(), restId, restName, latitude, longitude);
+
+        //when
+        List<GetFavRestListResponse> favRestList = restService.getFavRestList(joinUser1, group1.getId());
+
+        //then
+        assertAll(
+                () -> assertEquals(1, favRestList.size()),
+                () -> assertEquals(latitude, favRestList.get(0).getLatitude()),
+                () -> assertEquals(longitude, favRestList.get(0).getLongitude())
         );
     }
 

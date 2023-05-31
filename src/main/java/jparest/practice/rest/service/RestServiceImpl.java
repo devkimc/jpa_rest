@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,7 +70,6 @@ public class RestServiceImpl implements RestService {
     @Transactional
     public Boolean deleteFavRest(User user, Long groupId, String restId) {
 
-        // 1. 그룹에 가입됐는지 확인
         if (!user.isJoinGroup(groupId)) {
             throw new GroupNotFoundException("groupId = " + groupId);
         }
@@ -82,8 +82,30 @@ public class RestServiceImpl implements RestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<GetFavRestListResponse> getFavRestList(User user, Long groupId) {
-        return null;
+        Optional<List<GroupRest>> groupRestList = groupRestRepository.findAllByGroupId(groupId);
+
+        if(groupRestList.isEmpty()) {
+            return new ArrayList<>(0);
+        }
+
+        ArrayList<GetFavRestListResponse> responses = new ArrayList<>(groupRestList.get().size());
+
+        for (GroupRest gr : groupRestList.get()
+             ) {
+            Rest rest = gr.getRest();
+
+            GetFavRestListResponse response = GetFavRestListResponse.builder().restId(rest.getId())
+                    .restName(rest.getRestname())
+                    .latitude(rest.getLatitude())
+                    .longitude(rest.getLongitude())
+                    .build();
+
+            responses.add(response);
+        }
+
+        return responses;
     }
 
     private void saveGroupRest(Long groupId, Rest rest) {

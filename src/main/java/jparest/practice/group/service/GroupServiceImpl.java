@@ -72,7 +72,7 @@ public class GroupServiceImpl implements GroupService {
      * 그룹 리스트 조회
      */
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public List<GetUserGroupResponse> getUserGroupList(User user) {
         List<UserGroup> userGroups = user.getUserGroups();
 
