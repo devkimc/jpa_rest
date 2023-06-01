@@ -1,18 +1,12 @@
 package jparest.practice.controller;
 
 import jparest.SpringContainerTest;
-import jparest.practice.auth.jwt.JwtFilter;
 import jparest.practice.auth.jwt.JwtService;
-import jparest.practice.auth.jwt.JwtTokenProvider;
-import jparest.practice.auth.security.CustomUserDetailService;
 import jparest.practice.group.domain.Group;
-import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.service.GroupService;
-import jparest.practice.invite.service.InviteService;
-import jparest.practice.user.controller.UserController;
 import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.domain.UserType;
@@ -21,20 +15,26 @@ import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.List;
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@AutoConfigureMockMvc
+@ExtendWith(RestDocumentationExtension.class)
 public class GroupControllerTest extends SpringContainerTest {
 
     private final String socialUserId1 = "123123";
@@ -50,16 +50,7 @@ public class GroupControllerTest extends SpringContainerTest {
     private final String groupName = "유저 1의 나라";
 
     @Autowired
-    UserController userController;
-
-    @Autowired
     JwtService jwtService;
-
-    @Autowired
-    JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    JwtFilter jwtFilter;
 
     @Autowired
     UserAuthService userAuthService;
@@ -69,14 +60,6 @@ public class GroupControllerTest extends SpringContainerTest {
 
     @Autowired
     GroupRepository groupRepository;
-
-    @Autowired
-    CustomUserDetailService userDetailService;
-
-    @Autowired
-    InviteService inviteService;
-
-    private UserDetails userDetails;
 
     User joinUser1;
     User joinUser2;
@@ -109,6 +92,7 @@ public class GroupControllerTest extends SpringContainerTest {
     @Transactional
     @DisplayName("그룹 리스트 조회")
     void getGroupList() throws Exception {
+
         //given
 
         //when
@@ -116,8 +100,16 @@ public class GroupControllerTest extends SpringContainerTest {
 //                .with(user(userId))
 //                .header("Authorization", "Bearer " + accessToken)
 //                .header("Cookie", "refreshToken=" + refreshToken)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andDo(print());
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(document("get-groups",
+                        PayloadDocumentation.responseFields(
+                                PayloadDocumentation.fieldWithPath("success").description("성공 여부"),
+                                PayloadDocumentation.fieldWithPath("result.[].groupId").description("그룹 아이디"),
+                                PayloadDocumentation.fieldWithPath("result.[].groupName").description("그룹 이름"),
+                                PayloadDocumentation.fieldWithPath("result.[].totalUsers").description("그룹 인원수")
+                        )));
 
         //then
 //        assertTrue(result);

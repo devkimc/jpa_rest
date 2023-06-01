@@ -30,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
     private final JwtTokenProvider jwtProvider;
-    private final List<String> EXCLUDE_URL = List.of("/api/auth/join", "/api/auth/login", "/api/auth/kakao");
+    private final List<String> EXCLUDE_URL = List.of("/api/auth/join", "/api/auth/login", "/api/auth/kakao", "/docs/index.html");
 
     /**
      * 토큰 인증 정보를 현재 쓰레드의 SecurityContext 에 저장되는 역할 수행

@@ -40,11 +40,14 @@ public class SecurityConfig  {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        final String[] GET_WHITELIST = new String[]{
+                "/docs/index.html",
+        };
+
         final String[] POST_WHITELIST = new String[]{
                 "/api/auth/login",
                 "/api/auth/join",
                 "/api/auth/kakao",
-
         };
 
         return http
@@ -58,8 +61,9 @@ public class SecurityConfig  {
                 .and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                .antMatchers(HttpMethod.GET, GET_WHITELIST).permitAll() // 해당 GET URL은 모두 허용
                 .antMatchers(HttpMethod.POST, POST_WHITELIST).permitAll() // 해당 POST URL은 모두 허용
-                .antMatchers("**").hasAnyRole("GENERAL") // 권한 적용
+//                .antMatchers("**").hasAnyRole("GENERAL") // 권한 적용
                 .anyRequest().authenticated() // 나머지 요청에 대해서는 인증을 요구
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
