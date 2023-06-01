@@ -56,6 +56,5 @@ public class JwtService {
         return new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities()
         );
-
     }
 }

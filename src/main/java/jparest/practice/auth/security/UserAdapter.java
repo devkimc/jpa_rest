@@ -9,7 +9,9 @@ public class UserAdapter extends org.springframework.security.core.userdetails.U
     private final User user;
 
     public UserAdapter(User user) {
-        super(String.valueOf(user.getId()), "", List.of(new SimpleGrantedAuthority(user.getUserType().name())));
+        super(String.valueOf(user.getId()),
+                "",
+                List.of(new SimpleGrantedAuthority(user.getUserType().name())));
         this.user = user;
     }
 

@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static jparest.practice.invite.domain.InviteStatus.REJECT;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -96,10 +95,10 @@ public class InviteServiceTest extends MockUserJoin {
         Invite invite = findInviteById(response.getInviteId());
 
         //when
-        inviteService.procInvitation(invite.getId(), joinUser2, REJECT);
+        inviteService.procInvitation(invite.getId(), joinUser2, InviteStatus.REJECT);
 
         //then
-        assertEquals(REJECT, invite.getInviteStatus());
+        assertEquals(InviteStatus.REJECT, invite.getInviteStatus());
     }
 
     @Test
