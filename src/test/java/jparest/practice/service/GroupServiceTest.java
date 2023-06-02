@@ -1,6 +1,7 @@
 package jparest.practice.service;
 
-import jparest.practice.common.MockUserJoin;
+import jparest.practice.common.utils.GroupFixture;
+import jparest.practice.common.utils.UserFixture;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.dto.CreateGroupResponse;
@@ -10,6 +11,8 @@ import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.group.service.GroupService;
+import jparest.practice.user.domain.User;
+import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-public class GroupServiceTest extends MockUserJoin {
+public class GroupServiceTest {
+
+    private User firstUser;
+
+    @Autowired
+    UserAuthService userAuthService;
 
     @Autowired
     GroupService groupService;
@@ -34,38 +42,37 @@ public class GroupServiceTest extends MockUserJoin {
     @Autowired
     UserGroupRepository userGroupRepository;
 
+
     @BeforeEach
     void setUp() {
-        joinSetUp();
+        firstUser = userAuthService.join(UserFixture.createFirstUser());
     }
 
     @Test
     public void 그룹생성() throws Exception {
 
         //given
-        String groupName = "첫 그룹";
 
         //when
-        CreateGroupResponse response = groupService.createGroup(joinUser1, groupName);
+        CreateGroupResponse response = groupService.createGroup(firstUser, GroupFixture.groupName1);
 
         //then
         String saveGroupName = response.getGroupName();
 
-        assertEquals(groupName, saveGroupName, "생성한 그룹의 이름이 일치해야 한다.");
+        assertEquals(GroupFixture.groupName1, saveGroupName, "생성한 그룹의 이름이 일치해야 한다.");
     }
 
     @Test
     public void 그룹탈퇴() throws Exception {
 
         //given
-        String groupName = "첫 그룹";
-        Long saveGroupId = groupService.createGroup(joinUser1, groupName).getId();
+        Long saveGroupId = groupService.createGroup(firstUser, GroupFixture.groupName1).getId();
 
         //when
-        groupService.withdrawGroup(joinUser1, saveGroupId);
+        groupService.withdrawGroup(firstUser, saveGroupId);
 
         //then
-        assertThrows(UserGroupNotFoundException.class, () -> findUserGroup(joinUser1.getId(), saveGroupId));
+        assertThrows(UserGroupNotFoundException.class, () -> findUserGroup(firstUser.getId(), saveGroupId));
 
     }
 
@@ -73,16 +80,14 @@ public class GroupServiceTest extends MockUserJoin {
     public void 그룹_리스트_조회() throws Exception {
 
         //given
-        String groupName1 = "첫 그룹";
-        String groupName2 = "두번째 그룹";
-        Long id1 = groupService.createGroup(joinUser1, groupName1).getId();
-        Long id2 = groupService.createGroup(joinUser1, groupName2).getId();
+        Long id1 = groupService.createGroup(firstUser, GroupFixture.groupName1).getId();
+        Long id2 = groupService.createGroup(firstUser, GroupFixture.groupName2).getId();
 
         Group group1 = findGroup(id1);
         Group group2 = findGroup(id2);
 
         //when
-        List<GetUserGroupResponse> userGroupList = groupService.getUserGroupList(joinUser1);
+        List<GetUserGroupResponse> userGroupList = groupService.getUserGroupList(firstUser);
         GetUserGroupResponse result1 = userGroupList.get(0);
         GetUserGroupResponse result2 = userGroupList.get(1);
 

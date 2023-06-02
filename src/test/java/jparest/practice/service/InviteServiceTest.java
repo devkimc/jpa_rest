@@ -1,6 +1,7 @@
 package jparest.practice.service;
 
-import jparest.practice.common.MockUserJoin;
+import jparest.practice.common.utils.GroupFixture;
+import jparest.practice.common.utils.UserFixture;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.dto.CreateGroupResponse;
@@ -16,6 +17,8 @@ import jparest.practice.invite.exception.ExistInviteForUserException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.invite.service.InviteService;
+import jparest.practice.user.domain.User;
+import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +31,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-public class InviteServiceTest extends MockUserJoin {
+public class InviteServiceTest {
+    
+    private User firstUser;
+    private User secondUser;
+    private Group group;
 
-    private final String groupName = "유저 1의 나라";
+    @Autowired
+    UserAuthService userAuthService;
 
     @Autowired
     InviteService inviteService;
@@ -44,58 +52,57 @@ public class InviteServiceTest extends MockUserJoin {
     @Autowired
     InviteRepository inviteRepository;
 
-    Group group1;
-
     @BeforeEach
     void setUp() {
-        joinSetUp();
+        firstUser = userAuthService.join(UserFixture.createFirstUser());
+        secondUser = userAuthService.join(UserFixture.createSecondUser());
 
-        CreateGroupResponse response = groupService.createGroup(joinUser1, groupName);
-        group1 = findGroupById(response.getId());
+        CreateGroupResponse response = groupService.createGroup(firstUser, GroupFixture.groupName1);
+        group = findGroupById(response.getId());
     }
 
     @Test
     public void 그룹초대() throws Exception {
 
         //given
-        List<UserGroup> userGroups = joinUser1.getUserGroups();
+        List<UserGroup> userGroups = firstUser.getUserGroups();
 
         //when
-        InviteUserResponse response = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+        InviteUserResponse response = inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
         Invite invite = findInviteById(response.getInviteId());
 
         //then
         assertAll(
                 () -> assertEquals(InviteStatus.WAITING, invite.getInviteStatus()), // 초대 상태
                 () -> assertEquals(userGroups.get(0), invite.getSendUserGroup()), // 초대한 유저
-                () -> assertEquals(joinUser2, invite.getRecvUser()) // 초대받은 유저
+                () -> assertEquals(secondUser, invite.getRecvUser()) // 초대받은 유저
         );
     }
 
     @Test
     public void 그룹초대_승낙() throws Exception {
         //given
-        InviteUserResponse response = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+        InviteUserResponse response = inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
         Invite invite = findInviteById(response.getInviteId());
 
         //when
-        inviteService.procInvitation(invite.getId(), joinUser2, InviteStatus.ACCEPT);
+        inviteService.procInvitation(invite.getId(), secondUser, InviteStatus.ACCEPT);
 
         //then
         assertAll(
                 ()-> assertEquals(InviteStatus.ACCEPT, invite.getInviteStatus()), // 초대 승낙
-                ()-> assertEquals(group1.getUserGroups().get(1).getUser(), joinUser2) // 그룹원 추가
+                ()-> assertEquals(group.getUserGroups().get(1).getUser(), secondUser) // 그룹원 추가
         );
     }
 
     @Test
     public void 그룹초대_거절() throws Exception {
         //given
-        InviteUserResponse response = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+        InviteUserResponse response = inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
         Invite invite = findInviteById(response.getInviteId());
 
         //when
-        inviteService.procInvitation(invite.getId(), joinUser2, InviteStatus.REJECT);
+        inviteService.procInvitation(invite.getId(), secondUser, InviteStatus.REJECT);
 
         //then
         assertEquals(InviteStatus.REJECT, invite.getInviteStatus());
@@ -104,11 +111,11 @@ public class InviteServiceTest extends MockUserJoin {
     @Test
     public void 그룹초대_취소() throws Exception {
         //given
-        InviteUserResponse response = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+        InviteUserResponse response = inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
         Invite invite = findInviteById(response.getInviteId());
 
         //when
-        inviteService.procInvitation(invite.getId(), joinUser1, InviteStatus.CANCEL);
+        inviteService.procInvitation(invite.getId(), firstUser, InviteStatus.CANCEL);
 
         //then
         assertEquals(InviteStatus.CANCEL, invite.getInviteStatus());
@@ -118,15 +125,15 @@ public class InviteServiceTest extends MockUserJoin {
     public void 그룹에_존재하는_유저를_초대시_에러() throws Exception {
 
         //given
-        InviteUserResponse response = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+        InviteUserResponse response = inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
         Invite invite = findInviteById(response.getInviteId());
 
         //when
-        inviteService.procInvitation(invite.getId(), joinUser2, InviteStatus.ACCEPT);
+        inviteService.procInvitation(invite.getId(), secondUser, InviteStatus.ACCEPT);
 
         //then
         assertThrows(ExistUserGroupException.class,
-                () -> inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId()));
+                () -> inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId()));
     }
 
     @Test
@@ -135,28 +142,28 @@ public class InviteServiceTest extends MockUserJoin {
         //given
 
         //when
-        inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+        inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
 
         //then
         assertThrows(ExistInviteForUserException.class,
-                () -> inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId()));
+                () -> inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId()));
     }
 
     @Test
     public void 대기중인_초대리스트_조회() throws Exception {
 
         //given
-        InviteUserResponse response = inviteService.inviteToGroup(group1.getId(), joinUser1, joinUser2.getId());
+        InviteUserResponse response = inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
         Invite invite = findInviteById(response.getInviteId());
 
         //when
-        List<GetWaitingInviteResponse> inviteList = inviteService.getWaitingInviteList(joinUser2);
+        List<GetWaitingInviteResponse> inviteList = inviteService.getWaitingInviteList(secondUser);
 
         //then
         assertAll(
                 () -> assertEquals(invite.getId(), inviteList.get(0).getInviteId()),
-                () -> assertEquals(nickname1, inviteList.get(0).getNickName()),
-                () -> assertEquals(groupName, inviteList.get(0).getGroupName())
+                () -> assertEquals(firstUser.getNickname(), inviteList.get(0).getNickName()),
+                () -> assertEquals(GroupFixture.groupName1, inviteList.get(0).getGroupName())
         );
     }
 
@@ -166,7 +173,7 @@ public class InviteServiceTest extends MockUserJoin {
         //given
 
         //when
-        List<GetWaitingInviteResponse> inviteList = inviteService.getWaitingInviteList(joinUser2);
+        List<GetWaitingInviteResponse> inviteList = inviteService.getWaitingInviteList(secondUser);
 
         //then
         assertEquals(inviteList.size(), 0);

@@ -14,31 +14,32 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/restaurants")
 public class RestaurantController {
 
     private final RestService restService;
 
-    @PostMapping("/group/{groupId}/favorite/rest/{restId}")
+    @PostMapping("/{restId}/favorite")
     public ApiResult<Boolean> addFavRest(@CurrentUser User user,
-                                              @PathVariable Long groupId,
                                               @PathVariable String restId,
                                               @RequestBody AddFavoriteRestRequest addFavoriteRestRequest
                                               ) {
-        return ApiUtils.success(restService.addFavRest(user, groupId, restId, addFavoriteRestRequest.getRestName(), addFavoriteRestRequest.getLatitude(), addFavoriteRestRequest.getLongitude()));
+        return ApiUtils.success(restService.addFavRest(user, addFavoriteRestRequest.getGroupId(), restId, addFavoriteRestRequest.getRestName(), addFavoriteRestRequest.getLatitude(), addFavoriteRestRequest.getLongitude()));
     }
 
-    @DeleteMapping("/group/{groupId}/favorite/rest/{restId}")
+    @DeleteMapping("/{restId}/favorite")
     public ApiResult<Boolean> deleteFavRest(@CurrentUser User user,
-                                                 @PathVariable Long groupId,
-                                                 @PathVariable String restId
+                                            @PathVariable String restId,
+                                            @RequestParam Long groupId
     ) {
+
         return ApiUtils.success(restService.deleteFavRest(user, groupId, restId));
     }
 
-    @GetMapping("/group/{groupId}/favorite/rests")
+    @GetMapping("/favorite")
     public ApiResult<List<GetFavRestListResponse>> getFavRestList(@CurrentUser User user,
-                                                                  @PathVariable Long groupId) {
+                                                                  @RequestParam Long groupId
+    ) {
 
         return ApiUtils.success(restService.getFavRestList(user, groupId));
     }

@@ -68,14 +68,6 @@ asciidoctor.doFirst {	//(6) asciidoctor가 실행될 때 docs 하위 파일 삭�
 	delete file('src/main/resources/static/docs')
 }
 
-bootJar {	//(7) bootJar 시 asciidoctor 종속되고 build하위 스니펫츠 파일을 classes 하위로 복사
-	dependsOn asciidoctor
-	copy {
-		from "${asciidoctor.outputDir}"
-		into 'BOOT-INF/classes/static/docs'
-	}
-}
-
 task copyDocument(type: Copy) {		//(8) from의 파일을 into로 복사
 	dependsOn asciidoctor
 	from file("build/docs/asciidoc")

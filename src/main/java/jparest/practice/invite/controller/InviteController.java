@@ -18,12 +18,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/invite")
+@RequestMapping("/api/invites")
 public class InviteController {
 
     private final InviteService inviteService;
 
-    @GetMapping("s")
+    @GetMapping
     public ApiResult<List<GetWaitingInviteResponse>> getInvitedList(@CurrentUser User user) {
         return ApiUtils.success(inviteService.getWaitingInviteList(user));
     }
@@ -32,7 +32,6 @@ public class InviteController {
     public ApiResult<InviteUserResponse> inviteUser(@CurrentUser User user, InviteUserRequest inviteUserRequest) {
         return ApiUtils.success(inviteService.inviteToGroup(inviteUserRequest.getGroupId(), user, inviteUserRequest.getRecvUserId()));
     }
-
 
     @PatchMapping(value = "/{inviteId}/status")
     public ApiResult<Boolean> procInvite(@CurrentUser User user,

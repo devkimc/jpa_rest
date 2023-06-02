@@ -21,21 +21,21 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/groups")
 public class GroupController {
     private final GroupService groupService;
 
-    @PostMapping("/group")
+    @PostMapping
     public ApiResult<CreateGroupResponse> createGroup(@CurrentUser User user, @RequestBody CreateGroupRequest createGroupRequest) {
         return ApiUtils.success(groupService.createGroup(user, createGroupRequest.getGroupName()));
     }
 
-    @DeleteMapping("/group/{groupId}/user")
+    @DeleteMapping("/{groupId}/users")
     public ApiResult<Boolean> withdrawGroup(@CurrentUser User user, @PathVariable Long groupId) {
         return ApiUtils.success(groupService.withdrawGroup(user, groupId));
     }
 
-    @GetMapping("/groups")
+    @GetMapping
     public ApiResult<List<GetUserGroupResponse>> getUserGroupList(@CurrentUser User user) {
         return ApiUtils.success(groupService.getUserGroupList(user));
     }

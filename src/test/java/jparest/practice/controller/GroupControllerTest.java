@@ -2,6 +2,8 @@ package jparest.practice.controller;
 
 import jparest.SpringContainerTest;
 import jparest.practice.auth.jwt.JwtService;
+import jparest.practice.common.utils.GroupFixture;
+import jparest.practice.common.utils.UserFixture;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
@@ -15,14 +17,9 @@ import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.PayloadDocumentation;
-import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,22 +30,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
-@ExtendWith(RestDocumentationExtension.class)
 public class GroupControllerTest extends SpringContainerTest {
 
-    private final String socialUserId1 = "123123";
-    private final String email1 = "eee@www.aaaa";
-    private final String nickname1 = "유저1";
-    private final LoginType loginType1 = LoginType.KAKAO;
-
-    private final String socialUserId2 = "234234";
-    private final String email2 = "eee@www.bbb";
-    private final String nickname2 = "유저2";
-    private final LoginType loginType2 = LoginType.KAKAO;
-
-    private final String groupName = "유저 1의 나라";
-
+    private User firstUser;
+    private Group group;
+    
     @Autowired
     JwtService jwtService;
 
@@ -61,27 +47,18 @@ public class GroupControllerTest extends SpringContainerTest {
     @Autowired
     GroupRepository groupRepository;
 
-    User joinUser1;
-    User joinUser2;
-
-    Group group1;
-
     @BeforeEach
     void setUp() {
-        joinSetup();
+        firstUser = userAuthService.join(UserFixture.createFirstUser());
+
         authenticationSetup();
 
-        CreateGroupResponse response = groupService.createGroup(joinUser1, groupName);
-        group1 = findGroupById(response.getId());
-    }
-
-    private void joinSetup() {
-        joinUser1 = userAuthService.join(new SocialJoinRequest(socialUserId1, email1, nickname1, loginType1));
-        joinUser2 = userAuthService.join(new SocialJoinRequest(socialUserId2, email2, nickname2, loginType2));
+        CreateGroupResponse response = groupService.createGroup(firstUser, GroupFixture.groupName1);
+        group = findGroupById(response.getId());
     }
 
     private void authenticationSetup() {
-        String userId = String.valueOf(joinUser1.getId());
+        String userId = String.valueOf(firstUser.getId());
         String accessToken = jwtService.createAccessToken(userId, UserType.ROLE_GENERAL.name());
 
         Authentication authentication = jwtService.tokenLogin(accessToken);

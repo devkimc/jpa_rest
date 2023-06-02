@@ -1,20 +1,15 @@
 package jparest.practice.service;
 
 
-import jparest.practice.common.MockUserJoin;
+import jparest.practice.common.utils.GroupFixture;
+import jparest.practice.common.utils.UserFixture;
 import jparest.practice.group.domain.Group;
-import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
-import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
-import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.group.service.GroupService;
-import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.InviteUserResponse;
-import jparest.practice.invite.exception.InviteNotFoundException;
-import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.invite.service.InviteService;
 import jparest.practice.rest.domain.GroupRest;
 import jparest.practice.rest.domain.Rest;
@@ -25,6 +20,8 @@ import jparest.practice.rest.exception.RestNotFoundException;
 import jparest.practice.rest.repository.GroupRestRepository;
 import jparest.practice.rest.repository.RestRepository;
 import jparest.practice.rest.service.RestService;
+import jparest.practice.user.domain.User;
+import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,19 +29,24 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-public class RestServiceTest extends MockUserJoin {
+public class RestServiceTest {
 
-    private final String groupName = "유저 1의 나라";
     private final String restId = "223412312";
     private final String restName = "원할머니 보쌈";
     private final double latitude = 37.481079886;
     private final double longitude = 126.9530287;
+
+    private User firstUser;
+    private User secondUser;
+    private Group group;
+
+    @Autowired
+    UserAuthService userAuthService;
 
     @Autowired
     InviteService inviteService;
@@ -56,9 +58,6 @@ public class RestServiceTest extends MockUserJoin {
     GroupRepository groupRepository;
 
     @Autowired
-    UserGroupRepository userGroupRepository;
-
-    @Autowired
     RestService restService;
 
     @Autowired
@@ -67,20 +66,19 @@ public class RestServiceTest extends MockUserJoin {
     @Autowired
     RestRepository restRepository;
 
-    Group group1;
-
     @BeforeEach
     void setUp() {
         // 1. 2명의 유저 회원가입
-        joinSetUp();
+        firstUser = userAuthService.join(UserFixture.createFirstUser());
+        secondUser = userAuthService.join(UserFixture.createSecondUser());
 
         // 2. 그룹 생성
-        CreateGroupResponse groupResponse = groupService.createGroup(joinUser1, groupName);
-        group1 = findGroupById(groupResponse.getId());
+        CreateGroupResponse groupResponse = groupService.createGroup(firstUser, GroupFixture.groupName1);
+        group = findGroupById(groupResponse.getId());
 
         // 3. 그룹 초대, 초대 승낙
-        InviteUserResponse inviteResponse = inviteService.inviteToGroup(groupResponse.getId(), joinUser1, joinUser2.getId());
-        inviteService.procInvitation(inviteResponse.getInviteId(), joinUser2, InviteStatus.ACCEPT);
+        InviteUserResponse inviteResponse = inviteService.inviteToGroup(groupResponse.getId(), firstUser, secondUser.getId());
+        inviteService.procInvitation(inviteResponse.getInviteId(), secondUser, InviteStatus.ACCEPT);
     }
 
     @Test
@@ -89,9 +87,9 @@ public class RestServiceTest extends MockUserJoin {
         //given
 
         //when
-        restService.addFavRest(joinUser1, group1.getId(), restId, restName, latitude, longitude);
+        restService.addFavRest(firstUser, group.getId(), restId, restName, latitude, longitude);
 
-        GroupRest groupRest = findByGroupIdAndRestId(group1.getId(), restId);
+        GroupRest groupRest = findByGroupIdAndRestId(group.getId(), restId);
 
         //then
         assertAll(
@@ -104,13 +102,13 @@ public class RestServiceTest extends MockUserJoin {
     public void 맛집테이블에_존재하는_맛집_추가시_에러() throws Exception {
 
         //given
-        restService.addFavRest(joinUser1, group1.getId(), restId, restName, latitude, longitude);
+        restService.addFavRest(firstUser, group.getId(), restId, restName, latitude, longitude);
 
         //when
         //then
         assertThrows(
                 ExistGroupRestException.class,
-                () -> restService.addFavRest(joinUser1, group1.getId(), restId, restName, latitude, longitude)
+                () -> restService.addFavRest(firstUser, group.getId(), restId, restName, latitude, longitude)
         );
     }
 
@@ -118,12 +116,12 @@ public class RestServiceTest extends MockUserJoin {
     public void 맛집테이블에_존재하는_맛집_삭제후_조회시_에러() throws Exception {
         
         //given
-        restService.addFavRest(joinUser1, group1.getId(), restId, restName, latitude, longitude);
+        restService.addFavRest(firstUser, group.getId(), restId, restName, latitude, longitude);
 
-        GroupRest groupRest = findByGroupIdAndRestId(group1.getId(), restId);
+        GroupRest groupRest = findByGroupIdAndRestId(group.getId(), restId);
 
         //when
-        restService.deleteFavRest(joinUser1, group1.getId(), restId);
+        restService.deleteFavRest(firstUser, group.getId(), restId);
 
         //then
         assertThrows(
@@ -140,7 +138,7 @@ public class RestServiceTest extends MockUserJoin {
 
         //then
         assertThrows(
-                GroupRestNotFoundException.class, () -> restService.deleteFavRest(joinUser1, group1.getId(), restId)
+                GroupRestNotFoundException.class, () -> restService.deleteFavRest(firstUser, group.getId(), restId)
         );
     }
 
@@ -148,10 +146,10 @@ public class RestServiceTest extends MockUserJoin {
     public void 그룹맛집_리스트_조회() throws Exception {
 
         //given
-        restService.addFavRest(joinUser1, group1.getId(), restId, restName, latitude, longitude);
+        restService.addFavRest(firstUser, group.getId(), restId, restName, latitude, longitude);
 
         //when
-        List<GetFavRestListResponse> favRestList = restService.getFavRestList(joinUser1, group1.getId());
+        List<GetFavRestListResponse> favRestList = restService.getFavRestList(firstUser, group.getId());
 
         //then
         assertAll(

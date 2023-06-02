@@ -6,10 +6,7 @@ import jparest.practice.common.util.ApiResult;
 import jparest.practice.common.util.ApiUtils;
 import jparest.practice.common.util.CookieUtils;
 import jparest.practice.common.util.TokenDto;
-import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
-import jparest.practice.user.dto.SocialJoinRequest;
-import jparest.practice.user.dto.SocialJoinResponse;
 import jparest.practice.user.dto.SocialLoginResponse;
 import jparest.practice.user.service.UserAuthService;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +26,6 @@ public class UserController {
 
     private final UserAuthService userAuthService;
 
-    @PostMapping(value = "/join")
-    public ApiResult<SocialJoinResponse> join(@RequestBody SocialJoinRequest socialJoinRequest) {
-        SocialJoinResponse socialJoinResponse = userAuthService.socialJoin(socialJoinRequest);
-        return ApiUtils.success(socialJoinResponse);
-    }
-
     @PostMapping("/kakao")
     public ApiResult<SocialLoginResponse> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
         SocialLoginResponse socialLoginResponse = userAuthService.kakaoLogin(code);
@@ -51,28 +42,20 @@ public class UserController {
         return ApiUtils.fail(socialLoginResponse);
     }
 
-    @PostMapping("/kakao/test")
-    public ApiResult<User> kakaoTestLogin() {
-        User user = userAuthService.testKakaoLogin(new SocialJoinRequest("12313213", "aaaa@bbb.ccc", "kemooosuk", LoginType.KAKAO));
-
-//        if (socialLoginResponse.getTokenDto() != null) {
-//            TokenDto tokenDto = socialLoginResponse.getTokenDto();
-//
-//            CookieUtils.addCookie(response, TokenType.ACCESS_TOKEN.name(), tokenDto.getAccessToken(), domain);
-//            CookieUtils.addCookie(response, TokenType.REFRESH_TOKEN.name(), tokenDto.getRefreshToken(), domain);
-
-            return ApiUtils.success(user);
-//        }
-
-//        return ApiUtils.fail(socialLoginResponse);
-    }
-
     @DeleteMapping("/logout")
     public ApiResult<Boolean> logout(HttpServletRequest request, HttpServletResponse response,
                                      @CurrentUser User user) {
         userAuthService.logout(request, response, String.valueOf(user.getId()));
         return ApiUtils.success(Boolean.TRUE);
     }
+
+
+
+//    @PostMapping(value = "/join")
+//    public ApiResult<SocialJoinResponse> join(@RequestBody SocialJoinRequest socialJoinRequest) {
+//        SocialJoinResponse socialJoinResponse = userAuthService.socialJoin(socialJoinRequest);
+//        return ApiUtils.success(socialJoinResponse);
+//    }
 
 //    @PostMapping(name = "회원가입", value = "/join")
 //    public ApiResult<Boolean> join(@RequestBody User user) {
