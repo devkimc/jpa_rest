@@ -1,8 +1,6 @@
 package jparest.practice.service;
 
 
-import jparest.practice.common.utils.GroupFixture;
-import jparest.practice.common.utils.UserFixture;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
@@ -30,16 +28,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static jparest.practice.common.utils.GroupFixture.*;
+import static jparest.practice.common.utils.RestFixture.*;
+import static jparest.practice.common.utils.UserFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
 public class RestServiceTest {
-
-    private final String restId = "223412312";
-    private final String restName = "원할머니 보쌈";
-    private final double latitude = 37.481079886;
-    private final double longitude = 126.9530287;
 
     private User firstUser;
     private User secondUser;
@@ -69,11 +65,11 @@ public class RestServiceTest {
     @BeforeEach
     void setUp() {
         // 1. 2명의 유저 회원가입
-        firstUser = userAuthService.join(UserFixture.createFirstUser());
-        secondUser = userAuthService.join(UserFixture.createSecondUser());
+        firstUser = userAuthService.join(createFirstUser());
+        secondUser = userAuthService.join(createSecondUser());
 
         // 2. 그룹 생성
-        CreateGroupResponse groupResponse = groupService.createGroup(firstUser, GroupFixture.groupName1);
+        CreateGroupResponse groupResponse = groupService.createGroup(firstUser, groupName1);
         group = findGroupById(groupResponse.getId());
 
         // 3. 그룹 초대, 초대 승낙
@@ -87,7 +83,7 @@ public class RestServiceTest {
         //given
 
         //when
-        restService.addFavRest(firstUser, group.getId(), restId, restName, latitude, longitude);
+        restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
 
         GroupRest groupRest = findByGroupIdAndRestId(group.getId(), restId);
 
@@ -102,21 +98,22 @@ public class RestServiceTest {
     public void 맛집테이블에_존재하는_맛집_추가시_에러() throws Exception {
 
         //given
-        restService.addFavRest(firstUser, group.getId(), restId, restName, latitude, longitude);
+        restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
 
         //when
         //then
         assertThrows(
                 ExistGroupRestException.class,
-                () -> restService.addFavRest(firstUser, group.getId(), restId, restName, latitude, longitude)
+                () -> restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()))
         );
+
     }
 
     @Test
     public void 맛집테이블에_존재하는_맛집_삭제후_조회시_에러() throws Exception {
         
         //given
-        restService.addFavRest(firstUser, group.getId(), restId, restName, latitude, longitude);
+        restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
 
         GroupRest groupRest = findByGroupIdAndRestId(group.getId(), restId);
 
@@ -146,7 +143,7 @@ public class RestServiceTest {
     public void 그룹맛집_리스트_조회() throws Exception {
 
         //given
-        restService.addFavRest(firstUser, group.getId(), restId, restName, latitude, longitude);
+        restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
 
         //when
         List<GetFavRestListResponse> favRestList = restService.getFavRestList(firstUser, group.getId());

@@ -24,7 +24,7 @@ public class RestaurantController {
                                               @PathVariable String restId,
                                               @RequestBody AddFavoriteRestRequest addFavoriteRestRequest
                                               ) {
-        return ApiUtils.success(restService.addFavRest(user, addFavoriteRestRequest.getGroupId(), restId, addFavoriteRestRequest.getRestName(), addFavoriteRestRequest.getLatitude(), addFavoriteRestRequest.getLongitude()));
+        return ApiUtils.success(restService.addFavRest(user, restId, addFavoriteRestRequest));
     }
 
     @DeleteMapping("/{restId}/favorite")
@@ -32,7 +32,6 @@ public class RestaurantController {
                                             @PathVariable String restId,
                                             @RequestParam Long groupId
     ) {
-
         return ApiUtils.success(restService.deleteFavRest(user, groupId, restId));
     }
 
@@ -40,7 +39,6 @@ public class RestaurantController {
     public ApiResult<List<GetFavRestListResponse>> getFavRestList(@CurrentUser User user,
                                                                   @RequestParam Long groupId
     ) {
-
         return ApiUtils.success(restService.getFavRestList(user, groupId));
     }
 }

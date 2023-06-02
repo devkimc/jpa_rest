@@ -5,6 +5,7 @@ import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.rest.domain.GroupRest;
 import jparest.practice.rest.domain.Rest;
+import jparest.practice.rest.dto.AddFavoriteRestRequest;
 import jparest.practice.rest.dto.GetFavRestListResponse;
 import jparest.practice.rest.exception.ExistGroupRestException;
 import jparest.practice.rest.exception.GroupRestNotFoundException;
@@ -30,7 +31,9 @@ public class RestServiceImpl implements RestService {
 
     @Override
     @Transactional
-    public Boolean addFavRest(User user, Long groupId, String restId, String restName, double latitude, double longitude) {
+    public Boolean addFavRest(User user, String restId, AddFavoriteRestRequest addFavoriteRestRequest) {
+
+        Long groupId = addFavoriteRestRequest.getGroupId();
 
         // 1. 그룹에 가입됐는지 확인
         if (!user.isJoinGroup(groupId)) {
@@ -49,9 +52,9 @@ public class RestServiceImpl implements RestService {
         // 3. 식당 테이블에 존재하지 않는 맛집이면 식당, 맛집 저장
         if (findRest.isEmpty()) {
             Rest rest = Rest.builder().id(restId)
-                    .restname(restName)
-                    .latitude(latitude)
-                    .longitude(longitude)
+                    .restname(addFavoriteRestRequest.getRestName())
+                    .latitude(addFavoriteRestRequest.getLatitude())
+                    .longitude(addFavoriteRestRequest.getLongitude())
                     .build();
 
             Rest saveRest = restRepository.save(rest);

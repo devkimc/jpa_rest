@@ -3,18 +3,12 @@ package jparest.practice.group.controller;
 import jparest.practice.auth.security.CurrentUser;
 import jparest.practice.common.util.ApiResult;
 import jparest.practice.common.util.ApiUtils;
-import jparest.practice.group.domain.Group;
 import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.dto.GetUserGroupResponse;
 import jparest.practice.group.service.GroupService;
-import jparest.practice.group.service.GroupServiceImpl;
 import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

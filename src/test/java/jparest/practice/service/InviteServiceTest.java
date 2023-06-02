@@ -1,7 +1,5 @@
 package jparest.practice.service;
 
-import jparest.practice.common.utils.GroupFixture;
-import jparest.practice.common.utils.UserFixture;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.dto.CreateGroupResponse;
@@ -27,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static jparest.practice.common.utils.GroupFixture.*;
+import static jparest.practice.common.utils.UserFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -54,10 +54,10 @@ public class InviteServiceTest {
 
     @BeforeEach
     void setUp() {
-        firstUser = userAuthService.join(UserFixture.createFirstUser());
-        secondUser = userAuthService.join(UserFixture.createSecondUser());
+        firstUser = userAuthService.join(createFirstUser());
+        secondUser = userAuthService.join(createSecondUser());
 
-        CreateGroupResponse response = groupService.createGroup(firstUser, GroupFixture.groupName1);
+        CreateGroupResponse response = groupService.createGroup(firstUser, groupName1);
         group = findGroupById(response.getId());
     }
 
@@ -163,7 +163,7 @@ public class InviteServiceTest {
         assertAll(
                 () -> assertEquals(invite.getId(), inviteList.get(0).getInviteId()),
                 () -> assertEquals(firstUser.getNickname(), inviteList.get(0).getNickName()),
-                () -> assertEquals(GroupFixture.groupName1, inviteList.get(0).getGroupName())
+                () -> assertEquals(groupName1, inviteList.get(0).getGroupName())
         );
     }
 

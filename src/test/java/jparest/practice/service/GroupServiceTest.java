@@ -1,7 +1,5 @@
 package jparest.practice.service;
 
-import jparest.practice.common.utils.GroupFixture;
-import jparest.practice.common.utils.UserFixture;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.dto.CreateGroupResponse;
@@ -22,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static jparest.practice.common.utils.GroupFixture.*;
+import static jparest.practice.common.utils.UserFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -45,7 +45,7 @@ public class GroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        firstUser = userAuthService.join(UserFixture.createFirstUser());
+        firstUser = userAuthService.join(createFirstUser());
     }
 
     @Test
@@ -54,19 +54,19 @@ public class GroupServiceTest {
         //given
 
         //when
-        CreateGroupResponse response = groupService.createGroup(firstUser, GroupFixture.groupName1);
+        CreateGroupResponse response = groupService.createGroup(firstUser, groupName1);
 
         //then
         String saveGroupName = response.getGroupName();
 
-        assertEquals(GroupFixture.groupName1, saveGroupName, "생성한 그룹의 이름이 일치해야 한다.");
+        assertEquals(groupName1, saveGroupName, "생성한 그룹의 이름이 일치해야 한다.");
     }
 
     @Test
     public void 그룹탈퇴() throws Exception {
 
         //given
-        Long saveGroupId = groupService.createGroup(firstUser, GroupFixture.groupName1).getId();
+        Long saveGroupId = groupService.createGroup(firstUser, groupName1).getId();
 
         //when
         groupService.withdrawGroup(firstUser, saveGroupId);
@@ -80,8 +80,8 @@ public class GroupServiceTest {
     public void 그룹_리스트_조회() throws Exception {
 
         //given
-        Long id1 = groupService.createGroup(firstUser, GroupFixture.groupName1).getId();
-        Long id2 = groupService.createGroup(firstUser, GroupFixture.groupName2).getId();
+        Long id1 = groupService.createGroup(firstUser, groupName1).getId();
+        Long id2 = groupService.createGroup(firstUser, groupName2).getId();
 
         Group group1 = findGroup(id1);
         Group group2 = findGroup(id2);
