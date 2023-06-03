@@ -1,5 +1,5 @@
-/src/main/resources/**
-/src/test/resources/**
+*.yml
+*.p12
 
 HELP.md
 .gradle
