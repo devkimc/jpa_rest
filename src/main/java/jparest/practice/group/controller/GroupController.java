@@ -11,6 +11,7 @@ import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class GroupController {
     }
 
     @GetMapping
-    public ApiResult<List<GetUserGroupResponse>> getUserGroupList(@CurrentUser User user) {
+    public ApiResult<List<GetUserGroupResponse>> getUserGroupList(HttpServletRequest request, @CurrentUser User user) {
         return ApiUtils.success(groupService.getUserGroupList(user));
     }
 }

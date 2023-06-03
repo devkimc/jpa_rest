@@ -35,6 +35,16 @@ public class CookieUtils {
         response.addCookie(cookie);
     }
 
+    public static Cookie createCookie(String name, String value, String domain) {
+        Cookie cookie = new Cookie(name, serialize(value));
+        cookie.setDomain(domain);
+        cookie.setPath("/");
+        cookie.setMaxAge((360000));
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        return cookie;
+    }
+
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length > 0) {

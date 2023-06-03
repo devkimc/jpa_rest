@@ -1,0 +1,50 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= API Docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 1
+:toc-title: 그룹
+
+== 그룹 생성
+=== REQUEST
+
+include::{snippets}/post-groups/http-request.adoc[]
+
+=== RESPONSE BODY
+
+include::{snippets}/post-groups/response-body.adoc[]
+
+=== RESPONSE FIELD
+
+include::{snippets}/post-groups/response-fields.adoc[]
+
+== 그룹 탈퇴
+=== REQUEST
+
+include::{snippets}/delete-groups-users/http-request.adoc[]
+
+=== RESPONSE BODY
+
+include::{snippets}/delete-groups-users/response-body.adoc[]
+
+=== RESPONSE FIELD
+
+include::{snippets}/delete-groups-users/response-fields.adoc[]
+
+== 그룹 리스트 조회
+=== REQUEST
+
+include::{snippets}/get-groups/http-request.adoc[]
+
+=== RESPONSE BODY
+
+include::{snippets}/get-groups/response-body.adoc[]
+
+=== RESPONSE FIELD
+
+include::{snippets}/get-groups/response-fields.adoc[]

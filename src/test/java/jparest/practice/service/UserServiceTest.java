@@ -1,5 +1,6 @@
 package jparest.practice.service;
 
+import jparest.practice.common.utils.UserFixture;
 import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.dto.SocialJoinRequest;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import static jparest.practice.common.utils.UserFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -18,23 +20,17 @@ public class UserServiceTest {
 
     @Autowired
     UserAuthService userAuthService;
-    @Autowired
-    UserRepository userRepository;
 
     @Test
     public void UUID_회원가입() throws Exception {
         
         //given
-        String socialUserId = "123123";
-        String email = "eee@www.aaaa";
-        String nickname = "닉네임";
-        LoginType loginType = LoginType.KAKAO;
 
         //when
-        User joinUser = userAuthService.join(new SocialJoinRequest(socialUserId, email, nickname, loginType));
+        User joinUser = userAuthService.join(createFirstUser());
 
         //then
-        assertEquals(socialUserId, joinUser.getSocialUserId(), "가입한 유저의 소셜 ID 가 일치해야 한다.");
+        assertEquals(socialUserId1, joinUser.getSocialUserId(), "가입한 유저의 소셜 ID 가 일치해야 한다.");
     }
             
 
