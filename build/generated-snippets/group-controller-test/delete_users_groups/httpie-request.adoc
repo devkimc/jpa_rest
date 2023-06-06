@@ -1,0 +1,5 @@
+[source,bash]
+----
+$ http DELETE 'http://localhost:8080/api/groups/1/users' \
+    'Content-Type:application/json;charset=UTF-8'
+----

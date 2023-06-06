@@ -1,0 +1,6 @@
+[source,options="nowrap"]
+----
+{
+  "groupName" : "첫 그룹"
+}
+----

@@ -1,0 +1,9 @@
+[source,options="nowrap"]
+----
+{
+  "groupId" : 1,
+  "restName" : "원할머니 보쌈",
+  "latitude" : 37.481079886,
+  "longitude" : 126.9530287
+}
+----

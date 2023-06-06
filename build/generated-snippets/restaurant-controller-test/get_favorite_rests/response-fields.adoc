@@ -1,0 +1,24 @@
+|===
+|Path|Type|Description
+
+|`+success+`
+|`+Boolean+`
+|성공 여부
+
+|`+result.[].restId+`
+|`+String+`
+|식당 아이디
+
+|`+result.[].restName+`
+|`+String+`
+|식당 이름
+
+|`+result.[].latitude+`
+|`+Number+`
+|위도
+
+|`+result.[].longitude+`
+|`+Number+`
+|경도
+
+|===

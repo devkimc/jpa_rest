@@ -1,0 +1,10 @@
+[source,options="nowrap"]
+----
+{
+  "success" : true,
+  "result" : {
+    "id" : 1,
+    "groupName" : "첫 그룹"
+  }
+}
+----

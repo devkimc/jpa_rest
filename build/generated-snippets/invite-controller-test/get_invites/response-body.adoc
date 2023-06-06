@@ -1,0 +1,11 @@
+[source,options="nowrap"]
+----
+{
+  "success" : true,
+  "result" : [ {
+    "inviteId" : 1,
+    "nickName" : "유저1",
+    "groupName" : "첫 그룹"
+  } ]
+}
+----

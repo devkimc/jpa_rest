@@ -1,0 +1,12 @@
+[source,http,options="nowrap"]
+----
+GET /api/invites HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 76
+Host: localhost:8080
+
+{
+  "recvUserId" : "7f616b44-da03-43f7-8399-8242127720ee",
+  "groupId" : 1
+}
+----

@@ -1,0 +1,8 @@
+[source,bash]
+----
+$ echo '{
+  "recvUserId" : "7f616b44-da03-43f7-8399-8242127720ee",
+  "groupId" : 1
+}' | http GET 'http://localhost:8080/api/invites' \
+    'Content-Type:application/json;charset=UTF-8'
+----

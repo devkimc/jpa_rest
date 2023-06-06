@@ -1,0 +1,12 @@
+|===
+|Path|Type|Description
+
+|`+success+`
+|`+Boolean+`
+|성공 여부
+
+|`+result+`
+|`+Boolean+`
+|성공 여부
+
+|===
