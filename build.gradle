@@ -48,6 +48,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.projectlombok:lombok:1.18.22'
 
 	// docs
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'

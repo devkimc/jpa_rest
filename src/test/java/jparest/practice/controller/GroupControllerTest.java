@@ -29,9 +29,6 @@ public class GroupControllerTest extends RestDocsTestSupport {
 
     private final String GROUP_API = "/api/groups";
 
-//    @MockBean
-//    GroupService groupService;
-
     @Test
     @DisplayName("그룹 리스트 조회")
     void get_groups() throws Exception {

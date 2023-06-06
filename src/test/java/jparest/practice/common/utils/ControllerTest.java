@@ -7,6 +7,8 @@ import jparest.practice.group.controller.GroupController;
 import jparest.practice.group.service.GroupService;
 import jparest.practice.invite.controller.InviteController;
 import jparest.practice.invite.service.InviteService;
+import jparest.practice.rest.controller.RestaurantController;
+import jparest.practice.rest.service.RestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,7 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest({
         GroupController.class,
-        InviteController.class
+        InviteController.class,
+        RestaurantController.class
 })
 public abstract class ControllerTest {
 
@@ -29,6 +32,9 @@ public abstract class ControllerTest {
 
     @MockBean
     protected InviteService inviteService;
+
+    @MockBean
+    protected RestService restService;
 
     @MockBean
     JwtFilter jwtFilter;

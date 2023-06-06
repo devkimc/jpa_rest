@@ -1,20 +1,14 @@
 package jparest.practice.invite.domain;
 
-import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.user.domain.User;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 import static jparest.practice.invite.domain.InviteStatus.*;
-import static jparest.practice.invite.domain.InviteStatus.CANCEL;
 
 @Entity
 @Getter
@@ -34,6 +28,7 @@ public class Invite {
     private User recvUser;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private InviteStatus inviteStatus;
 
     public void setRecvUser(User user) {

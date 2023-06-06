@@ -1,7 +1,9 @@
 package jparest.practice.controller;
 
 import jparest.practice.common.utils.RestDocsTestSupport;
+import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
+import jparest.practice.invite.dto.InviteStatusPatchRequest;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -11,17 +13,19 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
 import static jparest.practice.common.utils.fixture.UserFixture.nickname1;
 import static jparest.practice.common.utils.fixture.UserFixture.userId;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,6 +61,42 @@ public class InviteControllerTest extends RestDocsTestSupport {
                         responseFields(
                                 fieldWithPath("success").description("성공 여부"),
                                 fieldWithPath("result.inviteId").description("초대 아이디")
+                        )));
+    }
+
+    @Test
+    @DisplayName("초대 상태 변경")
+    void update_invites_status() throws Exception {
+
+        //given
+        InviteStatusPatchRequest inviteStatusPatchRequest = new InviteStatusPatchRequest(InviteStatus.ACCEPT);
+
+        given(inviteService.procInvitation(any(), any(), any()))
+                .willReturn(true);
+
+        //when
+        ResultActions result = mockMvc.perform(
+                patch(INVITE_API + "/{inviteId}/status", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createJson(inviteStatusPatchRequest))
+        );
+
+        //then
+        result
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("$.result").value(true)
+                )
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("inviteId").description("초대 아이디")
+                        ),
+                        requestFields(
+                                fieldWithPath("inviteStatus").description(inviteStatus)
+                        ),
+                        responseFields(
+                                fieldWithPath("success").description("성공 여부"),
+                                fieldWithPath("result").description("성공 여부")
                         )));
     }
 
@@ -101,4 +141,9 @@ public class InviteControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("result.[].groupName").description("초대 그룹 이름")
                         )));
     }
+
+    // 추후 열거형 함수 처리용
+    String inviteStatus = Arrays.stream(InviteStatus.values())
+            .map(type -> String.format("`%s`", type))
+            .collect(Collectors.joining(", "));
 }
