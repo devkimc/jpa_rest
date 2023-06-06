@@ -36,7 +36,7 @@ include::{snippets}/restaurant-controller-test/delete_favorite_rests/response-bo
 === RESPONSE FIELD
 include::{snippets}/restaurant-controller-test/delete_favorite_rests/response-fields.adoc[]
 
-== 초대 상태 변경(초대 응답)
+== 맛집 리스트 조회
 === REQUEST
 include::{snippets}/restaurant-controller-test/get_favorite_rests/http-request.adoc[]
 
