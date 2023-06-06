@@ -1,92 +1,93 @@
 package jparest.practice.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jparest.ControllerTest;
-import jparest.practice.auth.jwt.JwtService;
-import jparest.practice.auth.jwt.TokenType;
-import jparest.practice.group.domain.Group;
+import jparest.practice.common.utils.RestDocsTestSupport;
 import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.exception.GroupNotFoundException;
-import jparest.practice.group.repository.GroupRepository;
-import jparest.practice.group.service.GroupService;
-import jparest.practice.user.domain.User;
-import jparest.practice.user.domain.UserType;
-import jparest.practice.user.service.UserAuthService;
-import org.junit.jupiter.api.BeforeEach;
+import jparest.practice.group.dto.GetUserGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.servlet.http.Cookie;
-
-import static jparest.practice.common.util.CookieUtils.createCookie;
-import static jparest.practice.common.utils.ApiDocumentUtils.*;
-import static jparest.practice.common.utils.GroupFixture.*;
-import static jparest.practice.common.utils.UserFixture.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Transactional
-public class GroupControllerTest extends ControllerTest {
+@AutoConfigureMockMvc(addFilters = false)
+public class GroupControllerTest extends RestDocsTestSupport {
 
-    @Value("${domain.host}")
-    private String domain;
+    private final String GROUP_API = "/api/groups";
 
-    private User firstUser;
+//    @MockBean
+//    GroupService groupService;
 
-    private Cookie accessTokenCookie;
-    private Cookie refreshTokenCookie;
+    @Test
+    @DisplayName("그룹 리스트 조회")
+    void get_groups() throws Exception {
+        //given
+        GetUserGroupResponse response = GetUserGroupResponse.builder()
+                .groupId(1L)
+                .groupName(groupName1)
+                .totalUsers(1)
+                .build();
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        List<GetUserGroupResponse> getUserGroupResponses = new ArrayList<>();
+        getUserGroupResponses.add(response);
 
-    @Autowired
-    JwtService jwtService;
+        given(groupService.getUserGroupList(any()))
+                .willReturn(getUserGroupResponses);
 
-    @Autowired
-    UserAuthService userAuthService;
+        //when
+        ResultActions result = mockMvc.perform(
+                get(GROUP_API)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
 
-    @Autowired
-    GroupService groupService;
-
-    @Autowired
-    GroupRepository groupRepository;
-
-    @BeforeEach
-    void setUp() {
-        firstUser = userAuthService.join(createFirstUser());
-
-        String userId = String.valueOf(firstUser.getId());
-        String accessToken = jwtService.createAccessToken(userId, UserType.ROLE_GENERAL.name());
-        String refreshToken = jwtService.createRefreshToken(userId);
-
-        accessTokenCookie = createCookie(TokenType.ACCESS_TOKEN.name(), accessToken, domain);
-        refreshTokenCookie = createCookie(TokenType.REFRESH_TOKEN.name(), refreshToken, domain);
+        //then
+        result
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("$.result.[0].groupId").value(1L),
+                        jsonPath("$.result.[0].groupName").value(groupName1),
+                        jsonPath("$.result.[0].totalUsers").value(1)
+                )
+                .andDo(restDocs.document(
+                        responseFields(
+                                fieldWithPath("success").description("성공 여부"),
+                                fieldWithPath("result.[].groupId").description("그룹 아이디"),
+                                fieldWithPath("result.[].groupName").description("그룹 이름"),
+                                fieldWithPath("result.[].totalUsers").description("그룹 인원수")
+                        )));
     }
 
     @Test
     @DisplayName("그룹 생성")
-    void createGroup() throws Exception {
+    void add_groups() throws Exception {
 
         //given
         CreateGroupRequest createGroupRequest = new CreateGroupRequest(groupName1);
         String content = objectMapper.writeValueAsString(createGroupRequest);
 
+        given(groupService.createGroup(any(), any()))
+                .willReturn(CreateGroupResponse.builder()
+                        .id(1L)
+                        .groupName(groupName1)
+                        .build());
+
         //when
         ResultActions result = mockMvc.perform(
-                post("/api/groups")
-                        .cookie(accessTokenCookie)
-                        .cookie(refreshTokenCookie)
+                post(GROUP_API)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
         );
@@ -97,29 +98,25 @@ public class GroupControllerTest extends ControllerTest {
                 .andExpectAll(
                         jsonPath("$.result.groupName").value(groupName1)
                 )
-                .andDo(document("post-groups",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
+                .andDo(restDocs.document(
                         responseFields(
                                 fieldWithPath("success").description("성공 여부"),
                                 fieldWithPath("result.id").description("그룹 아이디"),
                                 fieldWithPath("result.groupName").description("그룹 이름")
-                        )))
-                .andDo(print());
+                        )));
     }
 
     @Test
     @DisplayName("그룹 탈퇴")
-    void withdrawGroup() throws Exception {
+    void delete_users_groups() throws Exception {
 
         //given
-        Long groupId = groupService.createGroup(firstUser, groupName1).getId();
+        given(groupService.withdrawGroup(any(), any()))
+                .willReturn(true);
 
         //when
         ResultActions result = mockMvc.perform(
-                delete("/api/groups/{groupId}/users", groupId)
-                        .cookie(accessTokenCookie)
-                        .cookie(refreshTokenCookie)
+                delete(GROUP_API + "/{groupId}/users", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -129,54 +126,13 @@ public class GroupControllerTest extends ControllerTest {
                 .andExpectAll(
                         jsonPath("$.result").value(true)
                 )
-                .andDo(document("delete-groups-users",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("groupId").description("그룹 아이디")
+                        ),
                         responseFields(
                                 fieldWithPath("success").description("성공 여부"),
                                 fieldWithPath("result").description("성공 여부")
-                        )))
-                .andDo(print());
+                        )));
     }
-
-    @Test
-    @DisplayName("그룹 리스트 조회")
-    void getGroupList() throws Exception {
-
-        //given
-        CreateGroupResponse response = groupService.createGroup(firstUser, groupName1);
-
-        //when
-        ResultActions result = mockMvc.perform(
-                get("/api/groups")
-                        .cookie(accessTokenCookie)
-                        .cookie(refreshTokenCookie)
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        //then
-        result
-                .andExpect(status().isOk())
-                .andExpectAll(
-                        jsonPath("$.result.[0].groupId").value(response.getId()),
-                        jsonPath("$.result.[0].groupName").value(groupName1),
-                        jsonPath("$.result.[0].totalUsers").value(1)
-                )
-                .andDo(document("get-groups",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        responseFields(
-                                fieldWithPath("success").description("성공 여부"),
-                                fieldWithPath("result.[].groupId").description("그룹 아이디"),
-                                fieldWithPath("result.[].groupName").description("그룹 이름"),
-                                fieldWithPath("result.[].totalUsers").description("그룹 인원수")
-                        )))
-                .andDo(print());
-    }
-
-    private Group findGroupById(Long groupId) {
-        return groupRepository.findById(groupId).orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
-    }
-
-
 }

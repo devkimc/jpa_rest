@@ -1,4 +1,4 @@
-package jparest.practice.common.utils;
+package jparest.practice.common.utils.fixture;
 
 import jparest.practice.rest.dto.AddFavoriteRestRequest;
 

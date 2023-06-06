@@ -464,8 +464,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 Content-Type: application/json;charset=UTF-8
 Content-Length: 32
 Host: localhost:8080
-Cookie: ACCESS_TOKEN=rO0ABXQBCGV5SmhiR2NpT2lKSVV6STFOaUo5LmV5SnpkV0lpT2lKQlEwTkZVMU5mVkU5TFJVNGlMQ0poZFhSb0lqb2lVazlNUlY5SFJVNUZVa0ZNSWl3aWRYTmxja2xrSWpvaU1qQmtZVGN4WXprdE1EUTRNUzAwTkdNMkxUazFPVGd0WkRBeE1EVmxaRGd3WVdFMElpd2lhWE56SWpvaWFuQmhMbkpsYzNRdWQzTnJhVzBpTENKcFlYUWlPakUyT0RVM056RXpORFVzSW1WNGNDSTZNVFk0TlRjM05EazBOWDAuYTRiaXpiLUNuNUF1ZW93OWJmQWZhaVR0M1Zyd0FCRllkSm0xUnBhRGMyTQ==
-Cookie: REFRESH_TOKEN=rO0ABXQA7GV5SmhiR2NpT2lKSVV6STFOaUo5LmV5SnpkV0lpT2lKU1JVWlNSVk5JWDFSUFMwVk9JaXdpZFhObGNrbGtJam9pTWpCa1lUY3hZemt0TURRNE1TMDBOR00yTFRrMU9UZ3RaREF4TURWbFpEZ3dZV0UwSWl3aWFYTnpJam9pYW5CaExuSmxjM1F1ZDNOcmFXMGlMQ0pwWVhRaU9qRTJPRFUzTnpFek5EVXNJbVY0Y0NJNk1UWTROams0TURrME5YMC5KUEhBT0pMZnVtdmNxSGtDWEx4V2ROM0Z4d1Z0bWQ0UlctdXdQaVNhdDNn
 
 {
   "groupName" : "첫 그룹"
@@ -480,7 +478,7 @@ Cookie: REFRESH_TOKEN=rO0ABXQA7GV5SmhiR2NpT2lKSVV6STFOaUo5LmV5SnpkV0lpT2lKU1JVWl
 <pre class="highlightjs highlight nowrap"><code class="language-none hljs">{
   "success" : true,
   "result" : {
-    "id" : 3,
+    "id" : 1,
     "groupName" : "첫 그룹"
   }
 }</code></pre>
@@ -530,13 +528,33 @@ Cookie: REFRESH_TOKEN=rO0ABXQA7GV5SmhiR2NpT2lKSVV6STFOaUo5LmV5SnpkV0lpT2lKU1JVWl
 <h3 id="_request_2">REQUEST</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/groups/2/users HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/groups/1/users HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Host: localhost:8080
-Cookie: ACCESS_TOKEN=rO0ABXQBCGV5SmhiR2NpT2lKSVV6STFOaUo5LmV5SnpkV0lpT2lKQlEwTkZVMU5mVkU5TFJVNGlMQ0poZFhSb0lqb2lVazlNUlY5SFJVNUZVa0ZNSWl3aWRYTmxja2xrSWpvaVl6Y3pNakUzT1RRdE5UazJZUzAwTkRkbUxXRTFZbVV0T1RjNFlqTTFaRGhoTTJNMklpd2lhWE56SWpvaWFuQmhMbkpsYzNRdWQzTnJhVzBpTENKcFlYUWlPakUyT0RVM056RXpORFVzSW1WNGNDSTZNVFk0TlRjM05EazBOWDAuYXE0VUhzOE5Sb2FFczhhVk0wYnJ3ZFlraTVSczc1eUV4SFJtR3lBa3ZuWQ==
-Cookie: REFRESH_TOKEN=rO0ABXQA7GV5SmhiR2NpT2lKSVV6STFOaUo5LmV5SnpkV0lpT2lKU1JVWlNSVk5JWDFSUFMwVk9JaXdpZFhObGNrbGtJam9pWXpjek1qRTNPVFF0TlRrMllTMDBORGRtTFdFMVltVXRPVGM0WWpNMVpEaGhNMk0ySWl3aWFYTnpJam9pYW5CaExuSmxjM1F1ZDNOcmFXMGlMQ0pwWVhRaU9qRTJPRFUzTnpFek5EVXNJbVY0Y0NJNk1UWTROams0TURrME5YMC4zU0owVDV4aHBkRWRMSEltQVFDX1gtR0hwbGpvdmhIVzRkTXBRZUtnWndV</code></pre>
+Host: localhost:8080</code></pre>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_path_parameter">PATH PARAMETER</h3>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/groups/{groupId}/users</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">그룹 아이디</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_response_body_2">RESPONSE BODY</h3>
@@ -589,9 +607,7 @@ Cookie: REFRESH_TOKEN=rO0ABXQA7GV5SmhiR2NpT2lKSVV6STFOaUo5LmV5SnpkV0lpT2lKU1JVWl
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/groups HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Host: localhost:8080
-Cookie: ACCESS_TOKEN=rO0ABXQBCGV5SmhiR2NpT2lKSVV6STFOaUo5LmV5SnpkV0lpT2lKQlEwTkZVMU5mVkU5TFJVNGlMQ0poZFhSb0lqb2lVazlNUlY5SFJVNUZVa0ZNSWl3aWRYTmxja2xrSWpvaVlXTXdZbVJpWlRFdE1qQXlOeTAwWVRFNUxXRmlPR010TnpkaU9UY3pNelV4WlRreklpd2lhWE56SWpvaWFuQmhMbkpsYzNRdWQzTnJhVzBpTENKcFlYUWlPakUyT0RVM056RXpORFFzSW1WNGNDSTZNVFk0TlRjM05EazBOSDAuY3lYaFRFbFptdW5FNGIzLTZ2U2tjUW9FYmxMRHVtSVZwNENldW9MS3E3Yw==
-Cookie: REFRESH_TOKEN=rO0ABXQA7GV5SmhiR2NpT2lKSVV6STFOaUo5LmV5SnpkV0lpT2lKU1JVWlNSVk5JWDFSUFMwVk9JaXdpZFhObGNrbGtJam9pWVdNd1ltUmlaVEV0TWpBeU55MDBZVEU1TFdGaU9HTXROemRpT1Rjek16VXhaVGt6SWl3aWFYTnpJam9pYW5CaExuSmxjM1F1ZDNOcmFXMGlMQ0pwWVhRaU9qRTJPRFUzTnpFek5EUXNJbVY0Y0NJNk1UWTROams0TURrME5IMC5NM1JrNHpqQ2I5dlNZS0p2dHVhZGV6RTlNTXE5UEVLcVRDdVpqMGJlMGdF</code></pre>
+Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
@@ -655,7 +671,7 @@ Cookie: REFRESH_TOKEN=rO0ABXQA7GV5SmhiR2NpT2lKSVV6STFOaUo5LmV5SnpkV0lpT2lKU1JVWl
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-06-03 14:48:51 +0900
+Last updated 2023-06-06 17:19:48 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

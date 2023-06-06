@@ -1,17 +1,13 @@
 package jparest.practice.service;
 
-import jparest.practice.common.utils.UserFixture;
-import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
-import jparest.practice.user.dto.SocialJoinRequest;
-import jparest.practice.user.repository.UserRepository;
 import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static jparest.practice.common.utils.UserFixture.*;
+import static jparest.practice.common.utils.fixture.UserFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

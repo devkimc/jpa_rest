@@ -1,9 +1,12 @@
-package jparest.practice.common.utils;
+package jparest.practice.common.utils.fixture;
 
 import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.dto.SocialJoinRequest;
 
+import java.util.UUID;
+
 public class UserFixture {
+    public static final UUID userId = UUID.fromString("7f616b44-da03-43f7-8399-8242127720ee");
     public static final String socialUserId1 = "123123";
     public static final String socialUserId2 = "234234";
 

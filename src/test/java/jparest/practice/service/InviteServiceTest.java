@@ -26,8 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static jparest.practice.common.utils.GroupFixture.*;
-import static jparest.practice.common.utils.UserFixture.*;
+import static jparest.practice.common.utils.fixture.GroupFixture.*;
+import static jparest.practice.common.utils.fixture.UserFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

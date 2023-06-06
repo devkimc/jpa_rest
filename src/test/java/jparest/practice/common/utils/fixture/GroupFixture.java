@@ -1,4 +1,4 @@
-package jparest.practice.common.utils;
+package jparest.practice.common.utils.fixture;
 
 public class GroupFixture {
     public static final String groupName1 = "첫 그룹";
