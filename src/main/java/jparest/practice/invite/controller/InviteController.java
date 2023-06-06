@@ -30,7 +30,7 @@ public class InviteController {
 
     @PostMapping
     public ApiResult<InviteUserResponse> inviteUser(@CurrentUser User user, InviteUserRequest inviteUserRequest) {
-        return ApiUtils.success(inviteService.inviteToGroup(inviteUserRequest.getGroupId(), user, inviteUserRequest.getRecvUserId()));
+        return ApiUtils.success(inviteService.inviteToGroup(user, inviteUserRequest));
     }
 
     @PatchMapping(value = "/{inviteId}/status")

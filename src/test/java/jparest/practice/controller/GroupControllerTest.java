@@ -36,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Transactional
 public class GroupControllerTest extends ControllerTest {
 
     @Value("${domain.host}")
@@ -74,7 +75,6 @@ public class GroupControllerTest extends ControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("그룹 생성")
     void createGroup() throws Exception {
 
@@ -109,7 +109,6 @@ public class GroupControllerTest extends ControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("그룹 탈퇴")
     void withdrawGroup() throws Exception {
 
@@ -141,7 +140,6 @@ public class GroupControllerTest extends ControllerTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("그룹 리스트 조회")
     void getGroupList() throws Exception {
 

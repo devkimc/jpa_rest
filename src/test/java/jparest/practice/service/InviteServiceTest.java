@@ -10,6 +10,7 @@ import jparest.practice.group.service.GroupService;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
+import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
 import jparest.practice.invite.exception.ExistInviteForUserException;
 import jparest.practice.invite.exception.InviteNotFoundException;
@@ -66,9 +67,10 @@ public class InviteServiceTest {
 
         //given
         List<UserGroup> userGroups = firstUser.getUserGroups();
+        InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), group.getId());
 
         //when
-        InviteUserResponse response = inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
+        InviteUserResponse response = inviteService.inviteToGroup(firstUser, inviteUserRequest);
         Invite invite = findInviteById(response.getInviteId());
 
         //then
@@ -81,8 +83,11 @@ public class InviteServiceTest {
 
     @Test
     public void 그룹초대_승낙() throws Exception {
+
         //given
-        InviteUserResponse response = inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
+        InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), group.getId());
+        InviteUserResponse response = inviteService.inviteToGroup(firstUser, inviteUserRequest);
+
         Invite invite = findInviteById(response.getInviteId());
 
         //when
@@ -98,7 +103,9 @@ public class InviteServiceTest {
     @Test
     public void 그룹초대_거절() throws Exception {
         //given
-        InviteUserResponse response = inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
+        InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), group.getId());
+        InviteUserResponse response = inviteService.inviteToGroup(firstUser, inviteUserRequest);
+
         Invite invite = findInviteById(response.getInviteId());
 
         //when
@@ -111,7 +118,9 @@ public class InviteServiceTest {
     @Test
     public void 그룹초대_취소() throws Exception {
         //given
-        InviteUserResponse response = inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
+        InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), group.getId());
+        InviteUserResponse response = inviteService.inviteToGroup(firstUser, inviteUserRequest);
+
         Invite invite = findInviteById(response.getInviteId());
 
         //when
@@ -125,7 +134,9 @@ public class InviteServiceTest {
     public void 그룹에_존재하는_유저를_초대시_에러() throws Exception {
 
         //given
-        InviteUserResponse response = inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
+        InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), group.getId());
+        InviteUserResponse response = inviteService.inviteToGroup(firstUser, inviteUserRequest);
+
         Invite invite = findInviteById(response.getInviteId());
 
         //when
@@ -133,27 +144,30 @@ public class InviteServiceTest {
 
         //then
         assertThrows(ExistUserGroupException.class,
-                () -> inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId()));
+                () -> inviteService.inviteToGroup(firstUser, inviteUserRequest));
     }
 
     @Test
     public void 그룹에_대기중인_초대가_존재하는_유저를_초대시_에러() throws Exception {
 
         //given
+        InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), group.getId());
 
         //when
-        inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
+        inviteService.inviteToGroup(firstUser, inviteUserRequest);
 
         //then
         assertThrows(ExistInviteForUserException.class,
-                () -> inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId()));
+                () -> inviteService.inviteToGroup(firstUser, inviteUserRequest));
     }
 
     @Test
     public void 대기중인_초대리스트_조회() throws Exception {
 
         //given
-        InviteUserResponse response = inviteService.inviteToGroup(group.getId(), firstUser, secondUser.getId());
+        InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), group.getId());
+        InviteUserResponse response = inviteService.inviteToGroup(firstUser, inviteUserRequest);
+
         Invite invite = findInviteById(response.getInviteId());
 
         //when

@@ -11,6 +11,7 @@ import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
 import jparest.practice.invite.dto.InviteStatusPatchRequest;
+import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
 import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.ExistInviteForUserException;
@@ -40,7 +41,10 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     @Transactional
-    public InviteUserResponse inviteToGroup(Long groupId, User sendUser, UUID recvUserId) {
+    public InviteUserResponse inviteToGroup(User sendUser, InviteUserRequest inviteUserRequest) {
+
+        Long groupId = inviteUserRequest.getGroupId();
+        UUID recvUserId = inviteUserRequest.getRecvUserId();
 
         // 1. 초대한 사람이 그룹의 회원이 맞는지 확인
         UserGroup sendUserGroup = findUserGroup(sendUser.getId(), groupId);
