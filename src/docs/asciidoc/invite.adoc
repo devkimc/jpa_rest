@@ -27,11 +27,9 @@ include::{snippets}/invite-controller-test/add_invites/response-fields.adoc[]
 include::{snippets}/invite-controller-test/get_invites/http-request.adoc[]
 
 === RESPONSE BODY
-
 include::{snippets}/invite-controller-test/get_invites/response-body.adoc[]
 
 === RESPONSE FIELD
-
 include::{snippets}/invite-controller-test/get_invites/response-fields.adoc[]
 
 == 초대 상태 변경(초대 응답)
