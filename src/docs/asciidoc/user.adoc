@@ -14,12 +14,13 @@ endif::[]
 
 === REQUEST
 include::{snippets}/user-controller-test/login_kakao/http-request.adoc[]
+
 include::{snippets}/user-controller-test/login_kakao/request-parameters.adoc[]
 
 === RESPONSE
 include::{snippets}/user-controller-test/login_kakao/response-body.adoc[]
-include::{snippets}/user-controller-test/login_kakao/response-fields.adoc[]
 
+include::{snippets}/user-controller-test/login_kakao/response-fields.adoc[]
 
 == 로그아웃
 
@@ -28,4 +29,5 @@ include::{snippets}/user-controller-test/logout/http-request.adoc[]
 
 === RESPONSE
 include::{snippets}/user-controller-test/logout/response-body.adoc[]
+
 include::{snippets}/user-controller-test/logout/response-fields.adoc[]
