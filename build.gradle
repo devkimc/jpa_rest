@@ -63,6 +63,10 @@ test {
 asciidoctor {	//(5) asccidoctor 설정
 	dependsOn test
 	inputs.dir snippetsDir
+
+	sources{
+		include("**/*.adoc")
+	}
 }
 
 asciidoctor.doFirst {	//(6) asciidoctor가 실행될 때 docs 하위 파일 삭제

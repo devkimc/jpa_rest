@@ -1,0 +1,24 @@
+= API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:docinfo: shared-head
+
+
+[[API-List]]
+== APIs
+
+=== User API
+* link:user.adoc[바로가기, window=_blank]
+
+=== Group API
+* link:group.adoc[바로가기, window=_blank]
+
+=== Invite API
+* link:invite.adoc[바로가기, window=_blank]
+
+=== Restaurant API
+* link:restaurant.adoc[바로가기, window=_blank]

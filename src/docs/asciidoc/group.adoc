@@ -2,7 +2,7 @@ ifndef::snippets[]
 :snippets: ../../../build/generated-snippets
 endif::[]
 
-= API Docs
+= Group API
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
