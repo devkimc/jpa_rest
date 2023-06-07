@@ -17,8 +17,7 @@ import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -96,6 +95,9 @@ public class GroupControllerTest extends RestDocsTestSupport {
                         jsonPath("$.result.groupName").value(groupName1)
                 )
                 .andDo(restDocs.document(
+                        requestFields(
+                                fieldWithPath("groupName").description("그룸 이름")
+                        ),
                         responseFields(
                                 fieldWithPath("success").description("성공 여부"),
                                 fieldWithPath("result.id").description("그룹 아이디"),

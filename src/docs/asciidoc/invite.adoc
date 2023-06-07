@@ -11,40 +11,28 @@ endif::[]
 :toc-title: 초대
 
 == 그룹으로 초대하기
-
 === REQUEST
 include::{snippets}/invite-controller-test/add_invites/http-request.adoc[]
+include::{snippets}/invite-controller-test/add_invites/request-fields.adoc[]
 
-=== RESPONSE BODY
+=== RESPONSE
 include::{snippets}/invite-controller-test/add_invites/response-body.adoc[]
-
-=== RESPONSE FIELD
 include::{snippets}/invite-controller-test/add_invites/response-fields.adoc[]
 
 == 초대받은 리스트 조회
-
 === REQUEST
 include::{snippets}/invite-controller-test/get_invites/http-request.adoc[]
 
-=== RESPONSE BODY
+=== RESPONSE
 include::{snippets}/invite-controller-test/get_invites/response-body.adoc[]
-
-=== RESPONSE FIELD
 include::{snippets}/invite-controller-test/get_invites/response-fields.adoc[]
 
 == 초대 상태 변경(초대 응답)
-
 === REQUEST
 include::{snippets}/invite-controller-test/update_invites_status/http-request.adoc[]
-
-=== PATH PARAMETERS
 include::{snippets}/invite-controller-test/update_invites_status/path-parameters.adoc[]
-
-=== REQUEST FIELD
 include::{snippets}/invite-controller-test/update_invites_status/request-fields.adoc[]
 
-=== RESPONSE BODY
+=== RESPONSE
 include::{snippets}/invite-controller-test/update_invites_status/response-body.adoc[]
-
-=== RESPONSE FIELD
 include::{snippets}/invite-controller-test/update_invites_status/response-fields.adoc[]

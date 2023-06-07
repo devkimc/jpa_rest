@@ -1,0 +1,8 @@
+[source,http,options="nowrap"]
+----
+POST /api/auth/kakao HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+
+code=dCBtBeJy0NzZhRzVxqptBg4jvxgD11zsPsXhPGXx-Wy05qVNK0if0sFwqA7OTglVJjtVdwoqJQ4AAAGIlPJfEQ
+----

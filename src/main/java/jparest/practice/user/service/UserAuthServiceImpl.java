@@ -6,9 +6,10 @@ import jparest.practice.common.util.CookieUtils;
 import jparest.practice.common.util.TokenDto;
 import jparest.practice.user.domain.LoginType;
 import jparest.practice.user.domain.User;
+import jparest.practice.user.domain.UserType;
+import jparest.practice.user.dto.KakaoLoginResponse;
 import jparest.practice.user.dto.SocialJoinRequest;
 import jparest.practice.user.dto.SocialJoinResponse;
-import jparest.practice.user.dto.SocialLoginResponse;
 import jparest.practice.user.dto.SocialUserInfoDto;
 import jparest.practice.user.exception.LoginFailException;
 import jparest.practice.user.feign.KakaoFeignClient;
@@ -20,8 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import jparest.practice.user.domain.UserType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,19 +53,23 @@ public class UserAuthServiceImpl implements UserAuthService {
     public SocialJoinResponse socialJoin(SocialJoinRequest socialJoinRequest) {
         Optional<User> findSocialUser = userRepository.findBySocialUserId(socialJoinRequest.getSocialUserId());
         User user = findSocialUser.orElseGet(() -> join(socialJoinRequest));
+
         return new SocialJoinResponse(user.getNickname());
     }
 
     @Override
-    public void logout(HttpServletRequest request, HttpServletResponse response, String userId) {
+    @Transactional
+    public Boolean logout(HttpServletRequest request, HttpServletResponse response, User user) {
         CookieUtils.deleteCookie(request, response, TokenType.ACCESS_TOKEN.name());
         CookieUtils.deleteCookie(request, response, TokenType.REFRESH_TOKEN.name());
-        jwtService.deleteRefreshTokenByUserId(userId);
+
+        jwtService.deleteRefreshTokenByUserId(String.valueOf(user.getId()));
+        return true;
     }
 
     @Override
     @Transactional
-    public SocialLoginResponse kakaoLogin(String code) {
+    public KakaoLoginResponse kakaoLogin(String code) {
         Map<String, Object> token = getKakaoToken(grantType, clientId, code, redirectUri);
 
         String accessToken = BEARER + token.get("access_token");
@@ -88,7 +91,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         tokenDto.setAccessToken(jwtService.createAccessToken(joinUserId, UserType.ROLE_GENERAL.name()));
         tokenDto.setRefreshToken(jwtService.createRefreshToken(joinUserId));
 
-        return new SocialLoginResponse(socialUserId, email, nickname, LoginType.KAKAO, tokenDto);
+        return new KakaoLoginResponse(socialUserId, email, nickname, LoginType.KAKAO, tokenDto);
     }
 
     @Override

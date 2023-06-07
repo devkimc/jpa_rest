@@ -58,6 +58,10 @@ public class InviteControllerTest extends RestDocsTestSupport {
                         jsonPath("$.result.inviteId").exists()
                 )
                 .andDo(restDocs.document(
+                        requestFields(
+                                fieldWithPath("recvUserId").description("초대할 유저 아이디"),
+                                fieldWithPath("groupId").description("그룹 아이디")
+                        ),
                         responseFields(
                                 fieldWithPath("success").description("성공 여부"),
                                 fieldWithPath("result.inviteId").description("초대 아이디")
@@ -105,8 +109,6 @@ public class InviteControllerTest extends RestDocsTestSupport {
     void get_invites() throws Exception {
 
         //given
-        InviteUserRequest inviteUserRequest = new InviteUserRequest(userId, 1L);
-
         List<GetWaitingInviteResponse> response = new ArrayList<>();
 
         response.add(GetWaitingInviteResponse.builder()
@@ -115,14 +117,13 @@ public class InviteControllerTest extends RestDocsTestSupport {
                 .groupName(groupName1)
                 .build());
 
-        given(inviteService.getWaitingInviteList( any()))
+        given(inviteService.getWaitingInviteList(any()))
                 .willReturn(response);
 
         //when
         ResultActions result = mockMvc.perform(
                 get(INVITE_API)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(createJson(inviteUserRequest))
         );
 
         //then

@@ -18,10 +18,8 @@ import static jparest.practice.common.utils.fixture.RestFixture.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -73,7 +71,6 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
     void delete_favorite_rests() throws Exception {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-
         params.add("groupId", "1");
 
         //given
@@ -94,6 +91,9 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
                         jsonPath("$.result").value(true)
                 )
                 .andDo(restDocs.document(
+                        requestParameters(
+                                parameterWithName("groupId").description("그룹 아이디")
+                        ),
                         pathParameters(
                                 parameterWithName("restId").description("식당 아이디")
                         ),
@@ -142,6 +142,9 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
                         jsonPath("$.result.[0].longitude").value(longitude)
                 )
                 .andDo(restDocs.document(
+                        requestParameters(
+                                parameterWithName("groupId").description("그룹 아이디")
+                        ),
                         responseFields(
                                 fieldWithPath("success").description("성공 여부"),
                                 fieldWithPath("result.[].restId").description("식당 아이디"),

@@ -6,6 +6,7 @@ import jparest.practice.user.dto.SocialJoinRequest;
 import java.util.UUID;
 
 public class UserFixture {
+    public static final String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBQ0NFU1NfVE9LRU4iLCJhdXRoIjoiUk9MRV9HRU5FUkFMIiwidXNlcklkIjoiMTIzMTIzMTMxMjMxMjMiLCJpc3MiOiJqcGEucmVzdC53c2tpbSIsImlhdCI6MTY4NjEwMzA4NiwiZXhwIjoxNjg2MTAzMDg5fQ.JY0kvn7RBCdDGi8Pakk71EKgy0LF9aHw9LtFqugUeBQ";
     public static final UUID userId = UUID.fromString("7f616b44-da03-43f7-8399-8242127720ee");
     public static final String socialUserId1 = "123123";
     public static final String socialUserId2 = "234234";

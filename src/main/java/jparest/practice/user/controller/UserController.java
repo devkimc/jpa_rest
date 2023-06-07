@@ -7,6 +7,7 @@ import jparest.practice.common.util.ApiUtils;
 import jparest.practice.common.util.CookieUtils;
 import jparest.practice.common.util.TokenDto;
 import jparest.practice.user.domain.User;
+import jparest.practice.user.dto.KakaoLoginResponse;
 import jparest.practice.user.dto.SocialLoginResponse;
 import jparest.practice.user.service.UserAuthService;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,17 @@ public class UserController {
 
     @PostMapping("/kakao")
     public ApiResult<SocialLoginResponse> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) {
-        SocialLoginResponse socialLoginResponse = userAuthService.kakaoLogin(code);
+        KakaoLoginResponse kakaoLoginResponse = userAuthService.kakaoLogin(code);
 
-        if (socialLoginResponse.getTokenDto() != null) {
-            TokenDto tokenDto = socialLoginResponse.getTokenDto();
+        SocialLoginResponse socialLoginResponse = SocialLoginResponse.builder()
+                .socialUserId(kakaoLoginResponse.getSocialUserId())
+                .email(kakaoLoginResponse.getEmail())
+                .nickname(kakaoLoginResponse.getNickname())
+                .loginType(kakaoLoginResponse.getLoginType())
+                .build();
+
+        if (kakaoLoginResponse.getTokenDto() != null) {
+            TokenDto tokenDto = kakaoLoginResponse.getTokenDto();
 
             CookieUtils.addCookie(response, TokenType.ACCESS_TOKEN.name(), tokenDto.getAccessToken(), domain);
             CookieUtils.addCookie(response, TokenType.REFRESH_TOKEN.name(), tokenDto.getRefreshToken(), domain);
@@ -45,7 +53,7 @@ public class UserController {
     @DeleteMapping("/logout")
     public ApiResult<Boolean> logout(HttpServletRequest request, HttpServletResponse response,
                                      @CurrentUser User user) {
-        userAuthService.logout(request, response, String.valueOf(user.getId()));
+        userAuthService.logout(request, response, user);
         return ApiUtils.success(Boolean.TRUE);
     }
 

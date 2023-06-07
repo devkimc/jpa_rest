@@ -46,7 +46,7 @@ public class JwtTokenProviderTest {
         assertTrue(result);
     }
 
-    public String createAccessToken(String userId, String userType) {
+    private String createAccessToken(String userId, String userType) {
 
         Date now = new Date();
         return Jwts.builder()
@@ -60,7 +60,7 @@ public class JwtTokenProviderTest {
                 .compact();
     }
 
-    public boolean validateToken(String jwtToken) {
+    private boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(key)

@@ -1,0 +1,31 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+
+= API Docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 1
+:toc-title: 유저
+
+== 카카오 로그인(회원가입)
+
+=== REQUEST
+include::{snippets}/user-controller-test/login_kakao/http-request.adoc[]
+include::{snippets}/user-controller-test/login_kakao/request-parameters.adoc[]
+
+=== RESPONSE
+include::{snippets}/user-controller-test/login_kakao/response-body.adoc[]
+include::{snippets}/user-controller-test/login_kakao/response-fields.adoc[]
+
+
+== 로그아웃
+
+=== REQUEST
+include::{snippets}/user-controller-test/logout/http-request.adoc[]
+
+=== RESPONSE
+include::{snippets}/user-controller-test/logout/response-body.adoc[]
+include::{snippets}/user-controller-test/logout/response-fields.adoc[]
