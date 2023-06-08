@@ -1,4 +1,4 @@
-package jparest.practice.controller;
+package jparest.practice.rest.controller;
 
 import jparest.practice.common.utils.RestDocsTestSupport;
 import jparest.practice.rest.dto.AddFavoriteRestRequest;

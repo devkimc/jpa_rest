@@ -1,4 +1,4 @@
-package jparest.practice.service;
+package jparest.practice.group.service;
 
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
@@ -8,7 +8,6 @@ import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
-import jparest.practice.group.service.GroupService;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-import static jparest.practice.common.utils.fixture.GroupFixture.*;
-import static jparest.practice.common.utils.fixture.UserFixture.*;
+import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
+import static jparest.practice.common.utils.fixture.GroupFixture.groupName2;
+import static jparest.practice.common.utils.fixture.UserFixture.createFirstUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

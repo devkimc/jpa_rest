@@ -1,4 +1,4 @@
-package jparest.practice.controller;
+package jparest.practice.invite.controller;
 
 import jparest.practice.common.utils.RestDocsTestSupport;
 import jparest.practice.invite.domain.InviteStatus;

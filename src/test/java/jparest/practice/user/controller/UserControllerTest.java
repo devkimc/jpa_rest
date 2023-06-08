@@ -1,4 +1,4 @@
-package jparest.practice.controller;
+package jparest.practice.user.controller;
 
 import jparest.practice.auth.jwt.JwtService;
 import jparest.practice.common.util.TokenDto;

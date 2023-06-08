@@ -1,4 +1,4 @@
-package jparest.practice.service;
+package jparest.practice.rest.service;
 
 
 import jparest.practice.group.domain.Group;
@@ -18,7 +18,6 @@ import jparest.practice.rest.exception.GroupRestNotFoundException;
 import jparest.practice.rest.exception.RestNotFoundException;
 import jparest.practice.rest.repository.GroupRestRepository;
 import jparest.practice.rest.repository.RestRepository;
-import jparest.practice.rest.service.RestService;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,9 +28,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static jparest.practice.common.utils.fixture.GroupFixture.*;
+import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
 import static jparest.practice.common.utils.fixture.RestFixture.*;
-import static jparest.practice.common.utils.fixture.UserFixture.*;
+import static jparest.practice.common.utils.fixture.UserFixture.createFirstUser;
+import static jparest.practice.common.utils.fixture.UserFixture.createSecondUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
