@@ -1,4 +1,4 @@
-package jparest.practice.service;
+package jparest.practice.invite.service;
 
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
@@ -15,7 +15,6 @@ import jparest.practice.invite.dto.InviteUserResponse;
 import jparest.practice.invite.exception.ExistInviteForUserException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.invite.repository.InviteRepository;
-import jparest.practice.invite.service.InviteService;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,8 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static jparest.practice.common.utils.fixture.GroupFixture.*;
-import static jparest.practice.common.utils.fixture.UserFixture.*;
+import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
+import static jparest.practice.common.utils.fixture.UserFixture.createFirstUser;
+import static jparest.practice.common.utils.fixture.UserFixture.createSecondUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

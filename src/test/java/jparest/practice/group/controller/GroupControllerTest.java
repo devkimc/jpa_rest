@@ -1,4 +1,4 @@
-package jparest.practice.controller;
+package jparest.practice.group.controller;
 
 import jparest.practice.common.utils.RestDocsTestSupport;
 import jparest.practice.group.dto.CreateGroupRequest;
