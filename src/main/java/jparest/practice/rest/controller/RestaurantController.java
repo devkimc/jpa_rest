@@ -39,6 +39,6 @@ public class RestaurantController {
     public ApiResult<List<GetFavRestListResponse>> getFavRestList(@CurrentUser User user,
                                                                   @RequestParam Long groupId
     ) {
-        return ApiUtils.success(restService.getFavRestList(user, groupId));
+        return ApiUtils.success(restService.getFavRestList(groupId));
     }
 }

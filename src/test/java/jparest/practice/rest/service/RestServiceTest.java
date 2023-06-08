@@ -92,7 +92,7 @@ public class RestServiceTest {
 
         //then
         assertAll(
-                () -> assertEquals(restName, groupRest.getRest().getRestname()),
+                () -> assertEquals(restName, groupRest.getRest().getRestName()),
                 () -> assertEquals(restId, findRestById(restId).getId())
         );
     }
@@ -149,7 +149,7 @@ public class RestServiceTest {
         restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
 
         //when
-        List<GetFavRestListResponse> favRestList = restService.getFavRestList(firstUser, group.getId());
+        List<GetFavRestListResponse> favRestList = restService.getFavRestList(group.getId());
 
         //then
         assertAll(

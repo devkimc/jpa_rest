@@ -11,5 +11,5 @@ public interface RestService {
 
     Boolean deleteFavRest(User user, Long groupId, String restId);
 
-    List<GetFavRestListResponse> getFavRestList(User user, Long groupId);
+    List<GetFavRestListResponse> getFavRestList(Long groupId);
 }

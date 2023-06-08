@@ -122,7 +122,7 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
 
         response.add(favRest);
 
-        given(restService.getFavRestList(any(), any()))
+        given(restService.getFavRestList(any()))
                 .willReturn(response);
 
         //when

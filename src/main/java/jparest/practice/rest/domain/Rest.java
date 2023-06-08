@@ -18,7 +18,7 @@ public class Rest {
     private String id;
 
     @Column(nullable = false)
-    private String restname;
+    private String restName;
 
     @Column(nullable = false)
     private double latitude;
@@ -26,7 +26,6 @@ public class Rest {
     @Column(nullable = false)
     private double longitude;
 
-    // TODO : 왜 매핑이 안될까?
-//    @OneToMany(mappedBy = "rest")
-//    private List<Rest> rests = new ArrayList<Rest>();
+    @OneToMany(mappedBy = "rest")
+    private List<GroupRest> groupRests = new ArrayList<GroupRest>();
 }
