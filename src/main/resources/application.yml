@@ -2,8 +2,8 @@ server:
   port: 9090
   ssl:
     enabled: true
-    key-store-password: 123456
-    key-store: classpath:snackr.p12
+    key-store-password: somepass
+    key-store: classpath:keystore.p12
     key-store-type: PKCS12
 
 spring:

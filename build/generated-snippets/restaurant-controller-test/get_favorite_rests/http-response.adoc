@@ -2,15 +2,42 @@
 ----
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 175
+Content-Length: 710
 
 {
   "success" : true,
-  "result" : [ {
-    "restId" : "223412312",
-    "restName" : "원할머니 보쌈",
-    "latitude" : 37.481079886,
-    "longitude" : 126.9530287
-  } ]
+  "result" : {
+    "content" : [ {
+      "restId" : "223412312",
+      "restName" : "원할머니 보쌈",
+      "latitude" : 37.481079886,
+      "longitude" : 126.9530287
+    } ],
+    "pageable" : {
+      "sort" : {
+        "empty" : true,
+        "sorted" : false,
+        "unsorted" : true
+      },
+      "offset" : 0,
+      "pageNumber" : 0,
+      "pageSize" : 10,
+      "paged" : true,
+      "unpaged" : false
+    },
+    "last" : true,
+    "totalElements" : 1,
+    "totalPages" : 1,
+    "first" : true,
+    "size" : 10,
+    "number" : 0,
+    "sort" : {
+      "empty" : true,
+      "sorted" : false,
+      "unsorted" : true
+    },
+    "numberOfElements" : 1,
+    "empty" : false
+  }
 }
 ----

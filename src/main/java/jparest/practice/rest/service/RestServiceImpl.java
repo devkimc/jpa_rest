@@ -14,10 +14,11 @@ import jparest.practice.rest.repository.GroupRestRepository;
 import jparest.practice.rest.repository.RestRepository;
 import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -85,8 +86,8 @@ public class RestServiceImpl implements RestService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<GetFavRestListResponse> getFavRestList(Long groupId) {
-        List<GetFavRestListResponse> getFavRestListResponses = restRepository.findAllByGroupId(groupId);
+    public Page<GetFavRestListResponse> getFavRestList(Long groupId, Pageable pageable) {
+        Page<GetFavRestListResponse> getFavRestListResponses = restRepository.findAllByGroupId(groupId, pageable);
         return getFavRestListResponses;
     }
 
