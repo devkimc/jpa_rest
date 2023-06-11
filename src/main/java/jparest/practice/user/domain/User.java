@@ -1,11 +1,14 @@
 package jparest.practice.user.domain;
 
+import jparest.practice.common.util.TimeBaseEntity;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.invite.domain.Invite;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,7 +21,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User extends TimeBaseEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")

@@ -23,7 +23,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         show-sql: true

@@ -1,5 +1,6 @@
 package jparest.practice.group.domain;
 
+import jparest.practice.common.util.TimeBaseEntity;
 import jparest.practice.rest.domain.GroupRest;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Table(name = "groups")
 @Getter
 @NoArgsConstructor
-public class Group {
+public class Group extends TimeBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

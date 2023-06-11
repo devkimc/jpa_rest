@@ -1,10 +1,12 @@
 package jparest.practice.invite.domain;
 
+import jparest.practice.common.util.TimeBaseEntity;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.user.domain.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -12,7 +14,8 @@ import static jparest.practice.invite.domain.InviteStatus.*;
 
 @Entity
 @Getter
-public class Invite {
+@NoArgsConstructor
+public class Invite extends TimeBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
