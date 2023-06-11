@@ -1,22 +1,19 @@
 package jparest.practice.group.domain;
 
-import jparest.practice.invite.domain.Invite;
+import jparest.practice.common.util.TimeBaseEntity;
 import jparest.practice.user.domain.User;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Table(name = "user_group")
 @Getter
 @AllArgsConstructor
-public class UserGroup {
+@NoArgsConstructor
+public class UserGroup extends TimeBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

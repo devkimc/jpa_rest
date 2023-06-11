@@ -1,13 +1,16 @@
 package jparest.practice.rest.domain;
 
+import jparest.practice.common.util.TimeBaseEntity;
 import jparest.practice.group.domain.Group;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-public class GroupRest {
+@NoArgsConstructor
+public class GroupRest extends TimeBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

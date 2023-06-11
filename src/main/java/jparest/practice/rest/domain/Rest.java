@@ -1,5 +1,6 @@
 package jparest.practice.rest.domain;
 
+import jparest.practice.common.util.TimeBaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Rest {
+public class Rest extends TimeBaseEntity {
 
     @Id
     @Column(name = "rest_id", nullable = false, length = 16)
