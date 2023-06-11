@@ -14,11 +14,11 @@ import jparest.practice.rest.repository.GroupRestRepository;
 import jparest.practice.rest.repository.RestRepository;
 import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -52,7 +52,7 @@ public class RestServiceImpl implements RestService {
         // 3. 식당 테이블에 존재하지 않는 맛집이면 식당, 맛집 저장
         if (findRest.isEmpty()) {
             Rest rest = Rest.builder().id(restId)
-                    .restname(addFavoriteRestRequest.getRestName())
+                    .restName(addFavoriteRestRequest.getRestName())
                     .latitude(addFavoriteRestRequest.getLatitude())
                     .longitude(addFavoriteRestRequest.getLongitude())
                     .build();
@@ -86,29 +86,9 @@ public class RestServiceImpl implements RestService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<GetFavRestListResponse> getFavRestList(User user, Long groupId) {
-        Optional<List<GroupRest>> groupRestList = groupRestRepository.findAllByGroupId(groupId);
-
-        if(groupRestList.isEmpty()) {
-            return new ArrayList<>(0);
-        }
-
-        ArrayList<GetFavRestListResponse> responses = new ArrayList<>(groupRestList.get().size());
-
-        for (GroupRest gr : groupRestList.get()
-             ) {
-            Rest rest = gr.getRest();
-
-            GetFavRestListResponse response = GetFavRestListResponse.builder().restId(rest.getId())
-                    .restName(rest.getRestname())
-                    .latitude(rest.getLatitude())
-                    .longitude(rest.getLongitude())
-                    .build();
-
-            responses.add(response);
-        }
-
-        return responses;
+    public Page<GetFavRestListResponse> getFavRestList(Long groupId, Pageable pageable) {
+        Page<GetFavRestListResponse> getFavRestListResponses = restRepository.findAllByGroupId(groupId, pageable);
+        return getFavRestListResponses;
     }
 
     private void saveGroupRest(Long groupId, Rest rest) {

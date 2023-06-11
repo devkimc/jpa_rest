@@ -5,20 +5,48 @@
 |`+Boolean+`
 |성공 여부
 
-|`+result.[].restId+`
+|`+result.content.[].restId+`
 |`+String+`
 |식당 아이디
 
-|`+result.[].restName+`
+|`+result.content.[].restName+`
 |`+String+`
 |식당 이름
 
-|`+result.[].latitude+`
+|`+result.content.[].latitude+`
 |`+Number+`
 |위도
 
-|`+result.[].longitude+`
+|`+result.content.[].longitude+`
 |`+Number+`
 |경도
+
+|`+result.totalElements+`
+|`+Number+`
+|전체 데이터 수
+
+|`+result.totalPages+`
+|`+Number+`
+|전체 페이지 수
+
+|`+result.first+`
+|`+Boolean+`
+|첫 페이지 여부
+
+|`+result.last+`
+|`+Boolean+`
+|마지막 페이지 여부
+
+|`+result.empty+`
+|`+Boolean+`
+|빈 데이터 여부
+
+|`+result.size+`
+|`+Number+`
+|사이즈
+
+|`+result.number+`
+|`+Number+`
+|페이지
 
 |===

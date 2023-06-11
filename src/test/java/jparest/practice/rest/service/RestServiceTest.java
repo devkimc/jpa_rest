@@ -24,9 +24,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
 import static jparest.practice.common.utils.fixture.RestFixture.*;
@@ -92,7 +92,7 @@ public class RestServiceTest {
 
         //then
         assertAll(
-                () -> assertEquals(restName, groupRest.getRest().getRestname()),
+                () -> assertEquals(restName, groupRest.getRest().getRestName()),
                 () -> assertEquals(restId, findRestById(restId).getId())
         );
     }
@@ -147,15 +147,16 @@ public class RestServiceTest {
 
         //given
         restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
+        PageRequest pageRequest = PageRequest.of(0, 10);
 
         //when
-        List<GetFavRestListResponse> favRestList = restService.getFavRestList(firstUser, group.getId());
+        Page<GetFavRestListResponse> favRestList = restService.getFavRestList(group.getId(), pageRequest);
 
         //then
         assertAll(
-                () -> assertEquals(1, favRestList.size()),
-                () -> assertEquals(latitude, favRestList.get(0).getLatitude()),
-                () -> assertEquals(longitude, favRestList.get(0).getLongitude())
+                () -> assertEquals(1, favRestList.getTotalElements()),
+                () -> assertEquals(latitude, favRestList.getContent().get(0).getLatitude()),
+                () -> assertEquals(longitude, favRestList.getContent().get(0).getLongitude())
         );
     }
 

@@ -6,19 +6,21 @@ import jparest.practice.rest.dto.GetFavRestListResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static jparest.practice.common.utils.fixture.RestFixture.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -111,8 +113,6 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("groupId", "1");
 
-        List<GetFavRestListResponse> response = new ArrayList<>();
-
         GetFavRestListResponse favRest = GetFavRestListResponse.builder()
                 .restId(restId)
                 .restName(restName)
@@ -120,7 +120,7 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
                 .longitude(longitude)
                 .build();
 
-        response.add(favRest);
+        PageImpl<GetFavRestListResponse> response = new PageImpl<>(List.of(favRest), PageRequest.of(0, 10), 1);
 
         given(restService.getFavRestList(any(), any()))
                 .willReturn(response);
@@ -136,21 +136,35 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
         result
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.result.[0].restId").value(restId),
-                        jsonPath("$.result.[0].restName").value(restName),
-                        jsonPath("$.result.[0].latitude").value(latitude),
-                        jsonPath("$.result.[0].longitude").value(longitude)
+                        jsonPath("$.result.content.[0].restId").value(restId),
+                        jsonPath("$.result.content.[0].restName").value(restName),
+                        jsonPath("$.result.content.[0].latitude").value(latitude),
+                        jsonPath("$.result.content.[0].longitude").value(longitude)
                 )
                 .andDo(restDocs.document(
+
                         requestParameters(
                                 parameterWithName("groupId").description("그룹 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("success").description("성공 여부"),
-                                fieldWithPath("result.[].restId").description("식당 아이디"),
-                                fieldWithPath("result.[].restName").description("식당 이름"),
-                                fieldWithPath("result.[].latitude").description("위도"),
-                                fieldWithPath("result.[].longitude").description("경도")
+                                fieldWithPath("result.content.[].restId").description("식당 아이디"),
+                                fieldWithPath("result.content.[].restName").description("식당 이름"),
+                                fieldWithPath("result.content.[].latitude").description("위도"),
+                                fieldWithPath("result.content.[].longitude").description("경도"),
+
+                                fieldWithPath("result.totalElements").description("전체 데이터 수"),
+                                fieldWithPath("result.totalPages").description("전체 페이지 수"),
+                                fieldWithPath("result.first").description("첫 페이지 여부"),
+                                fieldWithPath("result.last").description("마지막 페이지 여부"),
+                                fieldWithPath("result.empty").description("빈 데이터 여부"),
+                                fieldWithPath("result.size").description("사이즈"),
+                                fieldWithPath("result.number").description("페이지"),
+
+                                fieldWithPath("result.numberOfElements").ignored(),
+                                fieldWithPath("result.pageable.*").ignored(),
+                                fieldWithPath("result.pageable.sort.*").ignored(),
+                                fieldWithPath("result.sort.*").ignored()
                         )));
     }
 }
