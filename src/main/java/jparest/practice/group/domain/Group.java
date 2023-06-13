@@ -25,10 +25,10 @@ public class Group extends TimeBaseEntity {
     @Column(nullable = false)
     private String groupName;
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany(mappedBy = "group", orphanRemoval = true)
     private List<UserGroup> userGroups = new ArrayList<UserGroup>();
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany(mappedBy = "group", orphanRemoval = true)
     private List<GroupRest> groupRests = new ArrayList<GroupRest>();
 
     public Group(String groupName) {

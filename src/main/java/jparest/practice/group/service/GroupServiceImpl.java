@@ -51,11 +51,21 @@ public class GroupServiceImpl implements GroupService {
 
         UserGroup findUserGroup = findUserGroup(user.getId(), groupId);
 
-        userGroupRepository.delete(findUserGroup);
-
         Group group = findUserGroup.getGroup();
 
-        if(group.getUserCount() >= 1) return  true;
+        int remainUserCount = group.getUserCount();
+
+        // 탈퇴하는 유저가 그룹의 마지막 유저일 경우 그룹을 삭제한다.
+        if (remainUserCount == 1) {
+            groupRepository.delete(group);
+            return true;
+        }
+
+        // 탈퇴하는 유저가 그룹의 마지막 유저가 아닐 경우 본인만 탈퇴한다.
+        if (remainUserCount > 1) {
+            userGroupRepository.delete(findUserGroup);
+            return true;
+        }
 
         return false;
     }

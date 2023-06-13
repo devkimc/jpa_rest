@@ -98,7 +98,9 @@ public class RestServiceImpl implements RestService {
     }
 
     private void saveGroupRest(Long groupId, Rest rest) {
-        GroupRest groupRest = new GroupRest(findGroupById(groupId), rest);
+//        GroupRest groupRest =  groupRest.createGroupRest(findGroupById(groupId), rest);
+        GroupRest groupRest = GroupRest.createGroupRest(findGroupById(groupId), rest);
+
         groupRestRepository.save(groupRest);
     }
 

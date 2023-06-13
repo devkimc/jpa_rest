@@ -30,6 +30,14 @@ public class GroupRest extends TimeBaseEntity {
         this.rest = rest;
     }
 
+    //==생성 메서드==//
+    public static GroupRest createGroupRest(Group group, Rest rest) {
+        GroupRest groupRest = new GroupRest(group, rest);
+//        addGroupRest(rest);
+        group.getGroupRests().add(groupRest);
+        return groupRest;
+    }
+
     //==연관관계 편의 메서드==//
     public void addGroupRest(Rest rest) {
         this.rest = rest;

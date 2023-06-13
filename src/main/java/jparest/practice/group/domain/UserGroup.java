@@ -44,7 +44,6 @@ public class UserGroup extends TimeBaseEntity {
     }
 
     //==연관관계 메서드==//
-    //OneToMany 필드에 주입시켜 준다.
     public void addUserGroup() {
         this.user.getUserGroups().add(this);
         this.group.getUserGroups().add(this);
