@@ -1,9 +1,0 @@
-[source,options="nowrap"]
-----
-{
-  "message" : "must not be blank",
-  "status" : 400,
-  "code" : "C03",
-  "field" : "restName"
-}
-----

@@ -1,6 +1,0 @@
-[source,bash]
-----
-$ curl 'http://localhost:8080/api/auth/kakao' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8' \
-    -d 'code=dCBtBeJy0NzZhRzVxqptBg4jvxgD11zsPsXhPGXx-Wy05qVNK0if0sFwqA7OTglVJjtVdwoqJQ4AAAGIlPJfEQ'
-----

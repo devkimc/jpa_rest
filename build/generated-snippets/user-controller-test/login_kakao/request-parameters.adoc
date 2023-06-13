@@ -1,7 +1,0 @@
-|===
-|Parameter|Description
-
-|`+code+`
-|카카오 로그인 후 제공받은 코드
-
-|===

@@ -1,7 +1,0 @@
-|===
-|Parameter|Description
-
-|`+groupId+`
-|그룹 아이디
-
-|===

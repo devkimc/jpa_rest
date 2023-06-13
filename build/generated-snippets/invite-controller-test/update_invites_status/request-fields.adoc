@@ -1,8 +1,0 @@
-|===
-|Path|Type|Description
-
-|`+inviteStatus+`
-|`+String+`
-|`WAITING`, `ACCEPT`, `REJECT`, `CANCEL`
-
-|===

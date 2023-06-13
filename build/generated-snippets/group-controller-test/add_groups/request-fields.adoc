@@ -1,8 +1,0 @@
-|===
-|Path|Type|Description
-
-|`+groupName+`
-|`+String+`
-|그룸 이름
-
-|===

@@ -1,8 +1,0 @@
-.+/api/restaurants/{restId}/favorite+
-|===
-|Parameter|Description
-
-|`+restId+`
-|식당 아이디
-
-|===

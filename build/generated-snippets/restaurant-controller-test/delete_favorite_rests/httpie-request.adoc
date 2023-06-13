@@ -1,5 +1,0 @@
-[source,bash]
-----
-$ http DELETE 'http://localhost:8080/api/restaurants/1/favorite?groupId=1' \
-    'Content-Type:application/json;charset=UTF-8'
-----
