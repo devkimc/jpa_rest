@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class RestServiceImpl implements RestService {
+public class FavoriteRestaurantServiceImpl implements FavoriteRestaurantService {
 
     private final GroupRepository groupRepository;
     private final RestRepository restRepository;

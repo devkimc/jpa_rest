@@ -17,7 +17,7 @@ import jparest.practice.invite.service.InviteService;
 import jparest.practice.rest.domain.GroupRest;
 import jparest.practice.rest.exception.GroupRestNotFoundException;
 import jparest.practice.rest.repository.GroupRestRepository;
-import jparest.practice.rest.service.RestService;
+import jparest.practice.rest.service.FavoriteRestaurantService;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +63,7 @@ public class GroupServiceTest {
     InviteService inviteService;
 
     @Autowired
-    RestService restService;
+    FavoriteRestaurantService favoriteRestaurantService;
 
     @Autowired
     GroupRestRepository groupRestRepository;
@@ -109,7 +109,7 @@ public class GroupServiceTest {
 
         InviteUserResponse response = inviteService.inviteToGroup(firstUser, new InviteUserRequest(secondUser.getId(), saveGroupId));
 
-        restService.addFavRest(firstUser, restId, createFavoriteRest(saveGroupId));
+        favoriteRestaurantService.addFavRest(firstUser, restId, createFavoriteRest(saveGroupId));
         GroupRest groupRest = findGroup(saveGroupId).getGroupRests().get(0);
 
         // when

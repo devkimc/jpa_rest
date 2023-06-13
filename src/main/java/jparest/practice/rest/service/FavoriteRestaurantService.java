@@ -6,7 +6,7 @@ import jparest.practice.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface RestService {
+public interface FavoriteRestaurantService {
     Boolean addFavRest(User user, String restId, AddFavoriteRestRequest addFavoriteRestRequest);
 
     Boolean deleteFavRest(User user, Long groupId, String restId);

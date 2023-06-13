@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
-public class RestaurantControllerTest extends RestDocsTestSupport {
+public class FavoriteRestaurantControllerTest extends RestDocsTestSupport {
 
     private final String RESTAURANT_API = "/api/restaurants";
 
@@ -42,7 +42,7 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
                 .longitude(longitude)
                 .build();
 
-        given(restService.addFavRest(any(), any(), any()))
+        given(favoriteRestaurantService.addFavRest(any(), any(), any()))
                 .willReturn(true);
 
         //when
@@ -73,7 +73,7 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
                 .longitude(longitude)
                 .build();
 
-        given(restService.addFavRest(any(), any(), any()))
+        given(favoriteRestaurantService.addFavRest(any(), any(), any()))
                 .willReturn(true);
 
         //when
@@ -107,7 +107,7 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
         params.add("groupId", "1");
 
         //given
-        given(restService.deleteFavRest(any(), any(), any()))
+        given(favoriteRestaurantService.deleteFavRest(any(), any(), any()))
                 .willReturn(true);
 
         //when
@@ -153,7 +153,7 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
 
         PageImpl<GetFavRestListResponse> response = new PageImpl<>(List.of(favRest), PageRequest.of(0, 10), 1);
 
-        given(restService.getFavRestList(any(), any()))
+        given(favoriteRestaurantService.getFavRestList(any(), any()))
                 .willReturn(response);
 
         //when

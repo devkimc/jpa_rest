@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-public class RestServiceTest {
+public class FavoriteRestaurantServiceTest {
 
     private User firstUser;
     private User secondUser;
@@ -48,7 +48,7 @@ public class RestServiceTest {
     GroupRepository groupRepository;
 
     @Autowired
-    RestService restService;
+    FavoriteRestaurantService favoriteRestaurantService;
 
     @Autowired
     GroupRestRepository groupRestRepository;
@@ -73,7 +73,7 @@ public class RestServiceTest {
         //given
 
         //when
-        restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
+        favoriteRestaurantService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
 
         GroupRest groupRest = findByGroupIdAndRestId(group.getId(), restId);
 
@@ -93,8 +93,8 @@ public class RestServiceTest {
         CreateGroupResponse secondGroupResponse = groupService.createGroup(firstUser, "두번째 그룹");
 
         //when
-        restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
-        restService.addFavRest(firstUser, restId, createFavoriteRest(secondGroupResponse.getId()));
+        favoriteRestaurantService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
+        favoriteRestaurantService.addFavRest(firstUser, restId, createFavoriteRest(secondGroupResponse.getId()));
 
         GroupRest groupRest = findByGroupIdAndRestId(group.getId(), restId);
 
@@ -108,13 +108,13 @@ public class RestServiceTest {
     public void 그룹맛집_테이블에_존재하는_맛집_추가시_에러() throws Exception {
 
         //given
-        restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
+        favoriteRestaurantService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
 
         //when
         //then
         assertThrows(
                 ExistGroupRestException.class,
-                () -> restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()))
+                () -> favoriteRestaurantService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()))
         );
     }
 
@@ -122,12 +122,12 @@ public class RestServiceTest {
     public void 맛집테이블에_존재하는_맛집_삭제후_조회시_에러() throws Exception {
         
         //given
-        restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
+        favoriteRestaurantService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
 
         GroupRest groupRest = findByGroupIdAndRestId(group.getId(), restId);
 
         //when
-        restService.deleteFavRest(firstUser, group.getId(), restId);
+        favoriteRestaurantService.deleteFavRest(firstUser, group.getId(), restId);
 
         //then
         assertAll(
@@ -145,7 +145,7 @@ public class RestServiceTest {
 
         //then
         assertThrows(
-                GroupRestNotFoundException.class, () -> restService.deleteFavRest(firstUser, group.getId(), restId)
+                GroupRestNotFoundException.class, () -> favoriteRestaurantService.deleteFavRest(firstUser, group.getId(), restId)
         );
     }
 
@@ -153,11 +153,11 @@ public class RestServiceTest {
     public void 그룹맛집_리스트_조회() throws Exception {
 
         //given
-        restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
+        favoriteRestaurantService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
         PageRequest pageRequest = PageRequest.of(0, 10);
 
         //when
-        Page<GetFavRestListResponse> favRestList = restService.getFavRestList(group.getId(), pageRequest);
+        Page<GetFavRestListResponse> favRestList = favoriteRestaurantService.getFavRestList(group.getId(), pageRequest);
 
         //then
         assertAll(
