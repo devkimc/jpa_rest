@@ -6,7 +6,6 @@ import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.service.GroupService;
-import jparest.practice.invite.service.InviteService;
 import jparest.practice.rest.domain.GroupRest;
 import jparest.practice.rest.domain.Rest;
 import jparest.practice.rest.dto.GetFavRestListResponse;
@@ -81,12 +80,32 @@ public class RestServiceTest {
         //then
         assertAll(
                 () -> assertEquals(restName, groupRest.getRest().getRestName()),
-                () -> assertEquals(restId, findRestById(restId).getId())
+                () -> assertEquals(restId, findRestById(restId).getId()),
+                () -> assertEquals(groupRest.getRest().getTotalFavorite(), 1, "처음 추가된 맛집은 총 북마크 맛집 개수가 1 개")
+        );
+
+    }
+
+    @Test
+    public void 맛집_추가_시_총_북마크_맛집_개수_확인() throws Exception {
+
+        //given
+        CreateGroupResponse secondGroupResponse = groupService.createGroup(firstUser, "두번째 그룹");
+
+        //when
+        restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
+        restService.addFavRest(firstUser, restId, createFavoriteRest(secondGroupResponse.getId()));
+
+        GroupRest groupRest = findByGroupIdAndRestId(group.getId(), restId);
+
+        //then
+        assertAll(
+                () -> assertEquals(groupRest.getRest().getTotalFavorite(), 2, "맛집은 추가한 그룹 수 = 총 북마크 맛집 개수")
         );
     }
 
     @Test
-    public void 맛집테이블에_존재하는_맛집_추가시_에러() throws Exception {
+    public void 그룹맛집_테이블에_존재하는_맛집_추가시_에러() throws Exception {
 
         //given
         restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()));
@@ -97,7 +116,6 @@ public class RestServiceTest {
                 ExistGroupRestException.class,
                 () -> restService.addFavRest(firstUser, restId, createFavoriteRest(group.getId()))
         );
-
     }
 
     @Test
@@ -112,8 +130,9 @@ public class RestServiceTest {
         restService.deleteFavRest(firstUser, group.getId(), restId);
 
         //then
-        assertThrows(
-                GroupRestNotFoundException.class, () -> findGroupRestById(groupRest.getId())
+        assertAll(
+                () -> assertThrows(GroupRestNotFoundException.class, () -> findGroupRestById(groupRest.getId())),
+                () -> assertEquals(0, groupRest.getRest().getTotalFavorite())
         );
     }
 
