@@ -15,14 +15,25 @@ import jparest.practice.user.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.Optional;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    // COMMON
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    ResponseEntity<ErrorResponse> methodArgumentNotValidException(MethodArgumentNotValidException e) {
+        FieldError error = e.getBindingResult().getFieldErrors().get(0);
+
+        return getErrorResponseEntity(e,
+                ErrorCode.METHOD_ARGUMENT_NOT_VALID,
+                error.getDefaultMessage(),
+                error.getField());
+    }
 
     // USER
     @ExceptionHandler(ExistLoginIdException.class)
@@ -88,10 +99,17 @@ public class GlobalExceptionHandler {
         return getErrorResponseEntity(e, ErrorCode.REST_NOT_FOUND);
     }
 
-    private static ResponseEntity<ErrorResponse> getErrorResponseEntity(BusinessException e, ErrorCode errorCode) {
-        log.error("GlobalException = {} {}", e.getErrorCode().getMessage(), e.getMessage());
+    private static ResponseEntity<ErrorResponse> getErrorResponseEntity(Exception e, ErrorCode errorCode) {
+        log.error("GlobalException = {} {}", e.getCause().getMessage(), e.getMessage());
 
         final ErrorResponse res = ErrorResponse.of(errorCode);
+        return new ResponseEntity<>(res, HttpStatus.valueOf(errorCode.getStatus()));
+    }
+
+    private static ResponseEntity<ErrorResponse> getErrorResponseEntity(Exception e, ErrorCode errorCode, String message, String field) {
+        log.error("GlobalException = {}", e.getMessage());
+
+        final ErrorResponse res = ErrorResponse.of(errorCode, message, field);
         return new ResponseEntity<>(res, HttpStatus.valueOf(errorCode.getStatus()));
     }
 }

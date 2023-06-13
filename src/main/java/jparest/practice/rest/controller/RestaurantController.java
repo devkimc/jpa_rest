@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/restaurants")
@@ -22,7 +24,7 @@ public class RestaurantController {
     @PostMapping("/{restId}/favorite")
     public ApiResult<Boolean> addFavRest(@CurrentUser User user,
                                               @PathVariable String restId,
-                                              @RequestBody AddFavoriteRestRequest addFavoriteRestRequest
+                                              @Valid @RequestBody AddFavoriteRestRequest addFavoriteRestRequest
                                               ) {
         return ApiUtils.success(restService.addFavRest(user, restId, addFavoriteRestRequest));
     }

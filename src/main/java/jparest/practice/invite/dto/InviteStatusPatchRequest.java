@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InviteStatusPatchRequest {
+
     private InviteStatus inviteStatus;
 }

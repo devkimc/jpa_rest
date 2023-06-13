@@ -1,7 +1,6 @@
 package jparest.practice.user.controller;
 
 import jparest.practice.auth.jwt.JwtService;
-import jparest.practice.common.util.TokenDto;
 import jparest.practice.common.utils.RestDocsTestSupport;
 import jparest.practice.user.dto.KakaoLoginResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +17,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,11 +39,6 @@ public class UserControllerTest extends RestDocsTestSupport {
         //given
         MultiValueMap<String, String> params = new LinkedMultiValueMap();
         params.add("code", "dCBtBeJy0NzZhRzVxqptBg4jvxgD11zsPsXhPGXx-Wy05qVNK0if0sFwqA7OTglVJjtVdwoqJQ4AAAGIlPJfEQ");
-
-        TokenDto tokenDto = TokenDto.builder()
-                .accessToken(token)
-                .refreshToken(token)
-                .build();
 
         KakaoLoginResponse kakaoLoginResponse = KakaoLoginResponse.builder()
                 .socialUserId(socialUserId1)

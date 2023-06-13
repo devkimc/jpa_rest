@@ -6,7 +6,7 @@ Content-Length: 76
 Host: localhost:8080
 
 {
-  "recvUserId" : "7f616b44-da03-43f7-8399-8242127720ee",
+  "recvUserId" : "43f28ebf-8921-477c-8089-dfa50d587697",
   "groupId" : 1
 }
 ----
