@@ -9,7 +9,6 @@ import jparest.practice.rest.dto.AddFavoriteRestRequest;
 import jparest.practice.rest.dto.GetFavRestListResponse;
 import jparest.practice.rest.exception.ExistGroupRestException;
 import jparest.practice.rest.exception.GroupRestNotFoundException;
-import jparest.practice.rest.exception.RestNotFoundException;
 import jparest.practice.rest.repository.GroupRestRepository;
 import jparest.practice.rest.repository.RestRepository;
 import jparest.practice.user.domain.User;
@@ -47,14 +46,15 @@ public class RestServiceImpl implements RestService {
             throw new ExistGroupRestException("이미 존재하는 맛집 = " + existGroupRest.get().getId());
         }
 
-        Optional<Rest> findRest = restRepository.findById(restId);
+        Optional<Rest> optionalFindRest = restRepository.findById(restId);
 
         // 3. 식당 테이블에 존재하지 않는 맛집이면 식당, 맛집 저장
-        if (findRest.isEmpty()) {
+        if (optionalFindRest.isEmpty()) {
             Rest rest = Rest.builder().id(restId)
                     .restName(addFavoriteRestRequest.getRestName())
                     .latitude(addFavoriteRestRequest.getLatitude())
                     .longitude(addFavoriteRestRequest.getLongitude())
+                    .totalFavorite(1)
                     .build();
 
             Rest saveRest = restRepository.save(rest);
@@ -64,8 +64,12 @@ public class RestServiceImpl implements RestService {
         }
 
         // 4. REST DB 에 존재하면, 맛집 저장
-        saveGroupRest(groupId, findRest.get());
+        Rest findRest = optionalFindRest.get();
 
+        findRest.increaseTotalFavorite();
+
+        saveGroupRest(groupId, findRest);
+        restRepository.save(findRest);
         return true;
     }
 
@@ -78,6 +82,8 @@ public class RestServiceImpl implements RestService {
         }
 
         GroupRest existGroupRest = findByGroupIdAndRestId(groupId, restId);
+
+        existGroupRest.getRest().decreaseTotalFavorite();
 
         groupRestRepository.delete(existGroupRest);
 
@@ -92,7 +98,9 @@ public class RestServiceImpl implements RestService {
     }
 
     private void saveGroupRest(Long groupId, Rest rest) {
-        GroupRest groupRest = new GroupRest(findGroupById(groupId), rest);
+//        GroupRest groupRest =  groupRest.createGroupRest(findGroupById(groupId), rest);
+        GroupRest groupRest = GroupRest.createGroupRest(findGroupById(groupId), rest);
+
         groupRestRepository.save(groupRest);
     }
 
@@ -100,15 +108,7 @@ public class RestServiceImpl implements RestService {
         return groupRepository.findById(groupId).orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
     }
 
-    private Rest findRestById(String restId) {
-        return restRepository.findById(restId).orElseThrow(() -> new RestNotFoundException("restId = " + restId));
-    }
-
     private GroupRest findByGroupIdAndRestId(Long groupId, String restId) {
         return groupRestRepository.findByGroupIdAndRestId(groupId, restId).orElseThrow(() -> new GroupRestNotFoundException("groupId = " + groupId + " restId = " + restId));
-    }
-
-    private GroupRest findGroupRest(Long groupRestId) {
-        return groupRestRepository.findById(groupRestId).orElseThrow(() -> new GroupRestNotFoundException("groupRestId = " + groupRestId));
     }
 }

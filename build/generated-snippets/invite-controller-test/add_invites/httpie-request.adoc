@@ -1,8 +1,0 @@
-[source,bash]
-----
-$ echo '{
-  "recvUserId" : "43f28ebf-8921-477c-8089-dfa50d587697",
-  "groupId" : 1
-}' | http POST 'http://localhost:8080/api/invites' \
-    'Content-Type:application/json;charset=UTF-8'
-----

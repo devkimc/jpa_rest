@@ -4,21 +4,17 @@ import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.dto.GetUserGroupResponse;
-import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.user.domain.User;
-import jparest.practice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -55,13 +51,21 @@ public class GroupServiceImpl implements GroupService {
 
         UserGroup findUserGroup = findUserGroup(user.getId(), groupId);
 
-//        inviteRepository.de
-
-        userGroupRepository.delete(findUserGroup);
-
         Group group = findUserGroup.getGroup();
 
-        if(group.getUserCount() >= 1) return  true;
+        int remainUserCount = group.getUserCount();
+
+        // 탈퇴하는 유저가 그룹의 마지막 유저일 경우 그룹을 삭제한다.
+        if (remainUserCount == 1) {
+            groupRepository.delete(group);
+            return true;
+        }
+
+        // 탈퇴하는 유저가 그룹의 마지막 유저가 아닐 경우 본인만 탈퇴한다.
+        if (remainUserCount > 1) {
+            userGroupRepository.delete(findUserGroup);
+            return true;
+        }
 
         return false;
     }

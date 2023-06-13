@@ -14,6 +14,6 @@ public class InviteUserRequest {
 
     private UUID recvUserId;
 
-    @Min(value = 1, message = "유효하지 않은 그룹 아이디입니다.")
+    @Min(1)
     private Long groupId;
 }

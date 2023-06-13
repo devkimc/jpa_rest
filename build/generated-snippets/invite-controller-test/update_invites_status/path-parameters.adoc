@@ -1,8 +1,0 @@
-.+/api/invites/{inviteId}/status+
-|===
-|Parameter|Description
-
-|`+inviteId+`
-|초대 아이디
-
-|===

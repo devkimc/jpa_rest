@@ -1,12 +1,15 @@
 package jparest.practice.group.domain;
 
 import jparest.practice.common.util.TimeBaseEntity;
+import jparest.practice.invite.domain.Invite;
 import jparest.practice.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "user_group")
@@ -28,6 +31,9 @@ public class UserGroup extends TimeBaseEntity {
     @JoinColumn(name = "group_id")
     private Group group;
 
+    @OneToMany(mappedBy = "sendUserGroup", orphanRemoval = true)
+    private List<Invite> invites = new ArrayList<>();
+
     public void setGroup(Group group) {
         this.group = group;
     }
@@ -38,7 +44,6 @@ public class UserGroup extends TimeBaseEntity {
     }
 
     //==연관관계 메서드==//
-    //OneToMany 필드에 주입시켜 준다.
     public void addUserGroup() {
         this.user.getUserGroups().add(this);
         this.group.getUserGroups().add(this);

@@ -8,6 +8,16 @@ import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
+import jparest.practice.invite.domain.Invite;
+import jparest.practice.invite.dto.InviteUserRequest;
+import jparest.practice.invite.dto.InviteUserResponse;
+import jparest.practice.invite.exception.InviteNotFoundException;
+import jparest.practice.invite.repository.InviteRepository;
+import jparest.practice.invite.service.InviteService;
+import jparest.practice.rest.domain.GroupRest;
+import jparest.practice.rest.exception.GroupRestNotFoundException;
+import jparest.practice.rest.repository.GroupRestRepository;
+import jparest.practice.rest.service.RestService;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +31,10 @@ import java.util.UUID;
 
 import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
 import static jparest.practice.common.utils.fixture.GroupFixture.groupName2;
+import static jparest.practice.common.utils.fixture.RestFixture.createFavoriteRest;
+import static jparest.practice.common.utils.fixture.RestFixture.restId;
 import static jparest.practice.common.utils.fixture.UserFixture.createFirstUser;
+import static jparest.practice.common.utils.fixture.UserFixture.createSecondUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -29,19 +42,31 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GroupServiceTest {
 
     private User firstUser;
+    private User secondUser;
 
     @Autowired
     UserAuthService userAuthService;
 
     @Autowired
-    GroupService groupService;
+    GroupRepository groupRepository;
 
     @Autowired
-    GroupRepository groupRepository;
+    GroupService groupService;
 
     @Autowired
     UserGroupRepository userGroupRepository;
 
+    @Autowired
+    InviteRepository inviteRepository;
+
+    @Autowired
+    InviteService inviteService;
+
+    @Autowired
+    RestService restService;
+
+    @Autowired
+    GroupRestRepository groupRestRepository;
 
     @BeforeEach
     void setUp() {
@@ -73,7 +98,30 @@ public class GroupServiceTest {
 
         //then
         assertThrows(UserGroupNotFoundException.class, () -> findUserGroup(firstUser.getId(), saveGroupId));
+    }
 
+    @Test
+    public void 마지막_그룹원이_탈퇴시_연관된_고아객체를_모두_삭제한다() throws Exception {
+
+        //given
+        secondUser = userAuthService.join(createSecondUser());
+        Long saveGroupId = groupService.createGroup(firstUser, groupName1).getId();
+
+        InviteUserResponse response = inviteService.inviteToGroup(firstUser, new InviteUserRequest(secondUser.getId(), saveGroupId));
+
+        restService.addFavRest(firstUser, restId, createFavoriteRest(saveGroupId));
+        GroupRest groupRest = findGroup(saveGroupId).getGroupRests().get(0);
+
+        // when
+        groupService.withdrawGroup(firstUser, saveGroupId);
+
+        //then
+        assertAll(
+                () -> assertThrows(UserGroupNotFoundException.class, () -> findUserGroup(firstUser.getId(), saveGroupId)),
+                () -> assertThrows(InviteNotFoundException.class, () -> findInvite(response.getInviteId())),
+                () -> assertThrows(GroupNotFoundException.class, () -> findGroup(saveGroupId)),
+                () -> assertThrows(GroupRestNotFoundException.class, () -> findGroupRest(groupRest.getId()))
+        );
     }
 
     @Test
@@ -104,11 +152,22 @@ public class GroupServiceTest {
     }
 
     private Group findGroup(Long groupId) {
-        return groupRepository.findById(groupId).orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
     }
 
     private UserGroup findUserGroup(UUID userId, Long groupId) {
         return userGroupRepository.findByUserIdAndGroupId(userId, groupId)
                 .orElseThrow(() -> new UserGroupNotFoundException("userId = " + userId + ", groupId = " + groupId));
+    }
+
+    private Invite findInvite(Long inviteId) {
+        return inviteRepository.findById(inviteId)
+                .orElseThrow(() -> new InviteNotFoundException("inviteId = " + inviteId));
+    }
+
+    private GroupRest findGroupRest(Long groupRestId) {
+        return groupRestRepository.findById(groupRestId)
+                .orElseThrow(() -> new GroupRestNotFoundException("groupRestId = " + groupRestId));
     }
 }

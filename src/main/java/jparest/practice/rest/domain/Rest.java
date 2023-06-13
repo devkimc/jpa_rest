@@ -27,6 +27,21 @@ public class Rest extends TimeBaseEntity {
     @Column(nullable = false)
     private double longitude;
 
+    @Column(nullable = false)
+    private int totalFavorite;
+
     @OneToMany(mappedBy = "rest")
     private List<GroupRest> groupRests = new ArrayList<GroupRest>();
+
+    public void setTotalFavorite(int totalFavorite) {
+        this.totalFavorite = totalFavorite;
+    }
+
+    public void increaseTotalFavorite() {
+        setTotalFavorite(this.totalFavorite + 1);
+    }
+
+    public void decreaseTotalFavorite() {
+        setTotalFavorite(this.totalFavorite - 1);
+    }
 }
