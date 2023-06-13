@@ -38,14 +38,21 @@ public class Invite extends TimeBaseEntity {
         this.recvUser = user;
     }
 
+    public void updateStatus(InviteStatus inviteStatus) {
+        this.inviteStatus = inviteStatus;
+    }
+
     public Invite(UserGroup sendUserGroup, User recvUser, InviteStatus inviteStatus) {
         this.sendUserGroup = sendUserGroup;
         this.recvUser = recvUser;
         this.inviteStatus = inviteStatus;
     }
 
-    public void updateStatus(InviteStatus inviteStatus) {
-        this.inviteStatus = inviteStatus;
+    //==생성 메서드==//
+    public static Invite createInvite(UserGroup sendUserGroup, User recvUser) {
+        Invite invite = new Invite(sendUserGroup, recvUser, WAITING);
+        sendUserGroup.getInvites().add(invite);
+        return invite;
     }
 
     // 초대 처리에 대한 권한 체크
@@ -67,14 +74,4 @@ public class Invite extends TimeBaseEntity {
             throw new InviteNotFoundException("취소 요청한 유저의 초대가 아닙니다.");
         }
     }
-
-    //==생성 메서드==//
-//    public static Invite createInvite(Long recvUserId, UserGroup userGroup) {
-//        Invite invite = new Invite();
-//        invite.setRecvUserId(recvUserId);
-//        invite.setUserGroup(userGroup);
-//        invite.setStatus(InviteStatus.WAITING);
-//
-//        return invite;
-//    }
 }

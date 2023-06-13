@@ -1,12 +1,15 @@
 package jparest.practice.group.domain;
 
 import jparest.practice.common.util.TimeBaseEntity;
+import jparest.practice.invite.domain.Invite;
 import jparest.practice.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "user_group")
@@ -27,6 +30,9 @@ public class UserGroup extends TimeBaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "group_id")
     private Group group;
+
+    @OneToMany(mappedBy = "sendUserGroup", orphanRemoval = true)
+    private List<Invite> invites = new ArrayList<>();
 
     public void setGroup(Group group) {
         this.group = group;

@@ -3,17 +3,13 @@ package jparest.practice.invite.service;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.exception.ExistUserGroupException;
-import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.exception.UserGroupNotFoundException;
-import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
-import jparest.practice.invite.dto.InviteStatusPatchRequest;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
-import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.ExistInviteForUserException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.invite.repository.InviteRepository;
@@ -29,7 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static jparest.practice.invite.domain.InviteStatus.*;
+import static jparest.practice.invite.domain.InviteStatus.ACCEPT;
+import static jparest.practice.invite.domain.InviteStatus.WAITING;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +60,7 @@ public class InviteServiceImpl implements InviteService {
         }
 
         User recvUser = findUser(recvUserId);
-        Invite invite = inviteRepository.save(new Invite(sendUserGroup, recvUser, WAITING));
+        Invite invite = inviteRepository.save(Invite.createInvite(sendUserGroup, recvUser));
 
         return InviteUserResponse.builder().inviteId(invite.getId()).build();
     }

@@ -4,21 +4,17 @@ import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.dto.GetUserGroupResponse;
-import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
 import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.user.domain.User;
-import jparest.practice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -54,8 +50,6 @@ public class GroupServiceImpl implements GroupService {
     public Boolean withdrawGroup(User user, Long groupId) {
 
         UserGroup findUserGroup = findUserGroup(user.getId(), groupId);
-
-//        inviteRepository.de
 
         userGroupRepository.delete(findUserGroup);
 
