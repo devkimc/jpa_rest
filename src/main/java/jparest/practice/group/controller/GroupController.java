@@ -11,7 +11,7 @@ import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -22,7 +22,7 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping
-    public ApiResult<CreateGroupResponse> createGroup(@CurrentUser User user, @RequestBody CreateGroupRequest createGroupRequest) {
+    public ApiResult<CreateGroupResponse> createGroup(@CurrentUser User user, @Valid @RequestBody CreateGroupRequest createGroupRequest) {
         return ApiUtils.success(groupService.createGroup(user, createGroupRequest.getGroupName()));
     }
 
@@ -32,7 +32,7 @@ public class GroupController {
     }
 
     @GetMapping
-    public ApiResult<List<GetUserGroupResponse>> getUserGroupList(HttpServletRequest request, @CurrentUser User user) {
+    public ApiResult<List<GetUserGroupResponse>> getUserGroupList(@CurrentUser User user) {
         return ApiUtils.success(groupService.getUserGroupList(user));
     }
 }

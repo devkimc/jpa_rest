@@ -16,7 +16,7 @@ configurations {
 }
 
 ext {
-	snippetsDir = file('build/generated-snippets')	//(3) 빌드시 snippets 파일들이 저장될 저장소
+	snippetsDir = file('build/generated-snippets')
 }
 
 repositories {
@@ -24,7 +24,12 @@ repositories {
 }
 
 dependencies {
-	// db
+
+	// common
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// database
 	implementation 'mysql:mysql-connector-java:8.0.29'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -35,13 +40,14 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+	// web
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 	// openApi
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5'
-
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
 	// test
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
@@ -52,6 +58,7 @@ dependencies {
 
 	// docs
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
 }
 
@@ -60,7 +67,7 @@ test {
 	outputs.dir snippetsDir
 }
 
-asciidoctor {	//(5) asccidoctor 설정
+asciidoctor {
 	dependsOn test
 	inputs.dir snippetsDir
 
@@ -69,16 +76,16 @@ asciidoctor {	//(5) asccidoctor 설정
 	}
 }
 
-asciidoctor.doFirst {	//(6) asciidoctor가 실행될 때 docs 하위 파일 삭제
+asciidoctor.doFirst {
 	delete file('src/main/resources/static/docs')
 }
 
-task copyDocument(type: Copy) {		//(8) from의 파일을 into로 복사
+task copyDocument(type: Copy) {
 	dependsOn asciidoctor
 	from file("build/docs/asciidoc")
 	into file("src/main/resources/static/docs")
 }
 
-build {		//(9) build 시 copyDocument 실행
+build {		// build 시 copyDocument 실행
 	dependsOn copyDocument
 }

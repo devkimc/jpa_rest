@@ -1,0 +1,10 @@
+[source,bash]
+----
+$ echo '{
+  "groupId" : 1,
+  "restName" : "",
+  "latitude" : 37.481079886,
+  "longitude" : 126.9530287
+}' | http POST 'http://localhost:8080/api/restaurants/1/favorite' \
+    'Content-Type:application/json;charset=UTF-8'
+----

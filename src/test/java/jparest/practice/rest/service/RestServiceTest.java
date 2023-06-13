@@ -6,9 +6,6 @@ import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.service.GroupService;
-import jparest.practice.invite.domain.InviteStatus;
-import jparest.practice.invite.dto.InviteUserRequest;
-import jparest.practice.invite.dto.InviteUserResponse;
 import jparest.practice.invite.service.InviteService;
 import jparest.practice.rest.domain.GroupRest;
 import jparest.practice.rest.domain.Rest;
@@ -46,9 +43,6 @@ public class RestServiceTest {
     UserAuthService userAuthService;
 
     @Autowired
-    InviteService inviteService;
-
-    @Autowired
     GroupService groupService;
 
     @Autowired
@@ -72,12 +66,6 @@ public class RestServiceTest {
         // 2. 그룹 생성
         CreateGroupResponse groupResponse = groupService.createGroup(firstUser, groupName1);
         group = findGroupById(groupResponse.getId());
-
-        // 3. 그룹 초대, 초대 승낙
-        InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), group.getId());
-        InviteUserResponse inviteResponse = inviteService.inviteToGroup(firstUser, inviteUserRequest);
-
-        inviteService.procInvitation(inviteResponse.getInviteId(), secondUser, InviteStatus.ACCEPT);
     }
 
     @Test

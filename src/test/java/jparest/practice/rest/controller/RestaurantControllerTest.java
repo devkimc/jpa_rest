@@ -31,6 +31,37 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
     private final String RESTAURANT_API = "/api/restaurants";
 
     @Test
+    @DisplayName("식당 이름이 빈값일 경우 에러를 반환한다.")
+    public void chk_add_favorite_rests_validation() throws Exception {
+
+        //given
+        AddFavoriteRestRequest requestBody = AddFavoriteRestRequest.builder()
+                .groupId(1L)
+                .restName("")
+                .latitude(latitude)
+                .longitude(longitude)
+                .build();
+
+        given(restService.addFavRest(any(), any(), any()))
+                .willReturn(true);
+
+        //when
+        ResultActions result = mockMvc.perform(
+                post(RESTAURANT_API + "/{restId}/favorite", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createJson(requestBody))
+        );
+
+        //then
+        result
+                .andExpect(status().isBadRequest())
+                .andExpectAll(
+                        jsonPath("$.field").value("restName")
+                );
+    }
+
+
+    @Test
     @DisplayName("맛집 추가")
     void add_favorite_rests() throws Exception {
 
