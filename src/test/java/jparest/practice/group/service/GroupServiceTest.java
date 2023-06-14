@@ -31,8 +31,7 @@ import java.util.UUID;
 
 import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
 import static jparest.practice.common.utils.fixture.GroupFixture.groupName2;
-import static jparest.practice.common.utils.fixture.RestFixture.createFavoriteRest;
-import static jparest.practice.common.utils.fixture.RestFixture.restId;
+import static jparest.practice.common.utils.fixture.RestFixture.*;
 import static jparest.practice.common.utils.fixture.UserFixture.createFirstUser;
 import static jparest.practice.common.utils.fixture.UserFixture.createSecondUser;
 import static org.junit.jupiter.api.Assertions.*;
@@ -109,7 +108,7 @@ public class GroupServiceTest {
 
         InviteUserResponse response = inviteService.inviteToGroup(firstUser, new InviteUserRequest(secondUser.getId(), saveGroupId));
 
-        favoriteRestaurantService.addFavRest(firstUser, restId, createFavoriteRest(saveGroupId));
+        favoriteRestaurantService.addFavRest(firstUser, restId1, createAddFavoriteRestRequest(saveGroupId, restName1));
         GroupRest groupRest = findGroup(saveGroupId).getGroupRests().get(0);
 
         // when

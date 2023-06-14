@@ -68,7 +68,7 @@ public class FavoriteRestaurantControllerTest extends RestDocsTestSupport {
         //given
         AddFavoriteRestRequest requestBody = AddFavoriteRestRequest.builder()
                 .groupId(1L)
-                .restName(restName)
+                .restName(restName1)
                 .latitude(latitude)
                 .longitude(longitude)
                 .build();
@@ -145,8 +145,8 @@ public class FavoriteRestaurantControllerTest extends RestDocsTestSupport {
         params.add("groupId", "1");
 
         GetFavRestListResponse favRest = GetFavRestListResponse.builder()
-                .restId(restId)
-                .restName(restName)
+                .restId(restId1)
+                .restName(restName1)
                 .latitude(latitude)
                 .longitude(longitude)
                 .build();
@@ -167,8 +167,8 @@ public class FavoriteRestaurantControllerTest extends RestDocsTestSupport {
         result
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.result.content.[0].restId").value(restId),
-                        jsonPath("$.result.content.[0].restName").value(restName),
+                        jsonPath("$.result.content.[0].restId").value(restId1),
+                        jsonPath("$.result.content.[0].restName").value(restName1),
                         jsonPath("$.result.content.[0].latitude").value(latitude),
                         jsonPath("$.result.content.[0].longitude").value(longitude)
                 )

@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface RestRepository extends JpaRepository<Rest, String> {
 
     @Query("SELECT " +
@@ -16,4 +18,8 @@ public interface RestRepository extends JpaRepository<Rest, String> {
             ") " +
             "FROM Rest r JOIN r.groupRests gr WHERE gr.group.id = :groupId")
     Page<GetFavRestListResponse> findAllByGroupId(@Param("groupId") Long groupId, Pageable pageable);
+
+//    Optional<List<Rest>> findTop5OrderByCreatedAtDesc();
+
+    List<Rest> findTop5ByOrderByTotalFavoriteDesc();
 }
