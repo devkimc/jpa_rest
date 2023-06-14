@@ -20,7 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
         UserController.class,
         GroupController.class,
         InviteController.class,
-        FavoriteRestaurantController.class
+        FavoriteRestaurantController.class,
+//        RankingRestaurantController.class
 })
 public abstract class ControllerTest {
 

@@ -48,7 +48,6 @@ class RankingRestaurantServiceTest {
     @Autowired
     RankingRestaurantService rankingRestaurantService;
 
-
     @BeforeEach
     void setUp() {
         firstUser = userAuthService.join(createFirstUser());
@@ -116,8 +115,6 @@ class RankingRestaurantServiceTest {
                 .sorted(Comparator.comparing(GetNewSavedRestResponse::getSavedAt)
                         .reversed())
                 .toList();
-        
-        
 
         //then
         assertAll(

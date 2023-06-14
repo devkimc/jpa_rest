@@ -17,8 +17,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static jparest.practice.auth.jwt.JwtFilterWhiteList.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,7 +34,8 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
     private final JwtTokenProvider jwtProvider;
-    private final List<String> EXCLUDE_URL = List.of("/api/auth/join", "/api/auth/login", "/api/auth/kakao", "/docs/index.html");
+    //    private final List<String> EXCLUDE_URL = List.of("/api/auth/join", "/api/auth/login", "/api/auth/kakao", "/docs/index.html");
+    private final List<String> EXCLUDE_URL = new ArrayList<>();
 
     /**
      * 토큰 인증 정보를 현재 쓰레드의 SecurityContext 에 저장되는 역할 수행
@@ -101,7 +106,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-            for(String url: EXCLUDE_URL) {
+        List<String> getWhiteList = Arrays.asList(GET_WHITELIST);
+        List<String> postWhiteList = Arrays.asList(POST_WHITELIST);
+
+        List<String> list = new ArrayList<>();
+        list.addAll(getWhiteList);
+        list.addAll(postWhiteList);
+
+        for(String url: list) {
                 if(request.getRequestURI().equalsIgnoreCase(url)) {
                     log.info("JwtFilter 에서 제외 : {}", request.getServletPath());
                     return true;

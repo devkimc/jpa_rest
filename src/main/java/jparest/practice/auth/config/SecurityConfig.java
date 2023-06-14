@@ -19,8 +19,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
+
+import static jparest.practice.auth.jwt.JwtFilterWhiteList.*;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -40,15 +41,6 @@ public class SecurityConfig  {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        final String[] GET_WHITELIST = new String[]{
-                "/docs/index.html",
-        };
-
-        final String[] POST_WHITELIST = new String[]{
-                "/api/auth/login",
-                "/api/auth/join",
-                "/api/auth/kakao",
-        };
 
         return http
                 .headers().frameOptions().sameOrigin()
