@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class RankingRestaurantControllerTest extends RestDocsTestSupport {
 
-    private final String REST_RANKING_API = "/api/restaurant/ranking";
+    private final String REST_RANKING_API = "/api/restaurants/ranking";
 
     @Test
     @DisplayName("가장 많이 저장된 맛집 조회")

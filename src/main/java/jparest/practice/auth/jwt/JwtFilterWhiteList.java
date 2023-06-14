@@ -8,8 +8,8 @@ public class JwtFilterWhiteList {
 
     public static final String[] GET_WHITELIST = new String[]{
             "/docs/index.html",
-            "/api/restaurant/ranking/most/save",
-            "/api/restaurant/ranking/new/save",
+            "/api/restaurants/ranking/most/save",
+            "/api/restaurants/ranking/new/save",
     };
 
     public static final String[] POST_WHITELIST = new String[]{
