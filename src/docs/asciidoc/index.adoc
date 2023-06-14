@@ -21,4 +21,4 @@
 * link:invite.adoc[바로가기, window=_blank]
 
 === Restaurant API
-* link:restaurant.adoc[바로가기, window=_blank]
+* link:restaurant-favorite.adoc[바로가기, window=_blank]

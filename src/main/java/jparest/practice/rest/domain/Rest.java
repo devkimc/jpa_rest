@@ -36,6 +36,7 @@ public class Rest extends TimeBaseEntity {
     @Column(nullable = false)
     private int totalFavorite;
 
+    @Builder.Default
     @OneToMany(mappedBy = "rest")
     private List<GroupRest> groupRests = new ArrayList<GroupRest>();
 

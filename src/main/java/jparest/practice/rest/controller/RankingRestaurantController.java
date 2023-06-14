@@ -1,6 +1,8 @@
 package jparest.practice.rest.controller;
 
 
+import jparest.practice.common.util.ApiResult;
+import jparest.practice.common.util.ApiUtils;
 import jparest.practice.rest.dto.GetMostSavedRestResponse;
 import jparest.practice.rest.dto.GetNewSavedRestResponse;
 import jparest.practice.rest.service.RankingRestaurantService;
@@ -19,12 +21,12 @@ public class RankingRestaurantController {
     private final RankingRestaurantService rankingRestaurantService;
 
     @GetMapping("/most/save")
-    public List<GetMostSavedRestResponse> getMostSavedRest() {
-        return rankingRestaurantService.getMostSavedRest();
+    public ApiResult<List<GetMostSavedRestResponse>> getMostSavedRest() {
+        return ApiUtils.success(rankingRestaurantService.getMostSavedRest());
     }
 
     @GetMapping("/new/save")
-    public List<GetNewSavedRestResponse> getNewSavedRest() {
-        return rankingRestaurantService.getNewSavedRest();
+    public ApiResult<List<GetNewSavedRestResponse>> getNewSavedRest() {
+        return ApiUtils.success(rankingRestaurantService.getNewSavedRest());
     }
 }

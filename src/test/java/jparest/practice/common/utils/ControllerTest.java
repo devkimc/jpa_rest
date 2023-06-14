@@ -8,7 +8,9 @@ import jparest.practice.group.service.GroupService;
 import jparest.practice.invite.controller.InviteController;
 import jparest.practice.invite.service.InviteService;
 import jparest.practice.rest.controller.FavoriteRestaurantController;
+import jparest.practice.rest.controller.RankingRestaurantController;
 import jparest.practice.rest.service.FavoriteRestaurantService;
+import jparest.practice.rest.service.RankingRestaurantService;
 import jparest.practice.user.controller.UserController;
 import jparest.practice.user.service.UserAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
         GroupController.class,
         InviteController.class,
         FavoriteRestaurantController.class,
-//        RankingRestaurantController.class
+        RankingRestaurantController.class
 })
 public abstract class ControllerTest {
 
@@ -39,6 +41,9 @@ public abstract class ControllerTest {
 
     @MockBean
     protected InviteService inviteService;
+
+    @MockBean
+    protected RankingRestaurantService rankingRestaurantService;
 
     @MockBean
     protected FavoriteRestaurantService favoriteRestaurantService;

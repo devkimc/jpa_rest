@@ -18,11 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static jparest.practice.auth.jwt.JwtFilterWhiteList.*;
+import static jparest.practice.auth.jwt.JwtFilterWhiteList.getWhitelist;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -106,14 +105,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        List<String> getWhiteList = Arrays.asList(GET_WHITELIST);
-        List<String> postWhiteList = Arrays.asList(POST_WHITELIST);
 
-        List<String> list = new ArrayList<>();
-        list.addAll(getWhiteList);
-        list.addAll(postWhiteList);
-
-        for(String url: list) {
+        for(String url: getWhitelist()) {
                 if(request.getRequestURI().equalsIgnoreCase(url)) {
                     log.info("JwtFilter 에서 제외 : {}", request.getServletPath());
                     return true;
