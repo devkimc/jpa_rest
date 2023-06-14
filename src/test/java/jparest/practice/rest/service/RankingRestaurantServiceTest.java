@@ -104,7 +104,6 @@ class RankingRestaurantServiceTest {
                     groupList.get(0).getId(), restNameList.get(i)
             );
 
-            System.out.println("====== " + i + " ======");
             favoriteRestaurantService.addFavRest(firstUser, restIdList.get(i), addFavRestRequest);
         }
 

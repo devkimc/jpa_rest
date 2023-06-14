@@ -23,10 +23,10 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
-        show-sql: true
+#        show-sql: true
         format_sql: true
 
   redis:
@@ -36,6 +36,6 @@ spring:
 domain:
   host: 'localhost'
 
-logging.level:
-  org.hibernate.SQL: debug
-  org.hibernate.type: trace
+#logging.level:
+#  org.hibernate.SQL: debug
+#  org.hibernate.type: trace
