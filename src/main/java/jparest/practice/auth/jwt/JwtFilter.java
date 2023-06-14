@@ -104,7 +104,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         for(String url: getWhitelist()) {
                 if(request.getRequestURI().equalsIgnoreCase(url)) {
-                    log.info("JwtFilter 에서 제외 : {}", request.getServletPath());
+//                    log.info("JwtFilter 에서 제외 : {}", request.getServletPath());
                     return true;
                 }
             }
