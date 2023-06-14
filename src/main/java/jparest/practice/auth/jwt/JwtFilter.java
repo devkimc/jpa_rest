@@ -17,8 +17,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import java.util.stream.Collectors;
+
+import static jparest.practice.auth.jwt.JwtFilterWhiteList.getWhitelist;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,7 +31,6 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
     private final JwtTokenProvider jwtProvider;
-    private final List<String> EXCLUDE_URL = List.of("/api/auth/join", "/api/auth/login", "/api/auth/kakao", "/docs/index.html");
 
     /**
      * 토큰 인증 정보를 현재 쓰레드의 SecurityContext 에 저장되는 역할 수행
@@ -101,7 +101,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-            for(String url: EXCLUDE_URL) {
+
+        for(String url: getWhitelist()) {
                 if(request.getRequestURI().equalsIgnoreCase(url)) {
                     log.info("JwtFilter 에서 제외 : {}", request.getServletPath());
                     return true;

@@ -1,0 +1,31 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+
+= Restaurant API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 1
+:toc-title: 식당 순위
+
+== 가장 많이 저장된 식당 순위 조회
+=== REQUEST
+include::{snippets}/ranking-restaurant-controller-test/get_fav_rests_ranking_most_save/http-request.adoc[]
+
+=== RESPONSE BODY
+include::{snippets}/ranking-restaurant-controller-test/get_fav_rests_ranking_most_save/response-body.adoc[]
+
+=== RESPONSE FIELD
+include::{snippets}/ranking-restaurant-controller-test/get_fav_rests_ranking_most_save/response-fields.adoc[]
+
+== 가장 최근에 저장된 식당 순위 조회
+=== REQUEST
+include::{snippets}/ranking-restaurant-controller-test/get_fav_rests_ranking_new_save/http-request.adoc[]
+
+=== RESPONSE BODY
+include::{snippets}/ranking-restaurant-controller-test/get_fav_rests_ranking_new_save/response-body.adoc[]
+
+=== RESPONSE FIELD
+include::{snippets}/ranking-restaurant-controller-test/get_fav_rests_ranking_new_save/response-fields.adoc[]

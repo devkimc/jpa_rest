@@ -16,7 +16,7 @@
 * Redis
 
 ## :link: Rest API 문서
-* [API 문서](https://github.com/vvs-kim/jpa_rest/blob/main/src/docs/asciidoc/index.adoc)
+* [API 문서](https://github.com/vvs-kim/jpa_rest/blob/develop/src/docs/asciidoc/index.adoc)
 
 ## :link: 테스트
-* [테스트](https://github.com/vvs-kim/jpa_rest/tree/main/src/test/java/jparest/practice/service)
+* [테스트](https://github.com/vvs-kim/jpa_rest/tree/develop/src/test/java/jparest/practice)

@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
-public class RestaurantControllerTest extends RestDocsTestSupport {
+public class FavoriteRestaurantControllerTest extends RestDocsTestSupport {
 
     private final String RESTAURANT_API = "/api/restaurants";
 
@@ -42,7 +42,7 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
                 .longitude(longitude)
                 .build();
 
-        given(restService.addFavRest(any(), any(), any()))
+        given(favoriteRestaurantService.addFavRest(any(), any(), any()))
                 .willReturn(true);
 
         //when
@@ -68,12 +68,12 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
         //given
         AddFavoriteRestRequest requestBody = AddFavoriteRestRequest.builder()
                 .groupId(1L)
-                .restName(restName)
+                .restName(restName1)
                 .latitude(latitude)
                 .longitude(longitude)
                 .build();
 
-        given(restService.addFavRest(any(), any(), any()))
+        given(favoriteRestaurantService.addFavRest(any(), any(), any()))
                 .willReturn(true);
 
         //when
@@ -107,7 +107,7 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
         params.add("groupId", "1");
 
         //given
-        given(restService.deleteFavRest(any(), any(), any()))
+        given(favoriteRestaurantService.deleteFavRest(any(), any(), any()))
                 .willReturn(true);
 
         //when
@@ -145,15 +145,15 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
         params.add("groupId", "1");
 
         GetFavRestListResponse favRest = GetFavRestListResponse.builder()
-                .restId(restId)
-                .restName(restName)
+                .restId(restId1)
+                .restName(restName1)
                 .latitude(latitude)
                 .longitude(longitude)
                 .build();
 
         PageImpl<GetFavRestListResponse> response = new PageImpl<>(List.of(favRest), PageRequest.of(0, 10), 1);
 
-        given(restService.getFavRestList(any(), any()))
+        given(favoriteRestaurantService.getFavRestList(any(), any()))
                 .willReturn(response);
 
         //when
@@ -167,8 +167,8 @@ public class RestaurantControllerTest extends RestDocsTestSupport {
         result
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.result.content.[0].restId").value(restId),
-                        jsonPath("$.result.content.[0].restName").value(restName),
+                        jsonPath("$.result.content.[0].restId").value(restId1),
+                        jsonPath("$.result.content.[0].restName").value(restName1),
                         jsonPath("$.result.content.[0].latitude").value(latitude),
                         jsonPath("$.result.content.[0].longitude").value(longitude)
                 )

@@ -5,7 +5,7 @@ import jparest.practice.common.util.ApiResult;
 import jparest.practice.common.util.ApiUtils;
 import jparest.practice.rest.dto.AddFavoriteRestRequest;
 import jparest.practice.rest.dto.GetFavRestListResponse;
-import jparest.practice.rest.service.RestService;
+import jparest.practice.rest.service.FavoriteRestaurantService;
 import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,16 +17,16 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/restaurants")
-public class RestaurantController {
+public class FavoriteRestaurantController {
 
-    private final RestService restService;
+    private final FavoriteRestaurantService favoriteRestaurantService;
 
     @PostMapping("/{restId}/favorite")
     public ApiResult<Boolean> addFavRest(@CurrentUser User user,
                                               @PathVariable String restId,
                                               @Valid @RequestBody AddFavoriteRestRequest addFavoriteRestRequest
                                               ) {
-        return ApiUtils.success(restService.addFavRest(user, restId, addFavoriteRestRequest));
+        return ApiUtils.success(favoriteRestaurantService.addFavRest(user, restId, addFavoriteRestRequest));
     }
 
     @DeleteMapping("/{restId}/favorite")
@@ -34,7 +34,7 @@ public class RestaurantController {
                                             @PathVariable String restId,
                                             @RequestParam Long groupId
     ) {
-        return ApiUtils.success(restService.deleteFavRest(user, groupId, restId));
+        return ApiUtils.success(favoriteRestaurantService.deleteFavRest(user, groupId, restId));
     }
 
     @GetMapping("/favorite")
@@ -42,6 +42,6 @@ public class RestaurantController {
                                                                   @RequestParam Long groupId,
                                                                   Pageable pageable
     ) {
-        return ApiUtils.success(restService.getFavRestList(groupId, pageable));
+        return ApiUtils.success(favoriteRestaurantService.getFavRestList(groupId, pageable));
     }
 }
