@@ -1,7 +1,6 @@
 package jparest.practice.auth.config;
 
 import jparest.practice.auth.jwt.JwtFilter;
-import jparest.practice.auth.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -21,7 +20,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-import static jparest.practice.auth.jwt.JwtFilterWhiteList.*;
+import static jparest.practice.auth.jwt.JwtFilterWhiteList.GET_WHITELIST;
+import static jparest.practice.auth.jwt.JwtFilterWhiteList.POST_WHITELIST;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -29,15 +29,11 @@ public class SecurityConfig  {
     private final CorsConfig corsProperties;
     private final JwtFilter jwtFilter;
 
-    // JWT 제공 클래스
-    private final JwtTokenProvider jwtProvider;
-    // 인증 실패 또는 인증헤더가 전달받지 못했을 때 핸들러
     private final AuthenticationEntryPoint authenticationEntryPoint;
-    // 인가 실패 핸들러
     private final AccessDeniedHandler accessDeniedHandler;
 
     /**
-     * 보안 기능 초기화 및 설정
+     * 보안 설정
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -53,10 +49,9 @@ public class SecurityConfig  {
                 .and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers(HttpMethod.GET, GET_WHITELIST).permitAll() // 해당 GET URL은 모두 허용
-                .antMatchers(HttpMethod.POST, POST_WHITELIST).permitAll() // 해당 POST URL은 모두 허용
-//                .antMatchers("**").hasAnyRole("GENERAL") // 권한 적용
-                .anyRequest().authenticated() // 나머지 요청에 대해서는 인증을 요구
+                .antMatchers(HttpMethod.GET, GET_WHITELIST).permitAll() // JwtFilterWhiteList 에서 관리
+                .antMatchers(HttpMethod.POST, POST_WHITELIST).permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
@@ -66,6 +61,9 @@ public class SecurityConfig  {
                 .build();
     }
 
+    /**
+     * Cors 설정 적용
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource corsConfigSource = new UrlBasedCorsConfigurationSource();
@@ -81,9 +79,6 @@ public class SecurityConfig  {
         return corsConfigSource;
     }
 
-    /**
-     * 비밀번호 암호화 및 확인 클래스
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
