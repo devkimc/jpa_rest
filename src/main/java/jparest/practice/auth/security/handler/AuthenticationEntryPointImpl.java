@@ -20,6 +20,7 @@ import java.io.OutputStream;
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper;
 
+    // 인증 실패 Handler
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authenticationException) throws IOException, ServletException {
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.AUTHENTICATION_ENTRYPOINT);

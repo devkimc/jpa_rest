@@ -20,6 +20,7 @@ import java.io.OutputStream;
 public class AuthDeniedHandler implements AccessDeniedHandler {
     private final ObjectMapper objectMapper;
 
+    // 인가 실패 Handler
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.ACCESS_DENIED);

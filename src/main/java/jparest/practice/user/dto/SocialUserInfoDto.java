@@ -11,7 +11,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-//@JsonIgnoreProperties({"connected_at", "id", "kakao_account"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SocialUserInfoDto {
 

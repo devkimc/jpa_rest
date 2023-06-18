@@ -1,4 +1,4 @@
-package jparest.practice.auth.config;
+package jparest.practice.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

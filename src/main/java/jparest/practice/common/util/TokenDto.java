@@ -21,8 +21,4 @@ public class TokenDto {
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
-
-    public void setRefreshTokenTTL(long refreshTokenTTL) {
-        this.refreshTokenTTL = refreshTokenTTL;
-    }
 }

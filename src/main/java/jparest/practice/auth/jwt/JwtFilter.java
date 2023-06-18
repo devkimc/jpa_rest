@@ -29,9 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
 
-    /**
-     * JWT 토큰 검사
-     */
+    // JWT 토큰 검사
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
