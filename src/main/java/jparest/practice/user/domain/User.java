@@ -71,11 +71,4 @@ public class User extends TimeBaseEntity {
         return false;
     }
 
-
-// 아이디, 비밀번호 로그인 시
-//    @Column(length = 20)
-//    private String loginId;
-
-//    @Column(length = 50)
-//    private String password;
 }

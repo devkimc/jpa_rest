@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class TimeBaseEntity {
 
+    // DB 수정자 추가할지 고려
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;

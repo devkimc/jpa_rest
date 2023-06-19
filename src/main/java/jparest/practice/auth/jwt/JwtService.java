@@ -1,7 +1,5 @@
 package jparest.practice.auth.jwt;
 
-import jparest.practice.auth.refreshToken.RefreshToken;
-import jparest.practice.auth.refreshToken.RefreshTokenRepository;
 import jparest.practice.auth.security.CustomUserDetailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

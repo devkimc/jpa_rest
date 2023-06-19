@@ -15,8 +15,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider implements InitializingBean {
 
-
-    private static final String AUTHORITIES_KEY = "auth";
+    private final String AUTHORITIES_KEY = "auth";
     private final String secret;
     private final long accessTokenTTL;
     private final long refreshTokenTTL;
@@ -90,15 +89,13 @@ public class JwtTokenProvider implements InitializingBean {
                     .build().parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (SecurityException e) {
-            log.error("Invalid JWT signature.", e);
-        } catch (MalformedJwtException e) {
-            log.error("Invalid JWT token", e);
+            log.error("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
-            log.debug("Expired JWT token -> reissue Access Token");
+            log.debug("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token", e);
+            log.error("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
-            log.error("JWT token compact of handler are invalid.", e);
+            log.error("JWT 토큰이 잘못되었습니다.");
         }
         return false;
     }

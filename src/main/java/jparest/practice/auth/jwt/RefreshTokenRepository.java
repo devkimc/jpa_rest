@@ -1,4 +1,4 @@
-package jparest.practice.auth.refreshToken;
+package jparest.practice.auth.jwt;
 
 import org.springframework.data.repository.CrudRepository;
 

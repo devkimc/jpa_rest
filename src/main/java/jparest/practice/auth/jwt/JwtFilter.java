@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-import static jparest.practice.auth.jwt.JwtFilterWhiteList.getWhitelist;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,11 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
 
-    private final JwtTokenProvider jwtProvider;
-
-    /**
-     * 토큰 인증 정보를 현재 쓰레드의 SecurityContext 에 저장되는 역할 수행
-     */
+    // JWT 토큰 검사
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -66,8 +61,8 @@ public class JwtFilter extends OncePerRequestFilter {
         if (isValidationRefreshToken == false) {
             CookieUtils.deleteCookie(request, response, TokenType.REFRESH_TOKEN.name());
             CookieUtils.deleteCookie(request, response, TokenType.ACCESS_TOKEN.name());
-            if (isValidationAccessToken == true) {
 
+            if (isValidationAccessToken == true) {
                 jwtService.deleteRefreshTokenByAccessToken(accessToken);
             }
         }
@@ -86,6 +81,7 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    // 존재하는 유저인지 확인 후, UsernamePasswordAuthenticationToken 을 SecurityContext 에 추가한다.
     private void setAuthentication(String token, HttpServletRequest request, HttpServletResponse response) {
         try {
             Authentication authentication = jwtService.tokenLogin(token);
@@ -99,12 +95,12 @@ public class JwtFilter extends OncePerRequestFilter {
         }
     }
 
+    // WhiteList 에 존재하는 URL 은 필터 검사를 제외시킨다.
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 
-        for(String url: getWhitelist()) {
+        for(String url: JwtFilterWhiteList.WHITELIST) {
                 if(request.getRequestURI().equalsIgnoreCase(url)) {
-//                    log.info("JwtFilter 에서 제외 : {}", request.getServletPath());
                     return true;
                 }
             }
