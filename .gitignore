@@ -1,7 +1,8 @@
 *.yml
 *.p12
-
 HELP.md
+
+### Build ###
 .gradle
 #!build/
 build/*
@@ -9,6 +10,9 @@ build/*
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+### Docker ###
+db/*
 
 ### STS ###
 .apt_generated

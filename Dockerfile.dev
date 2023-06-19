@@ -1,0 +1,5 @@
+FROM openjdk:17.0.2-slim
+ARG JAR_FILE=build/libs/practice-0.0.1-SNAPSHOT.jar
+COPY ${JAR_FILE} jpa-rest.jar
+EXPOSE 9090
+ENTRYPOINT ["java","-Dspring.profiles.active=dev","-jar","jpa-rest.jar"]
