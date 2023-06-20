@@ -24,7 +24,7 @@ public class Rest extends TimeBaseEntity {
     @Column(name = "rest_id", nullable = false, length = 16)
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String restName;
 
     @Column(nullable = false)

@@ -32,7 +32,7 @@ public class User extends TimeBaseEntity {
     @Column(length = 20)
     private String socialUserId;
 
-    @Column(length = 200)
+    @Column(length = 40)
     private String email;
 
     @Column(length = 20)

@@ -22,7 +22,7 @@ public class Group extends TimeBaseEntity {
     @Column(name = "group_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String groupName;
 
     @OneToMany(mappedBy = "group", orphanRemoval = true)
