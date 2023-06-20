@@ -1,0 +1,51 @@
+version: "3"
+services:
+  db:
+    container_name: jparest-mysql
+    image: mysql
+    environment:
+      MYSQL_DATABASE: jparest
+      MYSQL_ROOT_PASSWORD: 1#9&3!6@
+      TZ: Asia/Seoul
+    volumes:
+      - ./db/data:/var/lib/mysql:rw
+    ports:
+      - "3303:3306"
+    networks:
+      - api-network
+    restart: always
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+  redis:
+    container_name: jparest-redis
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - api-network
+    environment:
+      TZ: Asia/Seoul
+
+  api:
+    image: dkerhater/jpa-rest:0.0.1-dev
+    restart: always
+    ports:
+      - "9090:9090"
+    depends_on:
+      - db
+      - redis
+    container_name: jpa-rest-api
+    environment:
+      TZ: Asia/Seoul
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/jparest
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1#9&3!6@
+      SPRING_REDIS_HOST: redis
+    networks:
+      - api-network
+
+networks:
+  api-network:

@@ -10,6 +10,11 @@ public class JwtFilterWhiteList {
 
     public static final String[] GET_WHITELIST = new String[]{
             "/docs/index.html",
+            "/docs/user.html",
+            "/docs/group.html",
+            "/docs/invite.html",
+            "/docs/restaurant-favorite.html",
+            "/docs/restaurant-ranking.html",
             "/api/restaurants/ranking/most/save",
             "/api/restaurants/ranking/new/save",
     };
