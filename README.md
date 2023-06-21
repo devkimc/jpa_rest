@@ -20,7 +20,7 @@
 * Rest Docs
 
 ## :link: Rest API 문서
-* [API 문서](https://github.com/vvs-kim/jpa_rest/blob/develop/src/docs/asciidoc/index.adoc)
+* [API 문서](https://jpa-rest.vercel.app/)
 
 ## :link: 테스트
 * [테스트](https://github.com/vvs-kim/jpa_rest/tree/develop/src/test/java/jparest/practice)
@@ -85,6 +85,8 @@ EC2 를 사용하려면 인스턴스 설정, 탄력적 IP 설정, 도커 설치 
 또한 오토 스케일링, 로드밸런서 등 다른 AWS 서비스를 연결하려면 추가 설정이 필요합니다.
 추후에 이용률이 높은 서비스를 대응할 때 도움이 될 거 같아서 적용했습니다.
 Rolling 배포 옵션을 사용하여 배포 시, 무중단 배포가 가능하여 편리했습니다.
+
+<br />
 
 ## 성능 최적화
 
