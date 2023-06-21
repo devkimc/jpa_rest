@@ -33,9 +33,7 @@ public class JwtTokenProvider implements InitializingBean {
         this.tokenIssure = tokenIssure;
     }
 
-    /**
-     * accessToken 발급
-     */
+    // accessToken 발급
     public String createAccessToken(String userId, String userType) {
         log.debug("accessTokenTTL : {}ms", accessTokenTTL);
 
@@ -51,9 +49,7 @@ public class JwtTokenProvider implements InitializingBean {
                 .compact();
     }
 
-    /**
-     * refreshToken 발급
-     */
+    // refreshToken 발급
     public String createRefreshToken(String userId) {
         log.debug("Refresh : {}ms", refreshTokenTTL);
 
@@ -79,9 +75,7 @@ public class JwtTokenProvider implements InitializingBean {
         return refreshTokenTTL;
     }
 
-    /**
-     * 토큰 검증
-     */
+    // 토큰 유효성 검증
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
@@ -100,7 +94,7 @@ public class JwtTokenProvider implements InitializingBean {
         return false;
     }
 
-    // 애플리케이션 재실행 시 key 값 주입
+    // Bean 이 생성되고 의존성 주입까지 끝낸 후 주입 받은 secret 값을 key 변수에 할당하기 위함
     @Override
     public void afterPropertiesSet() throws Exception {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
