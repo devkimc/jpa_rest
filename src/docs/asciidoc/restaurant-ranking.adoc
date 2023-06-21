@@ -2,7 +2,7 @@ ifndef::snippets[]
 :snippets: ./build/generated-snippets
 endif::[]
 
-= Restaurant API
+= Restaurant ranking API
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
