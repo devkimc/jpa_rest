@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Persistable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +19,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Rest extends TimeBaseEntity {
+public class Rest extends TimeBaseEntity implements Persistable<String> {
 
     @Id
     @Column(name = "rest_id", nullable = false, length = 16)
@@ -50,5 +51,10 @@ public class Rest extends TimeBaseEntity {
 
     public void decreaseTotalFavorite() {
         setTotalFavorite(this.totalFavorite - 1);
+    }
+
+    @Override
+    public boolean isNew() {
+        return super.getCreatedAt() == null;
     }
 }
