@@ -2,6 +2,7 @@ package jparest.practice.rest.service;
 
 
 import jparest.practice.group.domain.Group;
+import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
@@ -24,10 +25,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
+import static jparest.practice.common.utils.fixture.GroupFixture.*;
 import static jparest.practice.common.utils.fixture.RestFixture.*;
-import static jparest.practice.common.utils.fixture.UserFixture.createFirstUser;
-import static jparest.practice.common.utils.fixture.UserFixture.createSecondUser;
+import static jparest.practice.common.utils.fixture.UserFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -63,7 +63,12 @@ public class FavoriteRestaurantServiceTest {
         secondUser = userAuthService.join(createSecondUser());
 
         // 2. 그룹 생성
-        CreateGroupResponse groupResponse = groupService.createGroup(firstUser, groupName1);
+        CreateGroupRequest createGroupRequest = CreateGroupRequest.builder()
+                .groupName(groupName1)
+                .isPublic(true)
+                .build();
+
+        CreateGroupResponse groupResponse = groupService.createGroup(firstUser, createGroupRequest);
         group = findGroupById(groupResponse.getId());
     }
 
@@ -90,7 +95,12 @@ public class FavoriteRestaurantServiceTest {
     public void 맛집_추가_시_총_북마크_맛집_개수_확인() throws Exception {
 
         //given
-        CreateGroupResponse secondGroupResponse = groupService.createGroup(firstUser, "두번째 그룹");
+        CreateGroupRequest createGroupRequest2 = CreateGroupRequest.builder()
+                .groupName(groupName2)
+                .isPublic(true)
+                .build();
+
+        CreateGroupResponse secondGroupResponse = groupService.createGroup(firstUser, createGroupRequest2);
 
         //when
         favoriteRestaurantService.addFavRest(firstUser, restId1, createAddFavoriteRestRequest(group.getId(), restName1));

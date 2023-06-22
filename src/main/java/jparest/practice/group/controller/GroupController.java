@@ -22,8 +22,9 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping
-    public ApiResult<CreateGroupResponse> createGroup(@CurrentUser User user, @Valid @RequestBody CreateGroupRequest createGroupRequest) {
-        return ApiUtils.success(groupService.createGroup(user, createGroupRequest.getGroupName()));
+    public ApiResult<CreateGroupResponse> createGroup(@CurrentUser User user,
+                                                      @Valid @RequestBody CreateGroupRequest createGroupRequest) {
+        return ApiUtils.success(groupService.createGroup(user, createGroupRequest));
     }
 
     @DeleteMapping("/{groupId}/users")

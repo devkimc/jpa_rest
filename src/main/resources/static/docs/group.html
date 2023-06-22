@@ -462,11 +462,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/groups HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 38
+Content-Length: 59
 Host: localhost:8080
 
 {
-  "groupName" : "첫번째 그룹"
+  "groupName" : "첫번째 그룹",
+  "isPublic" : true
 }</code></pre>
 </div>
 </div>
@@ -488,6 +489,11 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">그룸 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isPublic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공개 여부</p></td>
 </tr>
 </tbody>
 </table>
@@ -680,7 +686,7 @@ Host: localhost:8080</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-06-19 16:06:07 +0900
+Last updated 2023-06-20 12:25:38 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

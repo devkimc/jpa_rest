@@ -1,6 +1,7 @@
 package jparest.practice.rest.service;
 
 import jparest.practice.group.domain.Group;
+import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
@@ -131,7 +132,12 @@ class RankingRestaurantServiceTest {
 
     private void createGroupList(int count) {
         for (int i = 0; i < count; i++) {
-            CreateGroupResponse groupResponse = groupService.createGroup(firstUser, groupNameList.get(i));
+            CreateGroupRequest createGroupRequest = CreateGroupRequest.builder()
+                    .groupName(groupNameList.get(i))
+                    .isPublic(true)
+                    .build();
+
+            CreateGroupResponse groupResponse = groupService.createGroup(firstUser, createGroupRequest);
 
             Group group = findGroupById(groupResponse.getId());
             groupList.add(group);

@@ -14,7 +14,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "groups")
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Group extends TimeBaseEntity {
 
     @Id
@@ -25,11 +27,16 @@ public class Group extends TimeBaseEntity {
     @Column(nullable = false, length = 20)
     private String groupName;
 
+    @Builder.Default
     @OneToMany(mappedBy = "group", orphanRemoval = true)
     private List<UserGroup> userGroups = new ArrayList<UserGroup>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "group", orphanRemoval = true)
     private List<GroupRest> groupRests = new ArrayList<GroupRest>();
+
+    @Column(nullable = false)
+    private Boolean isPublic;
 
     public Group(String groupName) {
         this.groupName = groupName;

@@ -2,12 +2,12 @@ package jparest.practice.group.service;
 
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
+import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.dto.GetUserGroupResponse;
 import jparest.practice.group.exception.UserGroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.UserGroupRepository;
-import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,15 +23,18 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
     private final UserGroupRepository userGroupRepository;
-    private final InviteRepository inviteRepository;
 
     /**
      * 그룹 생성
      */
     @Override
     @Transactional
-    public CreateGroupResponse createGroup(User user, String groupName) {
-        Group newGroup = new Group(groupName);
+    public CreateGroupResponse createGroup(User user, CreateGroupRequest createGroupRequest) {
+        Group newGroup = Group.builder()
+                .groupName(createGroupRequest.getGroupName())
+                .isPublic(createGroupRequest.getIsPublic())
+                .build();
+
         Group saveGroup = groupRepository.save(newGroup);
 
         saveUserGroup(user, saveGroup);

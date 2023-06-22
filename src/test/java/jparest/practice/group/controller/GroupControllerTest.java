@@ -39,6 +39,7 @@ public class GroupControllerTest extends RestDocsTestSupport {
                 .build();
 
         List<GetUserGroupResponse> getUserGroupResponses = new ArrayList<>();
+
         getUserGroupResponses.add(response);
 
         given(groupService.getUserGroupList(any()))
@@ -72,7 +73,11 @@ public class GroupControllerTest extends RestDocsTestSupport {
     void add_groups() throws Exception {
 
         //given
-        CreateGroupRequest createGroupRequest = new CreateGroupRequest(groupName1);
+        CreateGroupRequest createGroupRequest = CreateGroupRequest.builder()
+                .groupName(groupName1)
+                .isPublic(true)
+                .build();
+
         String content = objectMapper.writeValueAsString(createGroupRequest);
 
         given(groupService.createGroup(any(), any()))
@@ -96,7 +101,8 @@ public class GroupControllerTest extends RestDocsTestSupport {
                 )
                 .andDo(restDocs.document(
                         requestFields(
-                                fieldWithPath("groupName").description("그룸 이름")
+                                fieldWithPath("groupName").description("그룸 이름"),
+                                fieldWithPath("isPublic").description("공개 여부")
                         ),
                         responseFields(
                                 fieldWithPath("success").description("성공 여부"),

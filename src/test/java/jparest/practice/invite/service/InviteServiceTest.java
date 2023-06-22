@@ -2,6 +2,7 @@ package jparest.practice.invite.service;
 
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
+import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.exception.ExistUserGroupException;
 import jparest.practice.group.exception.GroupNotFoundException;
@@ -58,7 +59,12 @@ public class InviteServiceTest {
         firstUser = userAuthService.join(createFirstUser());
         secondUser = userAuthService.join(createSecondUser());
 
-        CreateGroupResponse response = groupService.createGroup(firstUser, groupName1);
+        CreateGroupRequest createGroupRequest = CreateGroupRequest.builder()
+                .groupName(groupName1)
+                .isPublic(true)
+                .build();
+
+        CreateGroupResponse response = groupService.createGroup(firstUser, createGroupRequest);
         group = findGroupById(response.getId());
     }
 

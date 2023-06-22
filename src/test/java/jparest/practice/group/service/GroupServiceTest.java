@@ -2,6 +2,7 @@ package jparest.practice.group.service;
 
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.UserGroup;
+import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.dto.GetUserGroupResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
@@ -29,8 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
-import static jparest.practice.common.utils.fixture.GroupFixture.groupName2;
+import static jparest.practice.common.utils.fixture.GroupFixture.*;
 import static jparest.practice.common.utils.fixture.RestFixture.*;
 import static jparest.practice.common.utils.fixture.UserFixture.createFirstUser;
 import static jparest.practice.common.utils.fixture.UserFixture.createSecondUser;
@@ -42,6 +42,7 @@ public class GroupServiceTest {
 
     private User firstUser;
     private User secondUser;
+    private CreateGroupRequest createGroupRequest;
 
     @Autowired
     UserAuthService userAuthService;
@@ -70,6 +71,11 @@ public class GroupServiceTest {
     @BeforeEach
     void setUp() {
         firstUser = userAuthService.join(createFirstUser());
+
+        createGroupRequest = CreateGroupRequest.builder()
+                .groupName(groupName1)
+                .isPublic(true)
+                .build();
     }
 
     @Test
@@ -78,7 +84,7 @@ public class GroupServiceTest {
         //given
 
         //when
-        CreateGroupResponse response = groupService.createGroup(firstUser, groupName1);
+        CreateGroupResponse response = groupService.createGroup(firstUser, createGroupRequest);
 
         //then
         String saveGroupName = response.getGroupName();
@@ -90,7 +96,7 @@ public class GroupServiceTest {
     public void 그룹탈퇴() throws Exception {
 
         //given
-        Long saveGroupId = groupService.createGroup(firstUser, groupName1).getId();
+        Long saveGroupId = groupService.createGroup(firstUser, createGroupRequest).getId();
 
         //when
         groupService.withdrawGroup(firstUser, saveGroupId);
@@ -103,8 +109,8 @@ public class GroupServiceTest {
     public void 마지막_그룹원이_탈퇴시_연관된_고아객체를_모두_삭제한다() throws Exception {
 
         //given
+        Long saveGroupId = groupService.createGroup(firstUser, createGroupRequest).getId();
         secondUser = userAuthService.join(createSecondUser());
-        Long saveGroupId = groupService.createGroup(firstUser, groupName1).getId();
 
         InviteUserResponse response = inviteService.inviteToGroup(firstUser, new InviteUserRequest(secondUser.getId(), saveGroupId));
 
@@ -127,8 +133,13 @@ public class GroupServiceTest {
     public void 그룹_리스트_조회() throws Exception {
 
         //given
-        Long id1 = groupService.createGroup(firstUser, groupName1).getId();
-        Long id2 = groupService.createGroup(firstUser, groupName2).getId();
+        CreateGroupRequest createGroupRequest2 = CreateGroupRequest.builder()
+                .groupName(groupName2)
+                .isPublic(true)
+                .build();
+
+        Long id1 = groupService.createGroup(firstUser, createGroupRequest).getId();
+        Long id2 = groupService.createGroup(firstUser, createGroupRequest2).getId();
 
         Group group1 = findGroup(id1);
         Group group2 = findGroup(id2);
