@@ -2,6 +2,7 @@ package jparest.practice.group.service;
 
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.GroupUser;
+import jparest.practice.group.domain.GroupUserType;
 import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.dto.GetGroupUserResponse;
@@ -32,8 +33,7 @@ import java.util.UUID;
 
 import static jparest.practice.common.utils.fixture.GroupFixture.*;
 import static jparest.practice.common.utils.fixture.RestFixture.*;
-import static jparest.practice.common.utils.fixture.UserFixture.createFirstUser;
-import static jparest.practice.common.utils.fixture.UserFixture.createSecondUser;
+import static jparest.practice.common.utils.fixture.UserFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -86,10 +86,14 @@ public class GroupServiceTest {
         //when
         CreateGroupResponse response = groupService.createGroup(firstUser, createGroupRequest);
 
-        //then
-        String saveGroupName = response.getGroupName();
+        Group group = findGroup(response.getId());
+        GroupUser groupUser = findGroupUser(firstUser.getId(), group.getId());
 
-        assertEquals(groupName1, saveGroupName, "생성한 그룹의 이름이 일치해야 한다.");
+        //then
+        assertAll(
+                () -> assertEquals(groupName1, group.getGroupName(), "생성한 그룹의 이름이 일치해야 한다."),
+                () -> assertEquals(GroupUserType.ROLE_OWNER, groupUser.getGroupUserType(), "그룹 생성자의 역할은 OWNER 이다.")
+        );
     }
 
     @Test

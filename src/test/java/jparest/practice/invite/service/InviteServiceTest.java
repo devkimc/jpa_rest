@@ -2,6 +2,7 @@ package jparest.practice.invite.service;
 
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.GroupUser;
+import jparest.practice.group.domain.GroupUserType;
 import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
 import jparest.practice.group.exception.ExistGroupUserException;
@@ -99,10 +100,14 @@ public class InviteServiceTest {
         //when
         inviteService.procInvitation(invite.getId(), secondUser, InviteStatus.ACCEPT);
 
+        GroupUser groupUser = group.getGroupUsers().get(1);
+
         //then
         assertAll(
-                ()-> assertEquals(InviteStatus.ACCEPT, invite.getInviteStatus()), // 초대 승낙
-                ()-> assertEquals(group.getGroupUsers().get(1).getUser(), secondUser) // 그룹원 추가
+                () -> assertEquals(InviteStatus.ACCEPT, invite.getInviteStatus(), "그룹초대 승낙 시 초대상태는 ACCEPT 이다."),
+                () -> assertEquals(groupUser.getUser(), secondUser),
+                () -> assertEquals(groupUser.getGroupUserType(), GroupUserType.ROLE_MEMBER,
+                        "초대를 통해 그룹에 들어온 유저의 역할은 MEMBER 이다.")
         );
     }
 

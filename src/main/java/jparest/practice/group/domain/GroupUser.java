@@ -4,6 +4,7 @@ import jparest.practice.common.util.TimeBaseEntity;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.user.domain.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class GroupUser extends TimeBaseEntity {
 
     @Id
@@ -24,15 +26,20 @@ public class GroupUser extends TimeBaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 
+    @Builder.Default
     @OneToMany(mappedBy = "sendGroupUser", orphanRemoval = true)
     private List<Invite> invites = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private GroupUserType groupUserType;
 
     public void setGroup(Group group) {
         this.group = group;

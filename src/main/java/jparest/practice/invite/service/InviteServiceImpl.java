@@ -2,6 +2,7 @@ package jparest.practice.invite.service;
 
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.GroupUser;
+import jparest.practice.group.domain.GroupUserType;
 import jparest.practice.group.exception.ExistGroupUserException;
 import jparest.practice.group.exception.GroupUserNotFoundException;
 import jparest.practice.group.repository.GroupUserRepository;
@@ -126,8 +127,14 @@ public class InviteServiceImpl implements InviteService {
     }
 
     private GroupUser saveGroupUser(User user, Group group) {
-        GroupUser groupUser = groupUserRepository.save(new GroupUser(user, group));
-        groupUser.addGroupUser();
-        return groupUser;
+        GroupUser groupUser = GroupUser.builder()
+                .user(user)
+                .group(group)
+                .groupUserType(GroupUserType.ROLE_MEMBER)
+                .build();
+
+        GroupUser saveGroupUser = groupUserRepository.save(groupUser);
+        saveGroupUser.addGroupUser();
+        return saveGroupUser;
     }
 }
