@@ -1,8 +1,8 @@
 package jparest.practice.common.error;
 
-import jparest.practice.group.exception.ExistUserGroupException;
+import jparest.practice.group.exception.ExistGroupUserException;
 import jparest.practice.group.exception.GroupNotFoundException;
-import jparest.practice.group.exception.UserGroupNotFoundException;
+import jparest.practice.group.exception.GroupUserNotFoundException;
 import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.ExistInviteForUserException;
 import jparest.practice.invite.exception.InviteNotFoundException;
@@ -57,14 +57,14 @@ public class GlobalExceptionHandler {
         return getErrorResponseEntity(e, ErrorCode.GROUP_NOT_FOUND);
     }
 
-    @ExceptionHandler(UserGroupNotFoundException.class)
-    ResponseEntity<ErrorResponse> userGroupNotFoundHandler(UserGroupNotFoundException e) {
-        return getErrorResponseEntity(e, ErrorCode.USER_GROUP_NOT_FOUND);
+    @ExceptionHandler(GroupUserNotFoundException.class)
+    ResponseEntity<ErrorResponse> GroupUserNotFoundHandler(GroupUserNotFoundException e) {
+        return getErrorResponseEntity(e, ErrorCode.GROUP_USER_NOT_FOUND);
     }
 
-    @ExceptionHandler(ExistUserGroupException.class)
-    ResponseEntity<ErrorResponse> existUserGroupHandler(ExistUserGroupException e) {
-        return getErrorResponseEntity(e, ErrorCode.EXIST_USER_GROUP);
+    @ExceptionHandler(ExistGroupUserException.class)
+    ResponseEntity<ErrorResponse> existGroupUserHandler(ExistGroupUserException e) {
+        return getErrorResponseEntity(e, ErrorCode.EXIST_GROUP_USER);
     }
 
     // INVITE

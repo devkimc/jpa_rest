@@ -57,15 +57,15 @@ DELETE /api/restaurants/23523434/favorite?groupId=1
 #### 고아 객체
 
 그룹 -> 그룹맛집(연관관계 주인)<br/>
-그룹 -> 유저그룹(연관관계 주인)<br/>
-유저그룹 -> 초대(연관관계 주인)
+그룹 -> 그룹유저(연관관계 주인)<br/>
+그룹유저 -> 초대(연관관계 주인)
 
-그룹의 마지막 유저가 탙퇴 시, DB 의 4 개의 테이블(그룹, 유저그룹, 초대, 그룹맛집)에서 데이터가 삭제됩니다.
+그룹의 마지막 유저가 탙퇴 시, DB 의 4 개의 테이블(그룹, 그룹유저, 초대, 그룹맛집)에서 데이터가 삭제됩니다.
 부모 엔티티와 연관관계가 끊어진 자식 엔티티(고아객체)를 자동으로 삭제하도록 설정했습니다.
 반복적인 delete 메서드를 줄였습니다.
 ```java
     @OneToMany(mappedBy = "group", orphanRemoval = true)
-    private List<UserGroup> userGroups = new ArrayList<UserGroup>();
+    private List<GroupUser> groupUsers = new ArrayList<GroupUser>();
 ```
 
 <br />

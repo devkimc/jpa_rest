@@ -1,7 +1,7 @@
 package jparest.practice.user.domain;
 
 import jparest.practice.common.util.TimeBaseEntity;
-import jparest.practice.group.domain.UserGroup;
+import jparest.practice.group.domain.GroupUser;
 import jparest.practice.invite.domain.Invite;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,7 +46,7 @@ public class User extends TimeBaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
-    private List<UserGroup> userGroups = new ArrayList<UserGroup>();
+    private List<GroupUser> groupUsers = new ArrayList<GroupUser>();
 
     @Builder.Default
     @OneToMany(mappedBy = "recvUser")
@@ -59,7 +59,7 @@ public class User extends TimeBaseEntity {
     }
 
     public boolean isJoinGroup(Long groupId) {
-        long matchGroupCount = this.getUserGroups()
+        long matchGroupCount = this.getGroupUsers()
                 .stream()
                 .filter(e -> e.getGroup().getId().equals(groupId))
                 .count();

@@ -5,7 +5,7 @@ import jparest.practice.common.util.ApiResult;
 import jparest.practice.common.util.ApiUtils;
 import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.dto.GetUserGroupResponse;
+import jparest.practice.group.dto.GetGroupUserResponse;
 import jparest.practice.group.service.GroupService;
 import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class GroupController {
     }
 
     @GetMapping
-    public ApiResult<List<GetUserGroupResponse>> getUserGroupList(@CurrentUser User user) {
-        return ApiUtils.success(groupService.getUserGroupList(user));
+    public ApiResult<List<GetGroupUserResponse>> getGroupUserList(@CurrentUser User user) {
+        return ApiUtils.success(groupService.getGroupUserList(user));
     }
 }

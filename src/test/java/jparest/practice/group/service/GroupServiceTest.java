@@ -1,14 +1,14 @@
 package jparest.practice.group.service;
 
 import jparest.practice.group.domain.Group;
-import jparest.practice.group.domain.UserGroup;
+import jparest.practice.group.domain.GroupUser;
 import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.dto.GetUserGroupResponse;
+import jparest.practice.group.dto.GetGroupUserResponse;
 import jparest.practice.group.exception.GroupNotFoundException;
-import jparest.practice.group.exception.UserGroupNotFoundException;
+import jparest.practice.group.exception.GroupUserNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
-import jparest.practice.group.repository.UserGroupRepository;
+import jparest.practice.group.repository.GroupUserRepository;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
@@ -54,7 +54,7 @@ public class GroupServiceTest {
     GroupService groupService;
 
     @Autowired
-    UserGroupRepository userGroupRepository;
+    GroupUserRepository groupUserRepository;
 
     @Autowired
     InviteRepository inviteRepository;
@@ -102,7 +102,7 @@ public class GroupServiceTest {
         groupService.withdrawGroup(firstUser, saveGroupId);
 
         //then
-        assertThrows(UserGroupNotFoundException.class, () -> findUserGroup(firstUser.getId(), saveGroupId));
+        assertThrows(GroupUserNotFoundException.class, () -> findGroupUser(firstUser.getId(), saveGroupId));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class GroupServiceTest {
 
         //then
         assertAll(
-                () -> assertThrows(UserGroupNotFoundException.class, () -> findUserGroup(firstUser.getId(), saveGroupId)),
+                () -> assertThrows(GroupUserNotFoundException.class, () -> findGroupUser(firstUser.getId(), saveGroupId)),
                 () -> assertThrows(InviteNotFoundException.class, () -> findInvite(response.getInviteId())),
                 () -> assertThrows(GroupNotFoundException.class, () -> findGroup(saveGroupId)),
                 () -> assertThrows(GroupRestNotFoundException.class, () -> findGroupRest(groupRest.getId()))
@@ -145,9 +145,9 @@ public class GroupServiceTest {
         Group group2 = findGroup(id2);
 
         //when
-        List<GetUserGroupResponse> userGroupList = groupService.getUserGroupList(firstUser);
-        GetUserGroupResponse result1 = userGroupList.get(0);
-        GetUserGroupResponse result2 = userGroupList.get(1);
+        List<GetGroupUserResponse> groupUserList = groupService.getGroupUserList(firstUser);
+        GetGroupUserResponse result1 = groupUserList.get(0);
+        GetGroupUserResponse result2 = groupUserList.get(1);
 
         //then
         assertAll(
@@ -166,9 +166,9 @@ public class GroupServiceTest {
                 .orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
     }
 
-    private UserGroup findUserGroup(UUID userId, Long groupId) {
-        return userGroupRepository.findByUserIdAndGroupId(userId, groupId)
-                .orElseThrow(() -> new UserGroupNotFoundException("userId = " + userId + ", groupId = " + groupId));
+    private GroupUser findGroupUser(UUID userId, Long groupId) {
+        return groupUserRepository.findByUserIdAndGroupId(userId, groupId)
+                .orElseThrow(() -> new GroupUserNotFoundException("userId = " + userId + ", groupId = " + groupId));
     }
 
     private Invite findInvite(Long inviteId) {

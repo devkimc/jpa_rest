@@ -1,13 +1,13 @@
 package jparest.practice.group.service;
 
 import jparest.practice.group.domain.Group;
-import jparest.practice.group.domain.UserGroup;
+import jparest.practice.group.domain.GroupUser;
 import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.dto.GetUserGroupResponse;
-import jparest.practice.group.exception.UserGroupNotFoundException;
+import jparest.practice.group.dto.GetGroupUserResponse;
+import jparest.practice.group.exception.GroupUserNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
-import jparest.practice.group.repository.UserGroupRepository;
+import jparest.practice.group.repository.GroupUserRepository;
 import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.UUID;
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
-    private final UserGroupRepository userGroupRepository;
+    private final GroupUserRepository groupUserRepository;
 
     /**
      * 그룹 생성
@@ -37,7 +37,7 @@ public class GroupServiceImpl implements GroupService {
 
         Group saveGroup = groupRepository.save(newGroup);
 
-        saveUserGroup(user, saveGroup);
+        saveGroupUser(user, saveGroup);
 
         return CreateGroupResponse.builder()
                 .id(saveGroup.getId())
@@ -52,9 +52,9 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public Boolean withdrawGroup(User user, Long groupId) {
 
-        UserGroup findUserGroup = findUserGroup(user.getId(), groupId);
+        GroupUser findGroupUser = findGroupUser(user.getId(), groupId);
 
-        Group group = findUserGroup.getGroup();
+        Group group = findGroupUser.getGroup();
 
         int remainUserCount = group.getUserCount();
 
@@ -66,7 +66,7 @@ public class GroupServiceImpl implements GroupService {
 
         // 탈퇴하는 유저가 그룹의 마지막 유저가 아닐 경우 본인만 탈퇴한다.
         if (remainUserCount > 1) {
-            userGroupRepository.delete(findUserGroup);
+            groupUserRepository.delete(findGroupUser);
             return true;
         }
 
@@ -78,28 +78,28 @@ public class GroupServiceImpl implements GroupService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<GetUserGroupResponse> getUserGroupList(User user) {
-        List<UserGroup> userGroups = user.getUserGroups();
+    public List<GetGroupUserResponse> getGroupUserList(User user) {
+        List<GroupUser> groupUsers = user.getGroupUsers();
 
-        List<GetUserGroupResponse> getUserGroupResponse = new ArrayList<>(userGroups.size());
+        List<GetGroupUserResponse> getGroupUserResponse = new ArrayList<>(groupUsers.size());
 
-        for (UserGroup userGroup: userGroups) {
-            Group group = userGroup.getGroup();
-            GetUserGroupResponse res = new GetUserGroupResponse(group.getId(), group.getGroupName(), group.getUserCount());
-            getUserGroupResponse.add(res);
+        for (GroupUser groupUser : groupUsers) {
+            Group group = groupUser.getGroup();
+            GetGroupUserResponse res = new GetGroupUserResponse(group.getId(), group.getGroupName(), group.getUserCount());
+            getGroupUserResponse.add(res);
         }
 
-        return getUserGroupResponse;
+        return getGroupUserResponse;
     }
 
-    private UserGroup findUserGroup(UUID userId, Long groupId) {
-        return userGroupRepository.findByUserIdAndGroupId(userId, groupId)
-                .orElseThrow(() -> new UserGroupNotFoundException("userId = " + userId + ", groupId = " + groupId));
+    private GroupUser findGroupUser(UUID userId, Long groupId) {
+        return groupUserRepository.findByUserIdAndGroupId(userId, groupId)
+                .orElseThrow(() -> new GroupUserNotFoundException("userId = " + userId + ", groupId = " + groupId));
     }
 
-    private UserGroup saveUserGroup(User user, Group group) {
-        UserGroup userGroup = userGroupRepository.save(new UserGroup(user, group));
-        userGroup.addUserGroup();
-        return userGroup;
+    private GroupUser saveGroupUser(User user, Group group) {
+        GroupUser groupUser = groupUserRepository.save(new GroupUser(user, group));
+        groupUser.addGroupUser();
+        return groupUser;
     }
 }

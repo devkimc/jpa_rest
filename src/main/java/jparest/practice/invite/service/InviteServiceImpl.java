@@ -1,10 +1,10 @@
 package jparest.practice.invite.service;
 
 import jparest.practice.group.domain.Group;
-import jparest.practice.group.domain.UserGroup;
-import jparest.practice.group.exception.ExistUserGroupException;
-import jparest.practice.group.exception.UserGroupNotFoundException;
-import jparest.practice.group.repository.UserGroupRepository;
+import jparest.practice.group.domain.GroupUser;
+import jparest.practice.group.exception.ExistGroupUserException;
+import jparest.practice.group.exception.GroupUserNotFoundException;
+import jparest.practice.group.repository.GroupUserRepository;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
@@ -33,7 +33,7 @@ import static jparest.practice.invite.domain.InviteStatus.WAITING;
 public class InviteServiceImpl implements InviteService {
 
     private final UserRepository userRepository;
-    private final UserGroupRepository userGroupRepository;
+    private final GroupUserRepository groupUserRepository;
     private final InviteRepository inviteRepository;
 
     @Override
@@ -44,23 +44,23 @@ public class InviteServiceImpl implements InviteService {
         UUID recvUserId = inviteUserRequest.getRecvUserId();
 
         // 1. 초대한 사람이 그룹의 회원이 맞는지 확인
-        UserGroup sendUserGroup = findUserGroup(sendUser.getId(), groupId);
+        GroupUser sendGroupUser = findGroupUser(sendUser.getId(), groupId);
 
         // 2. 그룹에 속한 유저를 초대했는지 확인
-        if (sendUserGroup.getGroup().isJoinUser(recvUserId)) {
-            throw new ExistUserGroupException("groupId = " + groupId);
+        if (sendGroupUser.getGroup().isJoinUser(recvUserId)) {
+            throw new ExistGroupUserException("groupId = " + groupId);
         }
 
         // 3. 대기중인 요청이 존재하는지 확인
         Optional<Invite> waitingInvite = inviteRepository.
-                findBySendUserGroupIdAndRecvUserIdAndInviteStatus(sendUserGroup.getId(), recvUserId, WAITING);
+                findBySendGroupUserIdAndRecvUserIdAndInviteStatus(sendGroupUser.getId(), recvUserId, WAITING);
 
         if(waitingInvite.isPresent()) {
             throw new ExistInviteForUserException("대기중인 inviteId = " + waitingInvite.get().getId());
         }
 
         User recvUser = findUser(recvUserId);
-        Invite invite = inviteRepository.save(Invite.createInvite(sendUserGroup, recvUser));
+        Invite invite = inviteRepository.save(Invite.createInvite(sendGroupUser, recvUser));
 
         return InviteUserResponse.builder().inviteId(invite.getId()).build();
     }
@@ -73,8 +73,8 @@ public class InviteServiceImpl implements InviteService {
         invite.chkAuthorizationOfInvitation(user, requestStatus);
 
         if (requestStatus == ACCEPT) {
-            Group group = invite.getSendUserGroup().getGroup();
-            saveUserGroup(user, group);
+            Group group = invite.getSendGroupUser().getGroup();
+            saveGroupUser(user, group);
         }
 
         updateStatus(invite, requestStatus);
@@ -96,8 +96,8 @@ public class InviteServiceImpl implements InviteService {
         ) {
             result.add(GetWaitingInviteResponse.builder()
                     .inviteId(invite.getId())
-                    .nickName(invite.getSendUserGroup().getUser().getNickname())
-                    .groupName(invite.getSendUserGroup().getGroup().getGroupName())
+                    .nickName(invite.getSendGroupUser().getUser().getNickname())
+                    .groupName(invite.getSendGroupUser().getGroup().getGroupName())
                     .build());
         }
         return result;
@@ -115,9 +115,9 @@ public class InviteServiceImpl implements InviteService {
         return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("userId = " + userId));
     }
 
-    private UserGroup findUserGroup(UUID userId, Long groupId) {
-        return userGroupRepository.findByUserIdAndGroupId(userId, groupId)
-                .orElseThrow(() -> new UserGroupNotFoundException("userId = " + userId + ", groupId = " + groupId));
+    private GroupUser findGroupUser(UUID userId, Long groupId) {
+        return groupUserRepository.findByUserIdAndGroupId(userId, groupId)
+                .orElseThrow(() -> new GroupUserNotFoundException("userId = " + userId + ", groupId = " + groupId));
     }
     
     private void updateStatus(Invite invite, InviteStatus inviteStatus) {
@@ -125,9 +125,9 @@ public class InviteServiceImpl implements InviteService {
         inviteRepository.save(invite);
     }
 
-    private UserGroup saveUserGroup(User user, Group group) {
-        UserGroup userGroup = userGroupRepository.save(new UserGroup(user, group));
-        userGroup.addUserGroup();
-        return userGroup;
+    private GroupUser saveGroupUser(User user, Group group) {
+        GroupUser groupUser = groupUserRepository.save(new GroupUser(user, group));
+        groupUser.addGroupUser();
+        return groupUser;
     }
 }

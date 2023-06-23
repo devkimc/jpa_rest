@@ -1,10 +1,10 @@
 package jparest.practice.invite.service;
 
 import jparest.practice.group.domain.Group;
-import jparest.practice.group.domain.UserGroup;
+import jparest.practice.group.domain.GroupUser;
 import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.exception.ExistUserGroupException;
+import jparest.practice.group.exception.ExistGroupUserException;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.service.GroupService;
@@ -72,7 +72,7 @@ public class InviteServiceTest {
     public void 그룹초대() throws Exception {
 
         //given
-        List<UserGroup> userGroups = firstUser.getUserGroups();
+        List<GroupUser> groupUsers = firstUser.getGroupUsers();
         InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), group.getId());
 
         //when
@@ -82,7 +82,7 @@ public class InviteServiceTest {
         //then
         assertAll(
                 () -> assertEquals(InviteStatus.WAITING, invite.getInviteStatus()), // 초대 상태
-                () -> assertEquals(userGroups.get(0), invite.getSendUserGroup()), // 초대한 유저
+                () -> assertEquals(groupUsers.get(0), invite.getSendGroupUser()), // 초대한 유저
                 () -> assertEquals(secondUser, invite.getRecvUser()) // 초대받은 유저
         );
     }
@@ -102,7 +102,7 @@ public class InviteServiceTest {
         //then
         assertAll(
                 ()-> assertEquals(InviteStatus.ACCEPT, invite.getInviteStatus()), // 초대 승낙
-                ()-> assertEquals(group.getUserGroups().get(1).getUser(), secondUser) // 그룹원 추가
+                ()-> assertEquals(group.getGroupUsers().get(1).getUser(), secondUser) // 그룹원 추가
         );
     }
 
@@ -149,7 +149,7 @@ public class InviteServiceTest {
         inviteService.procInvitation(invite.getId(), secondUser, InviteStatus.ACCEPT);
 
         //then
-        assertThrows(ExistUserGroupException.class,
+        assertThrows(ExistGroupUserException.class,
                 () -> inviteService.inviteToGroup(firstUser, inviteUserRequest));
     }
 

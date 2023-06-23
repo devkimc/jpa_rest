@@ -1,7 +1,7 @@
 package jparest.practice.invite.domain;
 
 import jparest.practice.common.util.TimeBaseEntity;
-import jparest.practice.group.domain.UserGroup;
+import jparest.practice.group.domain.GroupUser;
 import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.user.domain.User;
@@ -23,8 +23,8 @@ public class Invite extends TimeBaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_group_id")
-    private UserGroup sendUserGroup;
+    @JoinColumn(name = "group_user_id")
+    private GroupUser sendGroupUser;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
@@ -42,16 +42,16 @@ public class Invite extends TimeBaseEntity {
         this.inviteStatus = inviteStatus;
     }
 
-    public Invite(UserGroup sendUserGroup, User recvUser, InviteStatus inviteStatus) {
-        this.sendUserGroup = sendUserGroup;
+    public Invite(GroupUser sendGroupUser, User recvUser, InviteStatus inviteStatus) {
+        this.sendGroupUser = sendGroupUser;
         this.recvUser = recvUser;
         this.inviteStatus = inviteStatus;
     }
 
     //==생성 메서드==//
-    public static Invite createInvite(UserGroup sendUserGroup, User recvUser) {
-        Invite invite = new Invite(sendUserGroup, recvUser, WAITING);
-        sendUserGroup.getInvites().add(invite);
+    public static Invite createInvite(GroupUser sendGroupUser, User recvUser) {
+        Invite invite = new Invite(sendGroupUser, recvUser, WAITING);
+        sendGroupUser.getInvites().add(invite);
         return invite;
     }
 
@@ -70,7 +70,7 @@ public class Invite extends TimeBaseEntity {
             throw new InviteNotFoundException("거절 요청한 유저의 초대가 아닙니다.");
         }
 
-        if(requestStatus == CANCEL && !this.getSendUserGroup().getUser().equals(user)) {
+        if(requestStatus == CANCEL && !this.getSendGroupUser().getUser().equals(user)) {
             throw new InviteNotFoundException("취소 요청한 유저의 초대가 아닙니다.");
         }
     }

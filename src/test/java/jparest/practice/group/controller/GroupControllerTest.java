@@ -3,7 +3,7 @@ package jparest.practice.group.controller;
 import jparest.practice.common.utils.RestDocsTestSupport;
 import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.dto.GetUserGroupResponse;
+import jparest.practice.group.dto.GetGroupUserResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,18 +32,18 @@ public class GroupControllerTest extends RestDocsTestSupport {
     @DisplayName("그룹 리스트 조회")
     void get_groups() throws Exception {
         //given
-        GetUserGroupResponse response = GetUserGroupResponse.builder()
+        GetGroupUserResponse response = GetGroupUserResponse.builder()
                 .groupId(1L)
                 .groupName(groupName1)
                 .totalUsers(1)
                 .build();
 
-        List<GetUserGroupResponse> getUserGroupResponses = new ArrayList<>();
+        List<GetGroupUserResponse> getGroupUserRespons = new ArrayList<>();
 
-        getUserGroupResponses.add(response);
+        getGroupUserRespons.add(response);
 
-        given(groupService.getUserGroupList(any()))
-                .willReturn(getUserGroupResponses);
+        given(groupService.getGroupUserList(any()))
+                .willReturn(getGroupUserRespons);
 
         //when
         ResultActions result = mockMvc.perform(

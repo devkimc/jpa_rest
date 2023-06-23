@@ -2,7 +2,7 @@ package jparest.practice.group.service;
 
 import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.dto.GetUserGroupResponse;
+import jparest.practice.group.dto.GetGroupUserResponse;
 import jparest.practice.user.domain.User;
 
 import java.util.List;
@@ -16,5 +16,5 @@ public interface GroupService {
     Boolean withdrawGroup(User user, Long groupId);
 
     // 가입한 그룹 조회
-    List<GetUserGroupResponse> getUserGroupList(User user);
+    List<GetGroupUserResponse> getGroupUserList(User user);
 }

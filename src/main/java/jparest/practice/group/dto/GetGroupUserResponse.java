@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class GetUserGroupResponse {
+public class GetGroupUserResponse {
     private Long groupId;
     private String groupName;
     private int totalUsers;

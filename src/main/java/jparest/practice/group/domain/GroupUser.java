@@ -12,15 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "user_group")
+@Table(name = "group_user")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserGroup extends TimeBaseEntity {
+public class GroupUser extends TimeBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_group_id")
+    @Column(name = "group_user_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -31,22 +31,22 @@ public class UserGroup extends TimeBaseEntity {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @OneToMany(mappedBy = "sendUserGroup", orphanRemoval = true)
+    @OneToMany(mappedBy = "sendGroupUser", orphanRemoval = true)
     private List<Invite> invites = new ArrayList<>();
 
     public void setGroup(Group group) {
         this.group = group;
     }
 
-    public UserGroup(User user, Group group) {
+    public GroupUser(User user, Group group) {
         this.user = user;
         this.group = group;
     }
 
     //==연관관계 메서드==//
-    public void addUserGroup() {
-        this.user.getUserGroups().add(this);
-        this.group.getUserGroups().add(this);
+    public void addGroupUser() {
+        this.user.getGroupUsers().add(this);
+        this.group.getGroupUsers().add(this);
     }
 
     //==생성 메서드==//
