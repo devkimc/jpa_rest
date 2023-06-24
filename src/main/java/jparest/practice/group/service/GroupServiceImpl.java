@@ -3,9 +3,8 @@ package jparest.practice.group.service;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.GroupUser;
 import jparest.practice.group.domain.GroupUserType;
-import jparest.practice.group.dto.CreateGroupRequest;
-import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.dto.GetGroupUserResponse;
+import jparest.practice.group.dto.*;
+import jparest.practice.group.exception.GroupAccessDeniedException;
 import jparest.practice.group.exception.GroupUserNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.GroupUserRepository;
@@ -14,9 +13,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,9 +94,76 @@ public class GroupServiceImpl implements GroupService {
         return getGroupUserResponse;
     }
 
+    /**
+     * 그룹 소유권 양도
+     */
+    @Override
+    @Transactional
+    public TransferOwnershipOfGroupResponse transferOwnershipOfGroup(User user,
+                                                                     TransferOwnershipOfGroupRequest request) {
+        List<GroupUser> groupUserList = findAllGroupUserByGroupId(request.getGroupId());
+
+        // 1. 전임자의 역할 체크
+        List<GroupUser> owners = groupUserList.stream()
+                .filter(e -> e.getUser().getId().equals(user.getId()))
+                .collect(Collectors.toList());
+
+        if (owners.size() != 1) {
+            throw new GroupAccessDeniedException("Not groupUserId = " + user.getId() + " , SameGroupUserCount = " + owners.size());
+        }
+
+        GroupUser groupOwner = owners.get(0);
+
+        if (!groupOwner.getGroupUserType()
+                .equals(GroupUserType.ROLE_OWNER)) {
+            throw new GroupAccessDeniedException("Not ownerId = " + user.getId());
+        }
+
+        // 2. 후임자가 그룹원인지 체크
+        List<GroupUser> successors = groupUserList.stream()
+                .filter(e -> e.getUser().getId().equals(request.getSuccessorId()))
+                .collect(Collectors.toList());
+
+        if (successors.size() != 1) {
+            throw new GroupUserNotFoundException("Not groupUserId = " + request.getSuccessorId() + " , SameGroupUserCount = " + owners.size());
+        }
+
+        // 3. 후임자 역할 변경
+        GroupUser groupSuccessor = GroupUser.builder()
+                .id(successors.get(0).getId())
+                .user(successors.get(0).getUser())
+                .group(successors.get(0).getGroup())
+                .groupUserType(GroupUserType.ROLE_OWNER)
+                .build();
+
+        groupUserRepository.save(groupSuccessor);
+
+        // 4. 전임자 역할 변경
+        GroupUser groupPredecessor = GroupUser.builder()
+                .id(groupOwner.getId())
+                .user(groupOwner.getUser())
+                .group(groupOwner.getGroup())
+                .groupUserType(GroupUserType.ROLE_MEMBER)
+                .build();
+
+        groupUserRepository.save(groupPredecessor);
+
+        TransferOwnershipOfGroupResponse response = TransferOwnershipOfGroupResponse.builder()
+                .ownerNickname(successors.get(0).getUser().getNickname())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        return response;
+    }
+
     private GroupUser findGroupUser(UUID userId, Long groupId) {
         return groupUserRepository.findByUserIdAndGroupId(userId, groupId)
                 .orElseThrow(() -> new GroupUserNotFoundException("userId = " + userId + ", groupId = " + groupId));
+    }
+
+    private List<GroupUser> findAllGroupUserByGroupId(Long groupId) {
+        return groupUserRepository.findAllByGroupId(groupId)
+                .orElseThrow(() -> new GroupUserNotFoundException("groupId = " + groupId));
     }
 
     private GroupUser saveGroupUser(User user, Group group) {

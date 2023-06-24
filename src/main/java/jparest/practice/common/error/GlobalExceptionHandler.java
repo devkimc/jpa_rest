@@ -1,6 +1,7 @@
 package jparest.practice.common.error;
 
 import jparest.practice.group.exception.ExistGroupUserException;
+import jparest.practice.group.exception.GroupAccessDeniedException;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.exception.GroupUserNotFoundException;
 import jparest.practice.invite.exception.AlreadyProcessedInviteException;
@@ -67,9 +68,15 @@ public class GlobalExceptionHandler {
         return getErrorResponseEntity(e, ErrorCode.EXIST_GROUP_USER);
     }
 
+    @ExceptionHandler(GroupAccessDeniedException.class)
+    ResponseEntity<ErrorResponse> groupAccessDeniedHandler(GroupAccessDeniedException e) {
+        return getErrorResponseEntity(e, ErrorCode.GROUP_ACCESS_DENIED);
+    }
+
     // INVITE
     @ExceptionHandler(ExistInviteForUserException.class)
     ResponseEntity<ErrorResponse> existInviteForUserHandler(ExistInviteForUserException e) {
+
         return getErrorResponseEntity(e, ErrorCode.EXIST_INVITE_FOR_USER);
     }
 

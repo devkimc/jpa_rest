@@ -45,11 +45,6 @@ public class GroupUser extends TimeBaseEntity {
         this.group = group;
     }
 
-    public GroupUser(User user, Group group) {
-        this.user = user;
-        this.group = group;
-    }
-
     //==연관관계 메서드==//
     public void addGroupUser() {
         this.user.getGroupUsers().add(this);

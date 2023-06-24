@@ -11,6 +11,6 @@ public interface GroupUserRepository extends JpaRepository<GroupUser, Long> {
 
     Optional<GroupUser> findByUserIdAndGroupId(UUID userId, Long groupId);
 
-    Optional<List<GroupUser>> findAllByUserId(UUID userId);
+    Optional<List<GroupUser>> findAllByGroupId(Long groupId);
 }
 

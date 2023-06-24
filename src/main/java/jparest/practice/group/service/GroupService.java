@@ -1,8 +1,6 @@
 package jparest.practice.group.service;
 
-import jparest.practice.group.dto.CreateGroupRequest;
-import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.dto.GetGroupUserResponse;
+import jparest.practice.group.dto.*;
 import jparest.practice.user.domain.User;
 
 import java.util.List;
@@ -17,4 +15,8 @@ public interface GroupService {
 
     // 가입한 그룹 조회
     List<GetGroupUserResponse> getGroupUserList(User user);
+
+    // 그룹 소유권 양도
+    TransferOwnershipOfGroupResponse transferOwnershipOfGroup(User user,
+                                                              TransferOwnershipOfGroupRequest transferOwnershipOfGroupRequest);
 }

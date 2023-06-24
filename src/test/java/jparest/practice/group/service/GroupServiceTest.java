@@ -3,14 +3,13 @@ package jparest.practice.group.service;
 import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.GroupUser;
 import jparest.practice.group.domain.GroupUserType;
-import jparest.practice.group.dto.CreateGroupRequest;
-import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.dto.GetGroupUserResponse;
+import jparest.practice.group.dto.*;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.exception.GroupUserNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.GroupUserRepository;
 import jparest.practice.invite.domain.Invite;
+import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
 import jparest.practice.invite.exception.InviteNotFoundException;
@@ -162,7 +161,37 @@ public class GroupServiceTest {
                 () -> assertEquals(group2.getGroupName(), result2.getGroupName()),
                 () -> assertEquals(group2.getUserCount(), result2.getTotalUsers())
         );
+    }
 
+    @Test
+    public void 그룹_소유권_양도() throws Exception {
+
+        //given
+        Long saveGroupId = groupService.createGroup(firstUser, createGroupRequest).getId();
+        secondUser = userAuthService.join(createSecondUser());
+
+        InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), saveGroupId);
+        InviteUserResponse inviteUserResponse = inviteService.inviteToGroup(firstUser, inviteUserRequest);
+
+        inviteService.procInvitation(inviteUserResponse.getInviteId(), secondUser, InviteStatus.ACCEPT);
+
+        //when
+        TransferOwnershipOfGroupRequest request = TransferOwnershipOfGroupRequest.builder()
+                .successorId(secondUser.getId())
+                .groupId(saveGroupId)
+                .build();
+
+        TransferOwnershipOfGroupResponse response = groupService.transferOwnershipOfGroup(firstUser, request);
+
+        //then
+        assertAll(
+                () -> assertEquals(GroupUserType.ROLE_MEMBER, firstUser.getGroupUsers().get(0).getGroupUserType(),
+                        "전임자는 소유권 양도 후 MEMBER 역할이 되야 한다."),
+                () -> assertEquals(GroupUserType.ROLE_OWNER, secondUser.getGroupUsers().get(0).getGroupUserType(),
+                        "후임자는 소유권 양도 후 OWNER 역할이 되야 한다."),
+                () -> assertEquals(secondUser.getNickname(), response.getOwnerNickname(),
+                        "후임자의 닉네임이 응닶값과 일치해야 한다.")
+        );
     }
 
     private Group findGroup(Long groupId) {
