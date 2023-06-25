@@ -16,7 +16,7 @@ public interface GroupService {
     // 가입한 그룹 조회
     List<GetGroupUserResponse> getGroupUserList(User user);
 
-    // 그룹 소유권 양도
-    TransferOwnershipOfGroupResponse transferOwnershipOfGroup(User user,
-                                                              TransferOwnershipOfGroupRequest transferOwnershipOfGroupRequest);
+    // 그룹 소유자 변경
+    ChangeOwnerResponse changeOwner(User user, Long groupId, ChangeOwnerRequest changeOwnerRequest);
+
 }

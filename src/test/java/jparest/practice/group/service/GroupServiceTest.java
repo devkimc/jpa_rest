@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -36,7 +37,7 @@ import static jparest.practice.common.utils.fixture.UserFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class GroupServiceTest {
 
     private User firstUser;
@@ -164,7 +165,7 @@ public class GroupServiceTest {
     }
 
     @Test
-    public void 그룹_소유권_양도() throws Exception {
+    public void 그룹_소유자_변경() throws Exception {
 
         //given
         Long saveGroupId = groupService.createGroup(firstUser, createGroupRequest).getId();
@@ -176,20 +177,20 @@ public class GroupServiceTest {
         inviteService.procInvitation(inviteUserResponse.getInviteId(), secondUser, InviteStatus.ACCEPT);
 
         //when
-        TransferOwnershipOfGroupRequest request = TransferOwnershipOfGroupRequest.builder()
+        ChangeOwnerRequest changeOwnerRequest = ChangeOwnerRequest.builder()
                 .successorId(secondUser.getId())
-                .groupId(saveGroupId)
                 .build();
 
-        TransferOwnershipOfGroupResponse response = groupService.transferOwnershipOfGroup(firstUser, request);
+        ChangeOwnerResponse changeOwnerResponse = groupService.changeOwner(
+                firstUser, saveGroupId, changeOwnerRequest);
 
         //then
         assertAll(
                 () -> assertEquals(GroupUserType.ROLE_MEMBER, firstUser.getGroupUsers().get(0).getGroupUserType(),
-                        "전임자는 소유권 양도 후 MEMBER 역할이 되야 한다."),
+                        "전임자는 소유자 변경 후 MEMBER 역할이 되야 한다."),
                 () -> assertEquals(GroupUserType.ROLE_OWNER, secondUser.getGroupUsers().get(0).getGroupUserType(),
-                        "후임자는 소유권 양도 후 OWNER 역할이 되야 한다."),
-                () -> assertEquals(secondUser.getNickname(), response.getOwnerNickname(),
+                        "후임자는 소유자 변경 후 OWNER 역할이 되야 한다"),
+                () -> assertEquals(secondUser.getNickname(), changeOwnerResponse.getOwnerNickname(),
                         "후임자의 닉네임이 응닶값과 일치해야 한다.")
         );
     }

@@ -13,24 +13,20 @@ endif::[]
 == 그룹 생성
 === REQUEST
 include::{snippets}/group-controller-test/add_groups/http-request.adoc[]
-
 include::{snippets}/group-controller-test/add_groups/request-fields.adoc[]
 
 === RESPONSE
 include::{snippets}/group-controller-test/add_groups/response-body.adoc[]
-
 include::{snippets}/group-controller-test/add_groups/response-fields.adoc[]
 
 == 그룹 탈퇴
 === REQUEST
-include::{snippets}/group-controller-test/delete_users_groups/http-request.adoc[]
-
-include::{snippets}/group-controller-test/delete_users_groups/path-parameters.adoc[]
+include::{snippets}/group-controller-test/delete_groups_users/http-request.adoc[]
+include::{snippets}/group-controller-test/delete_groups_users/path-parameters.adoc[]
 
 === RESPONSE
-include::{snippets}/group-controller-test/delete_users_groups/response-body.adoc[]
-
-include::{snippets}/group-controller-test/delete_users_groups/response-fields.adoc[]
+include::{snippets}/group-controller-test/delete_groups_users/response-body.adoc[]
+include::{snippets}/group-controller-test/delete_groups_users/response-fields.adoc[]
 
 == 그룹 리스트 조회
 === REQUEST
@@ -38,5 +34,14 @@ include::{snippets}/group-controller-test/get_groups/http-request.adoc[]
 
 === RESPONSE
 include::{snippets}/group-controller-test/get_groups/response-body.adoc[]
-
 include::{snippets}/group-controller-test/get_groups/response-fields.adoc[]
+
+== 그룹 소유자 변경
+=== REQUEST
+include::{snippets}/group-controller-test/patch_owners/http-request.adoc[]
+include::{snippets}/group-controller-test/patch_owners/path-parameters.adoc[]
+include::{snippets}/group-controller-test/patch_owners/request-fields.adoc[]
+
+=== RESPONSE
+include::{snippets}/group-controller-test/patch_owners/response-body.adoc[]
+include::{snippets}/group-controller-test/patch_owners/response-fields.adoc[]

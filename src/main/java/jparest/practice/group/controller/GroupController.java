@@ -3,9 +3,7 @@ package jparest.practice.group.controller;
 import jparest.practice.auth.security.CurrentUser;
 import jparest.practice.common.util.ApiResult;
 import jparest.practice.common.util.ApiUtils;
-import jparest.practice.group.dto.CreateGroupRequest;
-import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.dto.GetGroupUserResponse;
+import jparest.practice.group.dto.*;
 import jparest.practice.group.service.GroupService;
 import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +33,12 @@ public class GroupController {
     @GetMapping
     public ApiResult<List<GetGroupUserResponse>> getGroupUserList(@CurrentUser User user) {
         return ApiUtils.success(groupService.getGroupUserList(user));
+    }
+
+    @PatchMapping("/{groupId}/owners")
+    public ApiResult<ChangeOwnerResponse> changeOwner(@CurrentUser User user,
+                                                      @PathVariable Long groupId,
+                                                      ChangeOwnerRequest changeOwnerRequest) {
+        return ApiUtils.success(groupService.changeOwner(user, groupId, changeOwnerRequest));
     }
 }

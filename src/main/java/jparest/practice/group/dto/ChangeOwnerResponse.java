@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransferOwnershipOfGroupRequest {
-    private Long groupId;
-    private UUID successorId;
+public class ChangeOwnerResponse {
+    private String ownerNickname;
+    private LocalDateTime updatedAt;
 }

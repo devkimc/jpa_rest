@@ -99,9 +99,8 @@ public class GroupServiceImpl implements GroupService {
      */
     @Override
     @Transactional
-    public TransferOwnershipOfGroupResponse transferOwnershipOfGroup(User user,
-                                                                     TransferOwnershipOfGroupRequest request) {
-        List<GroupUser> groupUserList = findAllGroupUserByGroupId(request.getGroupId());
+    public ChangeOwnerResponse changeOwner(User user, Long groupId, ChangeOwnerRequest changeOwnerRequest) {
+        List<GroupUser> groupUserList = findAllGroupUserByGroupId(groupId);
 
         // 1. 전임자의 역할 체크
         List<GroupUser> owners = groupUserList.stream()
@@ -112,27 +111,29 @@ public class GroupServiceImpl implements GroupService {
             throw new GroupAccessDeniedException("Not groupUserId = " + user.getId() + " , SameGroupUserCount = " + owners.size());
         }
 
-        GroupUser groupOwner = owners.get(0);
+        GroupUser findGroupOwner = owners.get(0);
 
-        if (!groupOwner.getGroupUserType()
+        if (!findGroupOwner.getGroupUserType()
                 .equals(GroupUserType.ROLE_OWNER)) {
             throw new GroupAccessDeniedException("Not ownerId = " + user.getId());
         }
 
         // 2. 후임자가 그룹원인지 체크
         List<GroupUser> successors = groupUserList.stream()
-                .filter(e -> e.getUser().getId().equals(request.getSuccessorId()))
+                .filter(e -> e.getUser().getId().equals(changeOwnerRequest.getSuccessorId()))
                 .collect(Collectors.toList());
 
         if (successors.size() != 1) {
-            throw new GroupUserNotFoundException("Not groupUserId = " + request.getSuccessorId() + " , SameGroupUserCount = " + owners.size());
+            throw new GroupUserNotFoundException("Not groupUserId = " + changeOwnerRequest.getSuccessorId() + " , SameGroupUserCount = " + owners.size());
         }
 
         // 3. 후임자 역할 변경
+        GroupUser findGroupMember = successors.get(0);
+
         GroupUser groupSuccessor = GroupUser.builder()
-                .id(successors.get(0).getId())
-                .user(successors.get(0).getUser())
-                .group(successors.get(0).getGroup())
+                .id(findGroupMember.getId())
+                .user(findGroupMember.getUser())
+                .group(findGroupMember.getGroup())
                 .groupUserType(GroupUserType.ROLE_OWNER)
                 .build();
 
@@ -140,20 +141,20 @@ public class GroupServiceImpl implements GroupService {
 
         // 4. 전임자 역할 변경
         GroupUser groupPredecessor = GroupUser.builder()
-                .id(groupOwner.getId())
-                .user(groupOwner.getUser())
-                .group(groupOwner.getGroup())
+                .id(findGroupOwner.getId())
+                .user(findGroupOwner.getUser())
+                .group(findGroupOwner.getGroup())
                 .groupUserType(GroupUserType.ROLE_MEMBER)
                 .build();
 
         groupUserRepository.save(groupPredecessor);
 
-        TransferOwnershipOfGroupResponse response = TransferOwnershipOfGroupResponse.builder()
-                .ownerNickname(successors.get(0).getUser().getNickname())
+        ChangeOwnerResponse changeOwnerResponse = ChangeOwnerResponse.builder()
+                .ownerNickname(findGroupMember.getUser().getNickname())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        return response;
+        return changeOwnerResponse;
     }
 
     private GroupUser findGroupUser(UUID userId, Long groupId) {
