@@ -18,8 +18,9 @@ public enum ErrorCode {
 
     // GROUP
     GROUP_NOT_FOUND(404, "G01", "존재하지 않는 그룹입니다."),
-    USER_GROUP_NOT_FOUND(404, "G02", "해당 유저는 그룹에 존재하지 않습니다."),
-    EXIST_USER_GROUP(400, "G03", "이미 그룹에 존재하는 유저입니다."),
+    GROUP_USER_NOT_FOUND(404, "G02", "해당 유저는 그룹에 존재하지 않습니다."),
+    EXIST_GROUP_USER(400, "G03", "이미 그룹에 존재하는 유저입니다."),
+    GROUP_ACCESS_DENIED(403, "G04", "그룹에 대한 권한이 없습니다."),
 
     // INVITE
     EXIST_INVITE_FOR_USER(400, "I01", "이미 초대한 유저입니다."),

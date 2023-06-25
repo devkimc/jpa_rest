@@ -14,7 +14,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "groups")
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Group extends TimeBaseEntity {
 
     @Id
@@ -25,18 +27,23 @@ public class Group extends TimeBaseEntity {
     @Column(nullable = false, length = 20)
     private String groupName;
 
+    @Builder.Default
     @OneToMany(mappedBy = "group", orphanRemoval = true)
-    private List<UserGroup> userGroups = new ArrayList<UserGroup>();
+    private List<GroupUser> groupUsers = new ArrayList<GroupUser>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "group", orphanRemoval = true)
     private List<GroupRest> groupRests = new ArrayList<GroupRest>();
+
+    @Column(nullable = false)
+    private Boolean isPublic;
 
     public Group(String groupName) {
         this.groupName = groupName;
     }
 
     public int getUserCount() {
-        return this.getUserGroups().size();
+        return this.getGroupUsers().size();
     }
 
     public int getRestCount() {
@@ -44,7 +51,7 @@ public class Group extends TimeBaseEntity {
     }
 
     public boolean isJoinUser(UUID userId) {
-        long matchUserCount = this.getUserGroups()
+        long matchUserCount = this.getGroupUsers()
                 .stream()
                 .filter(e -> e.getUser().getId().equals(userId))
                 .count();

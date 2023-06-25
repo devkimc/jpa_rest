@@ -1,19 +1,20 @@
 package jparest.practice.group.controller;
 
 import jparest.practice.common.utils.RestDocsTestSupport;
-import jparest.practice.group.dto.CreateGroupRequest;
-import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.dto.GetUserGroupResponse;
+import jparest.practice.group.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
+import static jparest.practice.common.utils.fixture.UserFixture.nickname1;
+import static jparest.practice.common.utils.fixture.UserFixture.userId;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -31,18 +32,20 @@ public class GroupControllerTest extends RestDocsTestSupport {
     @Test
     @DisplayName("그룹 리스트 조회")
     void get_groups() throws Exception {
+
         //given
-        GetUserGroupResponse response = GetUserGroupResponse.builder()
+        GetGroupUserResponse response = GetGroupUserResponse.builder()
                 .groupId(1L)
                 .groupName(groupName1)
                 .totalUsers(1)
                 .build();
 
-        List<GetUserGroupResponse> getUserGroupResponses = new ArrayList<>();
-        getUserGroupResponses.add(response);
+        List<GetGroupUserResponse> getGroupUserRespons = new ArrayList<>();
 
-        given(groupService.getUserGroupList(any()))
-                .willReturn(getUserGroupResponses);
+        getGroupUserRespons.add(response);
+
+        given(groupService.getGroupUserList(any()))
+                .willReturn(getGroupUserRespons);
 
         //when
         ResultActions result = mockMvc.perform(
@@ -72,7 +75,11 @@ public class GroupControllerTest extends RestDocsTestSupport {
     void add_groups() throws Exception {
 
         //given
-        CreateGroupRequest createGroupRequest = new CreateGroupRequest(groupName1);
+        CreateGroupRequest createGroupRequest = CreateGroupRequest.builder()
+                .groupName(groupName1)
+                .isPublic(true)
+                .build();
+
         String content = objectMapper.writeValueAsString(createGroupRequest);
 
         given(groupService.createGroup(any(), any()))
@@ -96,7 +103,8 @@ public class GroupControllerTest extends RestDocsTestSupport {
                 )
                 .andDo(restDocs.document(
                         requestFields(
-                                fieldWithPath("groupName").description("그룸 이름")
+                                fieldWithPath("groupName").description("그룸 이름"),
+                                fieldWithPath("isPublic").description("공개 여부")
                         ),
                         responseFields(
                                 fieldWithPath("success").description("성공 여부"),
@@ -107,7 +115,7 @@ public class GroupControllerTest extends RestDocsTestSupport {
 
     @Test
     @DisplayName("그룹 탈퇴")
-    void delete_users_groups() throws Exception {
+    void delete_groups_users() throws Exception {
 
         //given
         given(groupService.withdrawGroup(any(), any()))
@@ -132,6 +140,54 @@ public class GroupControllerTest extends RestDocsTestSupport {
                         responseFields(
                                 fieldWithPath("success").description("성공 여부"),
                                 fieldWithPath("result").description("성공 여부")
+                        )));
+    }
+
+    @Test
+    @DisplayName("그룹 소유자 변경")
+    void patch_owners() throws Exception {
+
+        //given
+        ChangeOwnerRequest changeOwnerRequest = ChangeOwnerRequest.builder()
+                .successorId(userId)
+                .build();
+
+        String content = objectMapper.writeValueAsString(changeOwnerRequest);
+
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        ChangeOwnerResponse changeOwnerResponse = ChangeOwnerResponse.builder()
+                .ownerNickname(nickname1)
+                .updatedAt(currentTime)
+                .build();
+
+        given(groupService.changeOwner(any(), any(), any()))
+                .willReturn(changeOwnerResponse);
+
+        //when
+        ResultActions result = mockMvc.perform(
+                patch(GROUP_API + "/{groupId}/owners", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        //then
+        result
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("$.result.ownerNickname").value(nickname1)
+                )
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("groupId").description("그룹 아이디")
+                        ),
+                        requestFields(
+                            fieldWithPath("successorId").description("후임자 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("success").description("성공 여부"),
+                                fieldWithPath("result.ownerNickname").description("그룹 소유자 닉네임"),
+                                fieldWithPath("result.updatedAt").description("변경 시간")
                         )));
     }
 }

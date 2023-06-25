@@ -1,9 +1,11 @@
 package jparest.practice.invite.service;
 
 import jparest.practice.group.domain.Group;
-import jparest.practice.group.domain.UserGroup;
+import jparest.practice.group.domain.GroupUser;
+import jparest.practice.group.domain.GroupUserType;
+import jparest.practice.group.dto.CreateGroupRequest;
 import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.exception.ExistUserGroupException;
+import jparest.practice.group.exception.ExistGroupUserException;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.service.GroupService;
@@ -58,7 +60,12 @@ public class InviteServiceTest {
         firstUser = userAuthService.join(createFirstUser());
         secondUser = userAuthService.join(createSecondUser());
 
-        CreateGroupResponse response = groupService.createGroup(firstUser, groupName1);
+        CreateGroupRequest createGroupRequest = CreateGroupRequest.builder()
+                .groupName(groupName1)
+                .isPublic(true)
+                .build();
+
+        CreateGroupResponse response = groupService.createGroup(firstUser, createGroupRequest);
         group = findGroupById(response.getId());
     }
 
@@ -66,7 +73,7 @@ public class InviteServiceTest {
     public void 그룹초대() throws Exception {
 
         //given
-        List<UserGroup> userGroups = firstUser.getUserGroups();
+        List<GroupUser> groupUsers = firstUser.getGroupUsers();
         InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), group.getId());
 
         //when
@@ -76,7 +83,7 @@ public class InviteServiceTest {
         //then
         assertAll(
                 () -> assertEquals(InviteStatus.WAITING, invite.getInviteStatus()), // 초대 상태
-                () -> assertEquals(userGroups.get(0), invite.getSendUserGroup()), // 초대한 유저
+                () -> assertEquals(groupUsers.get(0), invite.getSendGroupUser()), // 초대한 유저
                 () -> assertEquals(secondUser, invite.getRecvUser()) // 초대받은 유저
         );
     }
@@ -93,10 +100,14 @@ public class InviteServiceTest {
         //when
         inviteService.procInvitation(invite.getId(), secondUser, InviteStatus.ACCEPT);
 
+        GroupUser groupUser = group.getGroupUsers().get(1);
+
         //then
         assertAll(
-                ()-> assertEquals(InviteStatus.ACCEPT, invite.getInviteStatus()), // 초대 승낙
-                ()-> assertEquals(group.getUserGroups().get(1).getUser(), secondUser) // 그룹원 추가
+                () -> assertEquals(InviteStatus.ACCEPT, invite.getInviteStatus(), "그룹초대 승낙 시 초대상태는 ACCEPT 이다."),
+                () -> assertEquals(groupUser.getUser(), secondUser),
+                () -> assertEquals(groupUser.getGroupUserType(), GroupUserType.ROLE_MEMBER,
+                        "초대를 통해 그룹에 들어온 유저의 역할은 MEMBER 이다.")
         );
     }
 
@@ -143,7 +154,7 @@ public class InviteServiceTest {
         inviteService.procInvitation(invite.getId(), secondUser, InviteStatus.ACCEPT);
 
         //then
-        assertThrows(ExistUserGroupException.class,
+        assertThrows(ExistGroupUserException.class,
                 () -> inviteService.inviteToGroup(firstUser, inviteUserRequest));
     }
 

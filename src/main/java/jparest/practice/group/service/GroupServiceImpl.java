@@ -1,40 +1,45 @@
 package jparest.practice.group.service;
 
 import jparest.practice.group.domain.Group;
-import jparest.practice.group.domain.UserGroup;
-import jparest.practice.group.dto.CreateGroupResponse;
-import jparest.practice.group.dto.GetUserGroupResponse;
-import jparest.practice.group.exception.UserGroupNotFoundException;
+import jparest.practice.group.domain.GroupUser;
+import jparest.practice.group.domain.GroupUserType;
+import jparest.practice.group.dto.*;
+import jparest.practice.group.exception.GroupAccessDeniedException;
+import jparest.practice.group.exception.GroupUserNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
-import jparest.practice.group.repository.UserGroupRepository;
-import jparest.practice.invite.repository.InviteRepository;
+import jparest.practice.group.repository.GroupUserRepository;
 import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
-    private final UserGroupRepository userGroupRepository;
-    private final InviteRepository inviteRepository;
+    private final GroupUserRepository groupUserRepository;
 
     /**
      * 그룹 생성
      */
     @Override
     @Transactional
-    public CreateGroupResponse createGroup(User user, String groupName) {
-        Group newGroup = new Group(groupName);
+    public CreateGroupResponse createGroup(User user, CreateGroupRequest createGroupRequest) {
+        Group newGroup = Group.builder()
+                .groupName(createGroupRequest.getGroupName())
+                .isPublic(createGroupRequest.getIsPublic())
+                .build();
+
         Group saveGroup = groupRepository.save(newGroup);
 
-        saveUserGroup(user, saveGroup);
+        saveGroupUser(user, saveGroup);
 
         return CreateGroupResponse.builder()
                 .id(saveGroup.getId())
@@ -49,9 +54,9 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public Boolean withdrawGroup(User user, Long groupId) {
 
-        UserGroup findUserGroup = findUserGroup(user.getId(), groupId);
+        GroupUser findGroupUser = findGroupUser(user.getId(), groupId);
 
-        Group group = findUserGroup.getGroup();
+        Group group = findGroupUser.getGroup();
 
         int remainUserCount = group.getUserCount();
 
@@ -63,7 +68,7 @@ public class GroupServiceImpl implements GroupService {
 
         // 탈퇴하는 유저가 그룹의 마지막 유저가 아닐 경우 본인만 탈퇴한다.
         if (remainUserCount > 1) {
-            userGroupRepository.delete(findUserGroup);
+            groupUserRepository.delete(findGroupUser);
             return true;
         }
 
@@ -75,28 +80,102 @@ public class GroupServiceImpl implements GroupService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<GetUserGroupResponse> getUserGroupList(User user) {
-        List<UserGroup> userGroups = user.getUserGroups();
+    public List<GetGroupUserResponse> getGroupUserList(User user) {
+        List<GroupUser> groupUsers = user.getGroupUsers();
 
-        List<GetUserGroupResponse> getUserGroupResponse = new ArrayList<>(userGroups.size());
+        List<GetGroupUserResponse> getGroupUserResponse = new ArrayList<>(groupUsers.size());
 
-        for (UserGroup userGroup: userGroups) {
-            Group group = userGroup.getGroup();
-            GetUserGroupResponse res = new GetUserGroupResponse(group.getId(), group.getGroupName(), group.getUserCount());
-            getUserGroupResponse.add(res);
+        for (GroupUser groupUser : groupUsers) {
+            Group group = groupUser.getGroup();
+            GetGroupUserResponse res = new GetGroupUserResponse(group.getId(), group.getGroupName(), group.getUserCount());
+            getGroupUserResponse.add(res);
         }
 
-        return getUserGroupResponse;
+        return getGroupUserResponse;
     }
 
-    private UserGroup findUserGroup(UUID userId, Long groupId) {
-        return userGroupRepository.findByUserIdAndGroupId(userId, groupId)
-                .orElseThrow(() -> new UserGroupNotFoundException("userId = " + userId + ", groupId = " + groupId));
+    /**
+     * 그룹 소유권 양도
+     */
+    @Override
+    @Transactional
+    public ChangeOwnerResponse changeOwner(User user, Long groupId, ChangeOwnerRequest changeOwnerRequest) {
+        List<GroupUser> groupUserList = findAllGroupUserByGroupId(groupId);
+
+        // 1. 전임자의 역할 체크
+        List<GroupUser> owners = groupUserList.stream()
+                .filter(e -> e.getUser().getId().equals(user.getId()))
+                .collect(Collectors.toList());
+
+        if (owners.size() != 1) {
+            throw new GroupAccessDeniedException("Not groupUserId = " + user.getId() + " , SameGroupUserCount = " + owners.size());
+        }
+
+        GroupUser findGroupOwner = owners.get(0);
+
+        if (!findGroupOwner.getGroupUserType()
+                .equals(GroupUserType.ROLE_OWNER)) {
+            throw new GroupAccessDeniedException("Not ownerId = " + user.getId());
+        }
+
+        // 2. 후임자가 그룹원인지 체크
+        List<GroupUser> successors = groupUserList.stream()
+                .filter(e -> e.getUser().getId().equals(changeOwnerRequest.getSuccessorId()))
+                .collect(Collectors.toList());
+
+        if (successors.size() != 1) {
+            throw new GroupUserNotFoundException("Not groupUserId = " + changeOwnerRequest.getSuccessorId() + " , SameGroupUserCount = " + owners.size());
+        }
+
+        // 3. 후임자 역할 변경
+        GroupUser findGroupMember = successors.get(0);
+
+        GroupUser groupSuccessor = GroupUser.builder()
+                .id(findGroupMember.getId())
+                .user(findGroupMember.getUser())
+                .group(findGroupMember.getGroup())
+                .groupUserType(GroupUserType.ROLE_OWNER)
+                .build();
+
+        groupUserRepository.save(groupSuccessor);
+
+        // 4. 전임자 역할 변경
+        GroupUser groupPredecessor = GroupUser.builder()
+                .id(findGroupOwner.getId())
+                .user(findGroupOwner.getUser())
+                .group(findGroupOwner.getGroup())
+                .groupUserType(GroupUserType.ROLE_MEMBER)
+                .build();
+
+        groupUserRepository.save(groupPredecessor);
+
+        ChangeOwnerResponse changeOwnerResponse = ChangeOwnerResponse.builder()
+                .ownerNickname(findGroupMember.getUser().getNickname())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        return changeOwnerResponse;
     }
 
-    private UserGroup saveUserGroup(User user, Group group) {
-        UserGroup userGroup = userGroupRepository.save(new UserGroup(user, group));
-        userGroup.addUserGroup();
-        return userGroup;
+    private GroupUser findGroupUser(UUID userId, Long groupId) {
+        return groupUserRepository.findByUserIdAndGroupId(userId, groupId)
+                .orElseThrow(() -> new GroupUserNotFoundException("userId = " + userId + ", groupId = " + groupId));
+    }
+
+    private List<GroupUser> findAllGroupUserByGroupId(Long groupId) {
+        return groupUserRepository.findAllByGroupId(groupId)
+                .orElseThrow(() -> new GroupUserNotFoundException("groupId = " + groupId));
+    }
+
+    private GroupUser saveGroupUser(User user, Group group) {
+        GroupUser groupUser = GroupUser.builder()
+                .user(user)
+                .group(group)
+                .groupUserType(GroupUserType.ROLE_OWNER)
+                .build();
+
+        GroupUser saveGroupUser = groupUserRepository.save(groupUser);
+        saveGroupUser.addGroupUser();
+        return saveGroupUser;
     }
 }
