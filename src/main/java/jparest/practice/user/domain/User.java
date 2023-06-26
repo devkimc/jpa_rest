@@ -52,6 +52,10 @@ public class User extends TimeBaseEntity {
     @OneToMany(mappedBy = "recvUser")
     private List<Invite> invites = new ArrayList<Invite>();
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     //==연관관계 메서드==//
     public void addInvite(Invite invite) {
         invites.add(invite);

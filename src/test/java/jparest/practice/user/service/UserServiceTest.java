@@ -33,19 +33,17 @@ public class UserServiceTest {
     }
 
     @Test
-    public void 닉네임_중복검사() throws Exception {
+    public void 닉네임_변경() throws Exception {
 
         //given
-        userAuthService.join(createFirstUser());
+        User joinUser = userAuthService.join(createFirstUser());
 
         //when
-        Boolean resultOfJoinUserNickName = userInfoService.chkNickNameDuplicate(nickname1);
-        Boolean resultOfNotJoinUserNickName = userInfoService.chkNickNameDuplicate(nickname2);
+        userInfoService.updateNickname(joinUser, nickname2);
 
         //then
         assertAll(
-                () -> assertEquals(true, resultOfJoinUserNickName, "가입한 유저의 닉네임은 TRUE 를 반환해야 한다."),
-                () -> assertEquals(false, resultOfNotJoinUserNickName, "가입하지 않은 닉네임은 FALSE 를 반환해야 한다.")
+                () -> assertEquals(nickname2, joinUser.getNickname())
         );
     }
 }
