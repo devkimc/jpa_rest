@@ -11,15 +11,18 @@ import jparest.practice.rest.controller.FavoriteRestaurantController;
 import jparest.practice.rest.controller.RankingRestaurantController;
 import jparest.practice.rest.service.FavoriteRestaurantService;
 import jparest.practice.rest.service.RankingRestaurantService;
-import jparest.practice.user.controller.UserController;
+import jparest.practice.user.controller.UserAuthController;
+import jparest.practice.user.controller.UserInfoController;
 import jparest.practice.user.service.UserAuthService;
+import jparest.practice.user.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest({
-        UserController.class,
+        UserAuthController.class,
+        UserInfoController.class,
         GroupController.class,
         InviteController.class,
         FavoriteRestaurantController.class,
@@ -35,6 +38,9 @@ public abstract class ControllerTest {
 
     @MockBean
     protected UserAuthService userAuthService;
+
+    @MockBean
+    protected UserInfoService userInfoService;
 
     @MockBean
     protected GroupService groupService;

@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
-public class UserControllerTest extends RestDocsTestSupport {
+public class UserAuthControllerTest extends RestDocsTestSupport {
 
     private final String AUTH_API = "/api/auth";
 
