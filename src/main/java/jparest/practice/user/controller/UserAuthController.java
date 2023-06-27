@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
-public class UserController {
+public class UserAuthController {
     
     @Value("${domain.host}")
     private String domain;

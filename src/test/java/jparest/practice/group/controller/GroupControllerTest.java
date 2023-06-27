@@ -152,8 +152,6 @@ public class GroupControllerTest extends RestDocsTestSupport {
                 .successorId(userId)
                 .build();
 
-        String content = objectMapper.writeValueAsString(changeOwnerRequest);
-
         LocalDateTime currentTime = LocalDateTime.now();
 
         ChangeOwnerResponse changeOwnerResponse = ChangeOwnerResponse.builder()
@@ -168,7 +166,7 @@ public class GroupControllerTest extends RestDocsTestSupport {
         ResultActions result = mockMvc.perform(
                 patch(GROUP_API + "/{groupId}/owners", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
+                        .content(createJson(changeOwnerRequest))
         );
 
         //then
