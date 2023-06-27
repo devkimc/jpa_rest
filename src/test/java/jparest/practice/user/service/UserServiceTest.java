@@ -1,6 +1,7 @@
 package jparest.practice.user.service;
 
 import jparest.practice.user.domain.User;
+import jparest.practice.user.dto.UpdateUserInfoRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,8 +39,12 @@ public class UserServiceTest {
         //given
         User joinUser = userAuthService.join(createFirstUser());
 
+        UpdateUserInfoRequest updateUserInfoRequest = UpdateUserInfoRequest.builder()
+                .nickname(nickname2)
+                .build();
+
         //when
-        userInfoService.updateNickname(joinUser, nickname2);
+        userInfoService.updateUserInfo(joinUser, updateUserInfoRequest);
 
         //then
         assertAll(

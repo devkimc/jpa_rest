@@ -1,6 +1,7 @@
 package jparest.practice.user.service;
 
 import jparest.practice.user.domain.User;
+import jparest.practice.user.dto.UpdateUserInfoRequest;
 import jparest.practice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,10 @@ public class UserInfoServiceImpl implements UserInfoService{
 
     @Override
     @Transactional
-    public Boolean updateNickname(User user, String nickname) {
-        user.setNickname(nickname);
-        User saveUser = userRepository.save(user);
+    public Boolean updateUserInfo(User user, UpdateUserInfoRequest updateUserInfoRequest) {
+        user.setNickname(updateUserInfoRequest.getNickname());
+        userRepository.save(user);
 
-        System.out.println("saveUser = " + saveUser);
         return true;
     }
 }
