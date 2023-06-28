@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static jparest.practice.common.utils.fixture.GroupFixture.groupNameList;
-import static jparest.practice.common.utils.fixture.RestFixture.*;
-import static jparest.practice.common.utils.fixture.UserFixture.createFirstUser;
+import static jparest.practice.common.fixture.GroupFixture.groupNameList;
+import static jparest.practice.common.fixture.RestFixture.*;
+import static jparest.practice.common.fixture.UserFixture.createFirstUser;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

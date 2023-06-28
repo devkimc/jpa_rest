@@ -1,6 +1,6 @@
 package jparest.practice.group.controller;
 
-import jparest.practice.common.utils.RestDocsTestSupport;
+import jparest.practice.common.document.RestDocsTestSupport;
 import jparest.practice.group.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
-import static jparest.practice.common.utils.fixture.UserFixture.nickname1;
-import static jparest.practice.common.utils.fixture.UserFixture.userId;
+import static jparest.practice.common.fixture.GroupFixture.groupName1;
+import static jparest.practice.common.fixture.UserFixture.nickname1;
+import static jparest.practice.common.fixture.UserFixture.userId;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;

@@ -1,5 +1,6 @@
-package jparest.practice.common.utils;
+package jparest.practice.common.document;
 
+import jparest.practice.common.config.ControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

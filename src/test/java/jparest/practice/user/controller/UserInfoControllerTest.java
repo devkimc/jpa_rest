@@ -1,8 +1,8 @@
 package jparest.practice.user.controller;
 
 import jparest.practice.auth.jwt.JwtService;
-import jparest.practice.common.utils.RestDocsTestSupport;
-import jparest.practice.common.utils.fixture.UserFixture;
+import jparest.practice.common.document.RestDocsTestSupport;
+import jparest.practice.common.fixture.UserFixture;
 import jparest.practice.user.dto.UpdateUserInfoRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

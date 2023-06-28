@@ -25,19 +25,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
-import static jparest.practice.common.utils.fixture.GroupFixture.*;
-import static jparest.practice.common.utils.fixture.RestFixture.*;
-import static jparest.practice.common.utils.fixture.UserFixture.*;
+import static jparest.practice.common.fixture.GroupFixture.groupName1;
+import static jparest.practice.common.fixture.GroupFixture.groupName2;
+import static jparest.practice.common.fixture.RestFixture.*;
+import static jparest.practice.common.fixture.UserFixture.createFirstUser;
+import static jparest.practice.common.fixture.UserFixture.createSecondUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional
 public class GroupServiceTest {
 
     private User firstUser;

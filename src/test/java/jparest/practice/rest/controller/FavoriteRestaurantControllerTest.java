@@ -1,6 +1,6 @@
 package jparest.practice.rest.controller;
 
-import jparest.practice.common.utils.RestDocsTestSupport;
+import jparest.practice.common.document.RestDocsTestSupport;
 import jparest.practice.rest.dto.AddFavoriteRestRequest;
 import jparest.practice.rest.dto.GetFavRestListResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +15,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
-import static jparest.practice.common.utils.fixture.RestFixture.*;
+import static jparest.practice.common.fixture.RestFixture.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
