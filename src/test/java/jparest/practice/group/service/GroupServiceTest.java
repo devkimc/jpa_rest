@@ -6,6 +6,7 @@ import jparest.practice.group.domain.GroupUserType;
 import jparest.practice.group.dto.*;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.exception.GroupUserNotFoundException;
+import jparest.practice.group.repository.GroupQueryRepository;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.GroupUserRepository;
 import jparest.practice.invite.domain.Invite;
@@ -25,24 +26,27 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
-import static jparest.practice.common.utils.fixture.GroupFixture.*;
-import static jparest.practice.common.utils.fixture.RestFixture.*;
-import static jparest.practice.common.utils.fixture.UserFixture.*;
+import static jparest.practice.common.fixture.GroupFixture.groupName1;
+import static jparest.practice.common.fixture.GroupFixture.groupName2;
+import static jparest.practice.common.fixture.RestFixture.*;
+import static jparest.practice.common.fixture.UserFixture.createFirstUser;
+import static jparest.practice.common.fixture.UserFixture.createSecondUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional
 public class GroupServiceTest {
 
     private User firstUser;
     private User secondUser;
-    private CreateGroupRequest createGroupRequest;
+
+    private CreateGroupRequest createFirstGroupRequest;
+    private CreateGroupRequest createSecondGroupRequest;
 
     @Autowired
     UserAuthService userAuthService;
@@ -55,6 +59,9 @@ public class GroupServiceTest {
 
     @Autowired
     GroupUserRepository groupUserRepository;
+
+    @Autowired
+    GroupQueryRepository groupQueryRepository;
 
     @Autowired
     InviteRepository inviteRepository;
@@ -72,9 +79,14 @@ public class GroupServiceTest {
     void setUp() {
         firstUser = userAuthService.join(createFirstUser());
 
-        createGroupRequest = CreateGroupRequest.builder()
+        createFirstGroupRequest = CreateGroupRequest.builder()
                 .groupName(groupName1)
                 .isPublic(true)
+                .build();
+
+        createSecondGroupRequest = CreateGroupRequest.builder()
+                .groupName(groupName2)
+                .isPublic(false)
                 .build();
     }
 
@@ -84,7 +96,7 @@ public class GroupServiceTest {
         //given
 
         //when
-        CreateGroupResponse response = groupService.createGroup(firstUser, createGroupRequest);
+        CreateGroupResponse response = groupService.createGroup(firstUser, createFirstGroupRequest);
 
         Group group = findGroup(response.getId());
         GroupUser groupUser = findGroupUser(firstUser.getId(), group.getId());
@@ -100,7 +112,7 @@ public class GroupServiceTest {
     public void 그룹탈퇴() throws Exception {
 
         //given
-        Long saveGroupId = groupService.createGroup(firstUser, createGroupRequest).getId();
+        Long saveGroupId = groupService.createGroup(firstUser, createFirstGroupRequest).getId();
 
         //when
         groupService.withdrawGroup(firstUser, saveGroupId);
@@ -113,7 +125,7 @@ public class GroupServiceTest {
     public void 마지막_그룹원이_탈퇴시_연관된_고아객체를_모두_삭제한다() throws Exception {
 
         //given
-        Long saveGroupId = groupService.createGroup(firstUser, createGroupRequest).getId();
+        Long saveGroupId = groupService.createGroup(firstUser, createFirstGroupRequest).getId();
         secondUser = userAuthService.join(createSecondUser());
 
         InviteUserResponse response = inviteService.inviteToGroup(firstUser, new InviteUserRequest(secondUser.getId(), saveGroupId));
@@ -137,13 +149,9 @@ public class GroupServiceTest {
     public void 그룹_리스트_조회() throws Exception {
 
         //given
-        CreateGroupRequest createGroupRequest2 = CreateGroupRequest.builder()
-                .groupName(groupName2)
-                .isPublic(true)
-                .build();
 
-        Long id1 = groupService.createGroup(firstUser, createGroupRequest).getId();
-        Long id2 = groupService.createGroup(firstUser, createGroupRequest2).getId();
+        Long id1 = groupService.createGroup(firstUser, createFirstGroupRequest).getId();
+        Long id2 = groupService.createGroup(firstUser, createSecondGroupRequest).getId();
 
         Group group1 = findGroup(id1);
         Group group2 = findGroup(id2);
@@ -168,7 +176,7 @@ public class GroupServiceTest {
     public void 그룹_소유자_변경() throws Exception {
 
         //given
-        Long saveGroupId = groupService.createGroup(firstUser, createGroupRequest).getId();
+        Long saveGroupId = groupService.createGroup(firstUser, createFirstGroupRequest).getId();
         secondUser = userAuthService.join(createSecondUser());
 
         InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), saveGroupId);
@@ -192,6 +200,26 @@ public class GroupServiceTest {
                         "후임자는 소유자 변경 후 OWNER 역할이 되야 한다"),
                 () -> assertEquals(secondUser.getNickname(), changeOwnerResponse.getOwnerNickname(),
                         "후임자의 닉네임이 응닶값과 일치해야 한다.")
+        );
+    }
+
+    @Test
+    public void 그룹_이름만_검색_시() throws Exception {
+
+        //given
+        groupService.createGroup(firstUser, createFirstGroupRequest); // public
+        groupService.createGroup(firstUser, createSecondGroupRequest); // private
+
+        //when
+        List<SearchGroupListResponse> resultList = groupQueryRepository.search("그룹", "");
+
+        //then
+        assertAll(
+                () -> assertEquals(1, resultList.size(), "공개된 그룹만 조회해야 한다."),
+                () -> assertEquals(firstUser.getNickname(), resultList.get(0).getOwnerNickname(),
+                        "그룹 소유자의 닉네임 같아야 한다."),
+                () -> assertEquals(groupName1, resultList.get(0).getGroupName(),
+                        "그룹의 이름은 같아야 한다.")
         );
     }
 

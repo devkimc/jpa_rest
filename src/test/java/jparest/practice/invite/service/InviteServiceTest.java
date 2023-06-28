@@ -27,9 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
-import static jparest.practice.common.utils.fixture.UserFixture.createFirstUser;
-import static jparest.practice.common.utils.fixture.UserFixture.createSecondUser;
+import static jparest.practice.common.fixture.GroupFixture.groupName1;
+import static jparest.practice.common.fixture.UserFixture.createFirstUser;
+import static jparest.practice.common.fixture.UserFixture.createSecondUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

@@ -20,7 +20,7 @@ public class UserInfoController {
     private final UserInfoService userInfoService;
 
     @PatchMapping("/info")
-    ApiResult<Boolean> updateNickname(@CurrentUser User user,
+    ApiResult<Boolean> updateUserInfo(@CurrentUser User user,
                                       @RequestBody UpdateUserInfoRequest updateUserInfoRequest) {
         return ApiUtils.success(userInfoService.updateUserInfo(user, updateUserInfoRequest));
     }

@@ -1,7 +1,7 @@
 package jparest.practice.user.controller;
 
 import jparest.practice.auth.jwt.JwtService;
-import jparest.practice.common.utils.RestDocsTestSupport;
+import jparest.practice.common.document.RestDocsTestSupport;
 import jparest.practice.user.dto.KakaoLoginResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import static jparest.practice.common.utils.fixture.UserFixture.*;
+import static jparest.practice.common.fixture.UserFixture.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;

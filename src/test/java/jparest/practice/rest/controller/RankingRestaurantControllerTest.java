@@ -1,6 +1,6 @@
 package jparest.practice.rest.controller;
 
-import jparest.practice.common.utils.RestDocsTestSupport;
+import jparest.practice.common.document.RestDocsTestSupport;
 import jparest.practice.rest.dto.GetMostSavedRestResponse;
 import jparest.practice.rest.dto.GetNewSavedRestResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jparest.practice.common.utils.fixture.RestFixture.restIdList;
-import static jparest.practice.common.utils.fixture.RestFixture.restNameList;
+import static jparest.practice.common.fixture.RestFixture.restIdList;
+import static jparest.practice.common.fixture.RestFixture.restNameList;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;

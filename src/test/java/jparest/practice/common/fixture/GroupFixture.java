@@ -1,4 +1,4 @@
-package jparest.practice.common.utils.fixture;
+package jparest.practice.common.fixture;
 
 import java.util.List;
 

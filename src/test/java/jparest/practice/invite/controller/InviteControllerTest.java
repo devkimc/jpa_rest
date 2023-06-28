@@ -1,6 +1,6 @@
 package jparest.practice.invite.controller;
 
-import jparest.practice.common.utils.RestDocsTestSupport;
+import jparest.practice.common.document.RestDocsTestSupport;
 import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
 import jparest.practice.invite.dto.InviteStatusPatchRequest;
@@ -17,9 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static jparest.practice.common.utils.fixture.GroupFixture.groupName1;
-import static jparest.practice.common.utils.fixture.UserFixture.nickname1;
-import static jparest.practice.common.utils.fixture.UserFixture.userId;
+import static jparest.practice.common.fixture.GroupFixture.groupName1;
+import static jparest.practice.common.fixture.UserFixture.nickname1;
+import static jparest.practice.common.fixture.UserFixture.userId;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;

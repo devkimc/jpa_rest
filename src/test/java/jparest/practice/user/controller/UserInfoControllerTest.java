@@ -1,8 +1,8 @@
 package jparest.practice.user.controller;
 
 import jparest.practice.auth.jwt.JwtService;
-import jparest.practice.common.utils.RestDocsTestSupport;
-import jparest.practice.common.utils.fixture.UserFixture;
+import jparest.practice.common.document.RestDocsTestSupport;
+import jparest.practice.common.fixture.UserFixture;
 import jparest.practice.user.dto.UpdateUserInfoRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,8 +27,8 @@ public class UserInfoControllerTest extends RestDocsTestSupport {
     JwtService jwtService;
 
     @Test
-    @DisplayName("닉네임 변경")
-    public void get_nickname_duplicate() throws Exception {
+    @DisplayName("유저 정보 수정")
+    public void patch_user_info() throws Exception {
 
         //given
         given(userInfoService.updateUserInfo(any(), any())).willReturn(true);

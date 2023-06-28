@@ -25,9 +25,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static jparest.practice.common.utils.fixture.GroupFixture.*;
-import static jparest.practice.common.utils.fixture.RestFixture.*;
-import static jparest.practice.common.utils.fixture.UserFixture.*;
+import static jparest.practice.common.fixture.GroupFixture.*;
+import static jparest.practice.common.fixture.RestFixture.*;
+import static jparest.practice.common.fixture.UserFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
