@@ -6,6 +6,7 @@ import jparest.practice.group.domain.GroupUserType;
 import jparest.practice.group.dto.*;
 import jparest.practice.group.exception.GroupAccessDeniedException;
 import jparest.practice.group.exception.GroupUserNotFoundException;
+import jparest.practice.group.repository.GroupQueryRepository;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.repository.GroupUserRepository;
 import jparest.practice.user.domain.User;
@@ -25,6 +26,7 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
     private final GroupUserRepository groupUserRepository;
+    private final GroupQueryRepository groupQueryRepository;
 
     /**
      * 그룹 생성
@@ -155,6 +157,13 @@ public class GroupServiceImpl implements GroupService {
                 .build();
 
         return changeOwnerResponse;
+    }
+
+    @Override
+    public List<SearchGroupListResponse> searchGroup(SearchGroupListRequest searchGroupListRequest) {
+        return groupQueryRepository.search(
+                searchGroupListRequest.getGroupName(), searchGroupListRequest.getOwnerNickname()
+        );
     }
 
     private GroupUser findGroupUser(UUID userId, Long groupId) {

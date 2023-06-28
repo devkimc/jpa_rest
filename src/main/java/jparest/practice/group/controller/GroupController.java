@@ -30,9 +30,15 @@ public class GroupController {
         return ApiUtils.success(groupService.withdrawGroup(user, groupId));
     }
 
-    @GetMapping
+    @GetMapping("/users")
     public ApiResult<List<GetGroupUserResponse>> getGroupUserList(@CurrentUser User user) {
         return ApiUtils.success(groupService.getGroupUserList(user));
+    }
+
+    @GetMapping
+    public ApiResult<List<SearchGroupListResponse>> getGroupUserList(@RequestParam String groupName,
+                                                                     @RequestParam String ownerNickname) {
+        return ApiUtils.success(groupService.searchGroup(new SearchGroupListRequest(groupName, ownerNickname)));
     }
 
     @PatchMapping("/{groupId}/owners")

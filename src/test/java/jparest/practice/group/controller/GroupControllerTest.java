@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,8 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,7 +32,7 @@ public class GroupControllerTest extends RestDocsTestSupport {
 
     @Test
     @DisplayName("그룹 리스트 조회")
-    void get_groups() throws Exception {
+    void get_groups_users() throws Exception {
 
         //given
         GetGroupUserResponse response = GetGroupUserResponse.builder()
@@ -40,16 +41,16 @@ public class GroupControllerTest extends RestDocsTestSupport {
                 .totalUsers(1)
                 .build();
 
-        List<GetGroupUserResponse> getGroupUserRespons = new ArrayList<>();
+        List<GetGroupUserResponse> getGroupUserResponse = new ArrayList<>();
 
-        getGroupUserRespons.add(response);
+        getGroupUserResponse.add(response);
 
         given(groupService.getGroupUserList(any()))
-                .willReturn(getGroupUserRespons);
+                .willReturn(getGroupUserResponse);
 
         //when
         ResultActions result = mockMvc.perform(
-                get(GROUP_API)
+                get(GROUP_API + "/users")
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -67,6 +68,63 @@ public class GroupControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("result.[].groupId").description("그룹 아이디"),
                                 fieldWithPath("result.[].groupName").description("그룹 이름"),
                                 fieldWithPath("result.[].totalUsers").description("그룹 인원수")
+                        )));
+    }
+
+    @Test
+    @DisplayName("그룹 검색")
+    void get_groups() throws Exception {
+
+        //given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("groupName", "gr");
+        params.add("ownerNickname", "us");
+
+        SearchGroupListResponse firstResponseGroup = SearchGroupListResponse.builder()
+                .groupId(1L)
+                .groupName("group1")
+                .ownerNickname("user1")
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        SearchGroupListResponse secondResponseGroup = SearchGroupListResponse.builder()
+                .groupId(2L)
+                .groupName("group2")
+                .ownerNickname("user2")
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        List<SearchGroupListResponse> searchGroupListResponses = new ArrayList<>(
+                List.of(firstResponseGroup, secondResponseGroup));
+
+        given(groupService.searchGroup(any()))
+                .willReturn(searchGroupListResponses);
+
+        //when
+        ResultActions result = mockMvc.perform(
+                get(GROUP_API)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .params(params)
+        );
+
+        //then
+        result
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("$.result.[0].groupId").value(1L),
+                        jsonPath("$.result.[0].groupName").value("group1")
+                )
+                .andDo(restDocs.document(
+                        requestParameters(
+                                parameterWithName("groupName").description("그룹 이름"),
+                                parameterWithName("ownerNickname").description("그룹 소유자 닉네임")
+                        ),
+                        responseFields(
+                                fieldWithPath("success").description("성공 여부"),
+                                fieldWithPath("result.[].groupId").description("그룹 아이디"),
+                                fieldWithPath("result.[].groupName").description("그룹 이름"),
+                                fieldWithPath("result.[].ownerNickname").description("그룹 소유자 닉네임"),
+                                fieldWithPath("result.[].updatedAt").description("최근 업데이트 시간")
                         )));
     }
 

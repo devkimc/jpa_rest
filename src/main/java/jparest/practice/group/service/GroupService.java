@@ -19,4 +19,7 @@ public interface GroupService {
     // 그룹 소유자 변경
     ChangeOwnerResponse changeOwner(User user, Long groupId, ChangeOwnerRequest changeOwnerRequest);
 
+    // 그룹 검색
+    List<SearchGroupListResponse> searchGroup(SearchGroupListRequest searchGroupListRequest);
+
 }

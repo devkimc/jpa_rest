@@ -27,8 +27,8 @@ public class UserInfoControllerTest extends RestDocsTestSupport {
     JwtService jwtService;
 
     @Test
-    @DisplayName("닉네임 변경")
-    public void get_nickname_duplicate() throws Exception {
+    @DisplayName("유저 정보 수정")
+    public void patch_user_info() throws Exception {
 
         //given
         given(userInfoService.updateUserInfo(any(), any())).willReturn(true);

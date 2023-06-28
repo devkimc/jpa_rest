@@ -1,11 +1,10 @@
 package jparest.practice.group.repository;
 
-import jparest.practice.group.domain.Group;
+import jparest.practice.group.dto.SearchGroupListResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface GroupQueryRepository {
 
-    Optional<List<Group>> search(String groupName, String ownerNickname);
+    List<SearchGroupListResponse> search(String groupName, String ownerNickname);
 }

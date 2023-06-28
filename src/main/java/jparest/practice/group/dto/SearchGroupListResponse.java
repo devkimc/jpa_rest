@@ -1,6 +1,6 @@
 package jparest.practice.group.dto;
 
-import lombok.AllArgsConstructor;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class SearchGroupListResponse {
 
     private Long groupId;
@@ -19,7 +18,15 @@ public class SearchGroupListResponse {
 
     private String ownerNickname;
 
-    private int totalGroupUser;
+//    private int totalGroupUser;
 
     private LocalDateTime updatedAt;
+
+    @QueryProjection
+    public SearchGroupListResponse(Long groupId, String groupName, String ownerNickname, LocalDateTime updatedAt) {
+        this.groupId = groupId;
+        this.groupName = groupName;
+        this.ownerNickname = ownerNickname;
+        this.updatedAt = updatedAt;
+    }
 }
