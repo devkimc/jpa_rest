@@ -12,6 +12,7 @@ import javax.persistence.*;
 
 import static jparest.practice.invite.domain.InviteStatus.*;
 
+@Table(name = "group_invite")
 @Entity
 @Getter
 @NoArgsConstructor

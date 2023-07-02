@@ -3,6 +3,7 @@ package jparest.practice.user.domain;
 import jparest.practice.common.util.TimeBaseEntity;
 import jparest.practice.group.domain.GroupUser;
 import jparest.practice.invite.domain.Invite;
+import jparest.practice.subscription.domain.Subscription;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,6 +52,10 @@ public class User extends TimeBaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "recvUser")
     private List<Invite> invites = new ArrayList<Invite>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "applicant")
+    private List<Subscription> subscriptions = new ArrayList<Subscription>();
 
     public void setNickname(String nickname) {
         this.nickname = nickname;

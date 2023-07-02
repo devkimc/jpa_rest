@@ -20,7 +20,7 @@
 * Rest Docs
 
 ## :link: Rest API 문서
-* [API 문서](https://jpa-rest.vercel.app/)
+* [API 문서](https://jpa-rest-git-develop-kws60000.vercel.app/)
 
 ## :link: 테스트
 * [테스트](https://github.com/vvs-kim/jpa_rest/tree/develop/src/test/java/jparest/practice)

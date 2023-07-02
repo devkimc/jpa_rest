@@ -2,6 +2,7 @@ package jparest.practice.group.domain;
 
 import jparest.practice.common.util.TimeBaseEntity;
 import jparest.practice.rest.domain.GroupRest;
+import jparest.practice.subscription.domain.Subscription;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +35,10 @@ public class Group extends TimeBaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "group", orphanRemoval = true)
     private List<GroupRest> groupRests = new ArrayList<GroupRest>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "group", orphanRemoval = true)
+    private List<Subscription> subscriptions = new ArrayList<Subscription>();
 
     @Column(nullable = false)
     private Boolean isPublic;
