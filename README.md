@@ -20,7 +20,7 @@
 * Rest Docs
 
 ## :link: Rest API 문서
-* [API 문서](https://jpa-rest.vercel.app/)
+* [API 문서](https://jpa-rest-git-develop-kws60000.vercel.app/)
 
 ## :link: 테스트
 * [테스트](https://github.com/vvs-kim/jpa_rest/tree/develop/src/test/java/jparest/practice)
@@ -95,4 +95,17 @@ Jpa 는 엔티티를 저장할 때, 새로운 엔티티면 merge, 아니라면 p
 
 ![](./src/main/resources/image/new-entity.png)
 
+### 조회 쿼리 메서드 사용 시 불필요한 Join 사용
+조회 쿼리 메서드 사용 시, 엔티티 필드의 속성값을 조건으로 사용하는 경우 자동으로 Join 이 사용되는 이슈가 있었습니다. <br />
+쿼리 메서드는 속성 순환을 통해 속성값을 분석하고, 다른 테이블의 기본키인 속성값을 사용하는 경우 Join 이 자동으로 사용된다는 것을 알게되었습니다. <br />
+쿼리 메서드 대신 JPQL 을 사용해서 불필요한 Join 을 사용하지 않도록 했습니다.
+
+```java
+public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
+    Optional<Subscription> findByApplicantIdAndGroupIdAndStatus(UUID applicantId,
+                                                                Long groupId,
+                                                                SubscriptionStatus status);
+}
+```
+![](./src/main/resources/image/select-query-method-join.png)
 

@@ -10,10 +10,10 @@ import java.util.UUID;
 
 public interface InviteRepository extends JpaRepository<Invite, Long> {
 
-    Optional<Invite> findBySendGroupUserIdAndRecvUserIdAndInviteStatus(Long sendGroupUserId,
-                                                                       UUID recvUserId,
-                                                                       InviteStatus inviteStatus);
+    Optional<Invite> findBySendGroupUserIdAndRecvUserIdAndStatus(Long sendGroupUserId,
+                                                                 UUID recvUserId,
+                                                                 InviteStatus status);
 
-    Optional<List<Invite>> findAllByRecvUserIdAndInviteStatus(UUID recvUserId, InviteStatus inviteStatus);
+    Optional<List<Invite>> findAllByRecvUserIdAndStatus(UUID recvUserId, InviteStatus status);
 
 }

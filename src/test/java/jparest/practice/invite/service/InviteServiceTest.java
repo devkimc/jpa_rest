@@ -14,7 +14,7 @@ import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
-import jparest.practice.invite.exception.ExistInviteForUserException;
+import jparest.practice.invite.exception.ExistWaitingInviteException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.user.domain.User;
@@ -82,7 +82,7 @@ public class InviteServiceTest {
 
         //then
         assertAll(
-                () -> assertEquals(InviteStatus.WAITING, invite.getInviteStatus()), // 초대 상태
+                () -> assertEquals(InviteStatus.WAITING, invite.getStatus()), // 초대 상태
                 () -> assertEquals(groupUsers.get(0), invite.getSendGroupUser()), // 초대한 유저
                 () -> assertEquals(secondUser, invite.getRecvUser()) // 초대받은 유저
         );
@@ -104,7 +104,7 @@ public class InviteServiceTest {
 
         //then
         assertAll(
-                () -> assertEquals(InviteStatus.ACCEPT, invite.getInviteStatus(), "그룹초대 승낙 시 초대상태는 ACCEPT 이다."),
+                () -> assertEquals(InviteStatus.ACCEPT, invite.getStatus(), "그룹초대 승낙 시 초대상태는 ACCEPT 이다."),
                 () -> assertEquals(groupUser.getUser(), secondUser),
                 () -> assertEquals(groupUser.getGroupUserType(), GroupUserType.ROLE_MEMBER,
                         "초대를 통해 그룹에 들어온 유저의 역할은 MEMBER 이다.")
@@ -123,7 +123,7 @@ public class InviteServiceTest {
         inviteService.procInvitation(invite.getId(), secondUser, InviteStatus.REJECT);
 
         //then
-        assertEquals(InviteStatus.REJECT, invite.getInviteStatus());
+        assertEquals(InviteStatus.REJECT, invite.getStatus());
     }
 
     @Test
@@ -138,7 +138,7 @@ public class InviteServiceTest {
         inviteService.procInvitation(invite.getId(), firstUser, InviteStatus.CANCEL);
 
         //then
-        assertEquals(InviteStatus.CANCEL, invite.getInviteStatus());
+        assertEquals(InviteStatus.CANCEL, invite.getStatus());
     }
 
     @Test
@@ -168,7 +168,7 @@ public class InviteServiceTest {
         inviteService.inviteToGroup(firstUser, inviteUserRequest);
 
         //then
-        assertThrows(ExistInviteForUserException.class,
+        assertThrows(ExistWaitingInviteException.class,
                 () -> inviteService.inviteToGroup(firstUser, inviteUserRequest));
     }
 

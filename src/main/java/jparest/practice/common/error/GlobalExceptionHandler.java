@@ -5,11 +5,12 @@ import jparest.practice.group.exception.GroupAccessDeniedException;
 import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.exception.GroupUserNotFoundException;
 import jparest.practice.invite.exception.AlreadyProcessedInviteException;
-import jparest.practice.invite.exception.ExistInviteForUserException;
+import jparest.practice.invite.exception.ExistWaitingInviteException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.rest.exception.ExistGroupRestException;
 import jparest.practice.rest.exception.GroupRestNotFoundException;
 import jparest.practice.rest.exception.RestNotFoundException;
+import jparest.practice.subscription.exception.ExistWaitingSubscriptionException;
 import jparest.practice.user.exception.ExistLoginIdException;
 import jparest.practice.user.exception.LoginFailException;
 import jparest.practice.user.exception.UserNotFoundException;
@@ -74,10 +75,10 @@ public class GlobalExceptionHandler {
     }
 
     // INVITE
-    @ExceptionHandler(ExistInviteForUserException.class)
-    ResponseEntity<ErrorResponse> existInviteForUserHandler(ExistInviteForUserException e) {
+    @ExceptionHandler(ExistWaitingInviteException.class)
+    ResponseEntity<ErrorResponse> existWaitingInviteHandler(ExistWaitingInviteException e) {
 
-        return getErrorResponseEntity(e, ErrorCode.EXIST_INVITE_FOR_USER);
+        return getErrorResponseEntity(e, ErrorCode.EXIST_WAITING_INVITE);
     }
 
     @ExceptionHandler(InviteNotFoundException.class)
@@ -90,9 +91,16 @@ public class GlobalExceptionHandler {
         return getErrorResponseEntity(e, ErrorCode.ALREADY_PROCESSED_INVITE);
     }
 
+    // SUBSCRIPTION
+    @ExceptionHandler(ExistWaitingSubscriptionException.class)
+    ResponseEntity<ErrorResponse> existWaitingSubscriptionHandler(ExistWaitingSubscriptionException e) {
+        return getErrorResponseEntity(e, ErrorCode.EXIST_WAITING_SUBSCRIPTION);
+    }
+
     // REST
     @ExceptionHandler(ExistGroupRestException.class)
     ResponseEntity<ErrorResponse> existGroupRestHandler(ExistGroupRestException e) {
+
         return getErrorResponseEntity(e, ErrorCode.EXIST_GROUP_REST);
     }
 

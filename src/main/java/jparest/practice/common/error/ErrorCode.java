@@ -23,9 +23,12 @@ public enum ErrorCode {
     GROUP_ACCESS_DENIED(403, "G04", "그룹에 대한 권한이 없습니다."),
 
     // INVITE
-    EXIST_INVITE_FOR_USER(400, "I01", "이미 초대한 유저입니다."),
+    EXIST_WAITING_INVITE(400, "I01", "대기중인 초대가 존재합니다. 유저의 승인을 기다려주세요."),
     INVITE_NOT_FOUND(404, "I02", "존재하지 않는 초대입니다"),
     ALREADY_PROCESSED_INVITE(400, "I03", "이미 처리된 초대입니다."),
+
+    // SUBSCRIPTION
+    EXIST_WAITING_SUBSCRIPTION(400, "S01", "대기중인 가입신청이 존재합니다. 그룹의 승인을 기다려주세요."),
 
     // REST
     REST_NOT_FOUND(404, "R01", "존재하지 않는 식당입니다."),

@@ -12,6 +12,7 @@ import javax.persistence.*;
 
 import static jparest.practice.invite.domain.InviteStatus.*;
 
+@Table(name = "group_invite")
 @Entity
 @Getter
 @NoArgsConstructor
@@ -32,20 +33,20 @@ public class Invite extends TimeBaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private InviteStatus inviteStatus;
+    private InviteStatus status;
 
     public void setRecvUser(User user) {
         this.recvUser = user;
     }
 
-    public void updateStatus(InviteStatus inviteStatus) {
-        this.inviteStatus = inviteStatus;
+    public void updateStatus(InviteStatus status) {
+        this.status = status;
     }
 
-    public Invite(GroupUser sendGroupUser, User recvUser, InviteStatus inviteStatus) {
+    public Invite(GroupUser sendGroupUser, User recvUser, InviteStatus status) {
         this.sendGroupUser = sendGroupUser;
         this.recvUser = recvUser;
-        this.inviteStatus = inviteStatus;
+        this.status = status;
     }
 
     //==생성 메서드==//
@@ -56,21 +57,21 @@ public class Invite extends TimeBaseEntity {
     }
 
     // 초대 처리에 대한 권한 체크
-    public void chkAuthorizationOfInvitation(User user, InviteStatus requestStatus) {
+    public void chkAuthorizationOfInvitation(User user, InviteStatus status) {
 
-        if(requestStatus == ACCEPT && !this.getRecvUser().equals(user)) {
+        if(status == ACCEPT && !this.getRecvUser().equals(user)) {
             throw new InviteNotFoundException("승낙 요청한 유저의 초대가 아닙니다.");
         }
 
-        if (requestStatus == ACCEPT && this.getInviteStatus() != WAITING) {
+        if (status == ACCEPT && this.getStatus() != WAITING) {
             throw new AlreadyProcessedInviteException("inviteId = " + this.getId());
         }
 
-        if(requestStatus == REJECT && !this.getRecvUser().equals(user)) {
+        if(status == REJECT && !this.getRecvUser().equals(user)) {
             throw new InviteNotFoundException("거절 요청한 유저의 초대가 아닙니다.");
         }
 
-        if(requestStatus == CANCEL && !this.getSendGroupUser().getUser().equals(user)) {
+        if(status == CANCEL && !this.getSendGroupUser().getUser().equals(user)) {
             throw new InviteNotFoundException("취소 요청한 유저의 초대가 아닙니다.");
         }
     }
