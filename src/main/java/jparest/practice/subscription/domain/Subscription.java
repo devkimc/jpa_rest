@@ -27,5 +27,8 @@ public class Subscription extends TimeBaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SubscriptionStatus subscriptionStatus;
+    private SubscriptionStatus status;
+
+    @Column(length = 40)
+    private String message;
 }

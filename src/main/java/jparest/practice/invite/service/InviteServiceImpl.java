@@ -11,7 +11,7 @@ import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
-import jparest.practice.invite.exception.ExistInviteForUserException;
+import jparest.practice.invite.exception.ExistWaitingInviteException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.user.domain.User;
@@ -49,15 +49,15 @@ public class InviteServiceImpl implements InviteService {
 
         // 2. 그룹에 속한 유저를 초대했는지 확인
         if (sendGroupUser.getGroup().isJoinUser(recvUserId)) {
-            throw new ExistGroupUserException("groupId = " + groupId);
+            throw new ExistGroupUserException("초대 불가능합니다. groupId = " + groupId + ", recvUserId = " + recvUserId);
         }
 
-        // 3. 대기중인 요청이 존재하는지 확인
+        // 3. 승인 대기중인 요청이 존재하는지 확인
         Optional<Invite> waitingInvite = inviteRepository.
-                findBySendGroupUserIdAndRecvUserIdAndInviteStatus(sendGroupUser.getId(), recvUserId, WAITING);
+                findBySendGroupUserIdAndRecvUserIdAndStatus(sendGroupUser.getId(), recvUserId, WAITING);
 
         if(waitingInvite.isPresent()) {
-            throw new ExistInviteForUserException("대기중인 inviteId = " + waitingInvite.get().getId());
+            throw new ExistWaitingInviteException("대기중인 inviteId = " + waitingInvite.get().getId());
         }
 
         User recvUser = findUser(recvUserId);
@@ -105,7 +105,7 @@ public class InviteServiceImpl implements InviteService {
     }
 
     private List<Invite> findInviteAllByUserIdAndStatus(UUID userId, InviteStatus status) {
-        return inviteRepository.findAllByRecvUserIdAndInviteStatus(userId, status).get();
+        return inviteRepository.findAllByRecvUserIdAndStatus(userId, status).get();
     }
 
     private Invite findInvite(Long inviteId) {
@@ -121,8 +121,8 @@ public class InviteServiceImpl implements InviteService {
                 .orElseThrow(() -> new GroupUserNotFoundException("userId = " + userId + ", groupId = " + groupId));
     }
     
-    private void updateStatus(Invite invite, InviteStatus inviteStatus) {
-        invite.updateStatus(inviteStatus);
+    private void updateStatus(Invite invite, InviteStatus status) {
+        invite.updateStatus(status);
         inviteRepository.save(invite);
     }
 

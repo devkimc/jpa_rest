@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 public class InviteControllerTest extends RestDocsTestSupport {
 
-    private final String INVITE_API = "/api/invites";
+    private final String INVITE_API = "/api/groups/invites";
 
     @Test
     @DisplayName("유저 초대")
