@@ -1,9 +1,10 @@
 package jparest.practice.subscription.service;
 
-import jparest.practice.subscription.dto.CreateSubscriptionRequest;
+import jparest.practice.subscription.dto.SubscribeForGroupRequest;
+import jparest.practice.subscription.dto.SubscribeForGroupResponse;
 import jparest.practice.user.domain.User;
 
 public interface SubscriptionService {
 
-    Boolean createSubscription(User user, CreateSubscriptionRequest createSubscriptionRequest);
+    SubscribeForGroupResponse subscribeForGroup(User user, SubscribeForGroupRequest subscribeForGroupRequest);
 }

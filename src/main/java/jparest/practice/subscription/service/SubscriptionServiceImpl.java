@@ -1,9 +1,14 @@
 package jparest.practice.subscription.service;
 
+import jparest.practice.group.domain.Group;
 import jparest.practice.group.exception.ExistGroupUserException;
+import jparest.practice.group.exception.GroupNotFoundException;
+import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.subscription.domain.Subscription;
 import jparest.practice.subscription.domain.SubscriptionStatus;
-import jparest.practice.subscription.dto.CreateSubscriptionRequest;
+import jparest.practice.subscription.dto.SubscribeForGroupRequest;
+import jparest.practice.subscription.dto.SubscribeForGroupResponse;
+import jparest.practice.subscription.exception.ExistWaitingSubscriptionException;
 import jparest.practice.subscription.repository.SubscriptionRepository;
 import jparest.practice.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +21,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SubscriptionServiceImpl implements SubscriptionService {
 
+    private final GroupRepository groupRepository;
     private final SubscriptionRepository subscriptionRepository;
 
     @Override
     @Transactional
-    public Boolean createSubscription(User user, CreateSubscriptionRequest createSubscriptionRequest) {
+    public SubscribeForGroupResponse subscribeForGroup(User user, SubscribeForGroupRequest subscribeForGroupRequest) {
 
         // 1. 가입신청을 한 유저가 이미 그룹에 속한 유저인지 확인
-        Long groupId = createSubscriptionRequest.getGroupId();
+        Long groupId = subscribeForGroupRequest.getGroupId();
 
         if (user.isJoinGroup(groupId)) {
             throw new ExistGroupUserException("가입신청 불가능합니다. groupId = " + groupId + ", userId = " + user.getId());
@@ -34,12 +40,22 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 findByApplicantIdAndGroupIdAndStatus(user.getId(), groupId, SubscriptionStatus.WAITING);
 
         if (waitingSubscription.isPresent()) {
-//            throw
+            throw new ExistWaitingSubscriptionException("대기중인 subscriptionId = " + waitingSubscription.get().getId());
         }
 
         // 3. 가입 승인 요청
+        Group findGroup = findGroupById(groupId);
+        Subscription subscription = Subscription.createSubscription(user, findGroup, subscribeForGroupRequest.getMessage());
 
+        Subscription saveSubscription = subscriptionRepository.save(subscription);
 
-        return null;
+        return SubscribeForGroupResponse.builder()
+                .subscriptionId(saveSubscription.getId())
+                .build();
+    }
+
+    private Group findGroupById(Long groupId) {
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
     }
 }

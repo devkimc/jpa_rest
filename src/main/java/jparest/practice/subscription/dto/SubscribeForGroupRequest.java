@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateSubscriptionRequest {
+public class SubscribeForGroupRequest {
     private Long groupId;
 
     @Size(max = 40, message = "가입 신청 메시지는 40 글자 이하여야 합니다.")
