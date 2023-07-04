@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 import static jparest.practice.subscription.domain.SubscriptionStatus.*;
-
 @Table(name = "group_subscription")
 @Entity
 @Getter
