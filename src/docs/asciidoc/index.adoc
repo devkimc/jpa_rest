@@ -12,16 +12,19 @@
 == APIs
 
 === User API
-* link:user.html[바로가기, window=_blank]
+* link:user.html[바로가기]
 
 === Group API
-* link:group.html[바로가기, window=_blank]
+* link:group.html[바로가기]
 
 === Invite API
-* link:invite.html[바로가기, window=_blank]
+* link:invite.html[바로가기]
+
+=== Subscription API
+* link:subscription.html[바로가기]
 
 === Restaurant favorite API
-* link:restaurant-favorite.html[바로가기, window=_blank]
+* link:restaurant-favorite.html[바로가기]
 
 === Restaurant ranking API
-* link:restaurant-ranking.html[바로가기, window=_blank]
+* link:restaurant-ranking.html[바로가기]

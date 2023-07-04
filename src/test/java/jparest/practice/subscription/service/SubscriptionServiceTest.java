@@ -9,9 +9,9 @@ import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.service.GroupService;
 import jparest.practice.subscription.domain.Subscription;
+import jparest.practice.subscription.dto.ProcessSubscriptionRequest;
 import jparest.practice.subscription.dto.SubscribeForGroupRequest;
 import jparest.practice.subscription.exception.ExistWaitingSubscriptionException;
-import jparest.practice.subscription.repository.SubscriptionRepository;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.Assertions;
@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static jparest.practice.common.fixture.GroupFixture.groupName1;
 import static jparest.practice.common.fixture.UserFixture.createFirstUser;
 import static jparest.practice.common.fixture.UserFixture.createSecondUser;
+import static jparest.practice.subscription.domain.SubscriptionStatus.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -46,9 +47,6 @@ public class SubscriptionServiceTest {
 
     @Autowired
     SubscriptionService subscriptionService;
-
-    @Autowired
-    SubscriptionRepository subscriptionRepository;
 
     @BeforeEach
     void setUp() {
@@ -117,6 +115,83 @@ public class SubscriptionServiceTest {
                 () -> assertEquals(secondUser, subscription.getApplicant(), "신청한 유저가 동일해야 한다."),
                 () -> assertEquals(group, subscription.getGroup(), "신청한 그룹이 동일해야 한다."),
                 () -> assertEquals(SubscriptionFixture.message, subscription.getMessage(), "신청 메시지가 동일해야 한다.")
+        );
+    }
+
+    @Test
+    public void 가입신청을_그룹원이_수락_시() throws Exception {
+
+        //given
+        SubscribeForGroupRequest subscribeForGroupRequest = SubscribeForGroupRequest.builder()
+                .groupId(group.getId())
+                .message(SubscriptionFixture.message)
+                .build();
+
+        subscriptionService.subscribeForGroup(secondUser, subscribeForGroupRequest);
+
+        Subscription subscription = group.getSubscriptions().get(0);
+
+        ProcessSubscriptionRequest request = ProcessSubscriptionRequest.builder().status(ACCEPT).build();
+
+        //when
+        subscriptionService.processSubscription(firstUser, subscription.getId(), request);
+
+        //then
+        assertAll(
+                () -> assertEquals(true, secondUser.isJoinGroup(group), "가입신청한 유저는 그룹원이 된다."),
+                () -> assertEquals(ACCEPT, subscription.getStatus(), "가입 신청 상태는 수락상태로 변경된다.")
+        );
+    }
+
+    @Test
+    public void 가입신청을_그룹원이_거절_시() throws Exception {
+
+        //given
+        SubscribeForGroupRequest subscribeForGroupRequest = SubscribeForGroupRequest.builder()
+                .groupId(group.getId())
+                .message(SubscriptionFixture.message)
+                .build();
+
+        subscriptionService.subscribeForGroup(secondUser, subscribeForGroupRequest);
+
+        Subscription subscription = group.getSubscriptions().get(0);
+
+        ProcessSubscriptionRequest request = ProcessSubscriptionRequest.builder().status(REJECT).build();
+
+        //when
+        subscriptionService.processSubscription(firstUser, subscription.getId(), request);
+
+        //then
+        assertAll(
+                () -> assertEquals(false, secondUser.isJoinGroup(group),
+                        "가입신청한 유저는 그룹원이 되지 않는다."),
+                () -> assertEquals(REJECT, subscription.getStatus(), "가입 신청 상태는 거절상태로 변경된다.")
+        );
+    }
+
+    @Test
+    public void 가입신청을_신청한_유저가_취소_시() throws Exception {
+
+        //given
+        SubscribeForGroupRequest subscribeForGroupRequest = SubscribeForGroupRequest.builder()
+                .groupId(group.getId())
+                .message(SubscriptionFixture.message)
+                .build();
+
+        subscriptionService.subscribeForGroup(secondUser, subscribeForGroupRequest);
+
+        Subscription subscription = group.getSubscriptions().get(0);
+
+        ProcessSubscriptionRequest request = ProcessSubscriptionRequest.builder().status(CANCEL).build();
+
+        //when
+        subscriptionService.processSubscription(secondUser, subscription.getId(), request);
+
+        //then
+        assertAll(
+                () -> assertEquals(false, secondUser.isJoinGroup(group),
+                        "가입신청한 유저는 그룹원이 되지 않는다."),
+                () -> assertEquals(CANCEL, subscription.getStatus(), "가입 신청 상태는 거절상태로 변경된다.")
         );
     }
 

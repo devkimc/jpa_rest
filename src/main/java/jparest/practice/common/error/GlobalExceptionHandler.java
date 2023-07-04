@@ -7,10 +7,14 @@ import jparest.practice.group.exception.GroupUserNotFoundException;
 import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.ExistWaitingInviteException;
 import jparest.practice.invite.exception.InviteNotFoundException;
+import jparest.practice.invite.exception.NotValidUpdateInviteStatusException;
 import jparest.practice.rest.exception.ExistGroupRestException;
 import jparest.practice.rest.exception.GroupRestNotFoundException;
 import jparest.practice.rest.exception.RestNotFoundException;
+import jparest.practice.subscription.exception.AlreadyProcessedSubscriptionException;
 import jparest.practice.subscription.exception.ExistWaitingSubscriptionException;
+import jparest.practice.subscription.exception.NotValidUpdateSubscriptionStatusException;
+import jparest.practice.subscription.exception.SubscriptionNotFoundException;
 import jparest.practice.user.exception.ExistLoginIdException;
 import jparest.practice.user.exception.LoginFailException;
 import jparest.practice.user.exception.UserNotFoundException;
@@ -39,78 +43,98 @@ public class GlobalExceptionHandler {
 
     // USER
     @ExceptionHandler(ExistLoginIdException.class)
-    ResponseEntity<ErrorResponse> existUserHandler(ExistLoginIdException e) {
+    ResponseEntity<ErrorResponse> existLoginIdException(ExistLoginIdException e) {
         return getErrorResponseEntity(e, ErrorCode.LOGIN_FAIL);
     }
 
     @ExceptionHandler(LoginFailException.class)
-    ResponseEntity<ErrorResponse> loginFailHandler(LoginFailException e) {
+    ResponseEntity<ErrorResponse> loginFailException(LoginFailException e) {
         return getErrorResponseEntity(e, ErrorCode.LOGIN_FAIL);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    ResponseEntity<ErrorResponse> userNotFoundHandler(UserNotFoundException e) {
+    ResponseEntity<ErrorResponse> userNotFoundException(UserNotFoundException e) {
         return getErrorResponseEntity(e, ErrorCode.USER_NOT_FOUND);
     }
 
     // GROUP
     @ExceptionHandler(GroupNotFoundException.class)
-    ResponseEntity<ErrorResponse> groupNotFoundHandler(GroupNotFoundException e) {
+    ResponseEntity<ErrorResponse> groupNotFoundException(GroupNotFoundException e) {
         return getErrorResponseEntity(e, ErrorCode.GROUP_NOT_FOUND);
     }
 
     @ExceptionHandler(GroupUserNotFoundException.class)
-    ResponseEntity<ErrorResponse> GroupUserNotFoundHandler(GroupUserNotFoundException e) {
+    ResponseEntity<ErrorResponse> groupUserNotFoundException(GroupUserNotFoundException e) {
         return getErrorResponseEntity(e, ErrorCode.GROUP_USER_NOT_FOUND);
     }
 
     @ExceptionHandler(ExistGroupUserException.class)
-    ResponseEntity<ErrorResponse> existGroupUserHandler(ExistGroupUserException e) {
+    ResponseEntity<ErrorResponse> existGroupUserException(ExistGroupUserException e) {
         return getErrorResponseEntity(e, ErrorCode.EXIST_GROUP_USER);
     }
 
     @ExceptionHandler(GroupAccessDeniedException.class)
-    ResponseEntity<ErrorResponse> groupAccessDeniedHandler(GroupAccessDeniedException e) {
+    ResponseEntity<ErrorResponse> groupAccessDeniedException(GroupAccessDeniedException e) {
         return getErrorResponseEntity(e, ErrorCode.GROUP_ACCESS_DENIED);
     }
 
     // INVITE
     @ExceptionHandler(ExistWaitingInviteException.class)
-    ResponseEntity<ErrorResponse> existWaitingInviteHandler(ExistWaitingInviteException e) {
+    ResponseEntity<ErrorResponse> existWaitingInviteException(ExistWaitingInviteException e) {
 
         return getErrorResponseEntity(e, ErrorCode.EXIST_WAITING_INVITE);
     }
 
     @ExceptionHandler(InviteNotFoundException.class)
-    ResponseEntity<ErrorResponse> inviteNotFoundHandler(InviteNotFoundException e) {
+    ResponseEntity<ErrorResponse> inviteNotFoundException(InviteNotFoundException e) {
         return getErrorResponseEntity(e, ErrorCode.INVITE_NOT_FOUND);
     }
 
+    @ExceptionHandler(NotValidUpdateInviteStatusException.class)
+    ResponseEntity<ErrorResponse> notValidUpdateInviteStatusException(NotValidUpdateInviteStatusException e) {
+        return getErrorResponseEntity(e, ErrorCode.NOT_VALID_UPDATE_INVITE_STATUS);
+    }
+
     @ExceptionHandler(AlreadyProcessedInviteException.class)
-    ResponseEntity<ErrorResponse> AlreadyProcessedInviteHandler(AlreadyProcessedInviteException e) {
+    ResponseEntity<ErrorResponse> alreadyProcessedInviteException(AlreadyProcessedInviteException e) {
         return getErrorResponseEntity(e, ErrorCode.ALREADY_PROCESSED_INVITE);
     }
 
     // SUBSCRIPTION
     @ExceptionHandler(ExistWaitingSubscriptionException.class)
-    ResponseEntity<ErrorResponse> existWaitingSubscriptionHandler(ExistWaitingSubscriptionException e) {
+    ResponseEntity<ErrorResponse> existWaitingSubscriptionException(ExistWaitingSubscriptionException e) {
         return getErrorResponseEntity(e, ErrorCode.EXIST_WAITING_SUBSCRIPTION);
+    }
+
+    @ExceptionHandler(NotValidUpdateSubscriptionStatusException.class)
+    ResponseEntity<ErrorResponse> notValidUpdateSubscriptionStatusException(NotValidUpdateSubscriptionStatusException e) {
+        return getErrorResponseEntity(e, ErrorCode.NOT_VALID_SUBSCRIPTION_INVITE_STATUS);
+    }
+
+    @ExceptionHandler(SubscriptionNotFoundException.class)
+    ResponseEntity<ErrorResponse> subscriptionNotFoundException(SubscriptionNotFoundException e) {
+        return getErrorResponseEntity(e, ErrorCode.SUBSCRIPTION_NOT_FOUND);
+    }
+
+    @ExceptionHandler(AlreadyProcessedSubscriptionException.class)
+    ResponseEntity<ErrorResponse> alreadyProcessedSubscriptionException(AlreadyProcessedSubscriptionException e) {
+        return getErrorResponseEntity(e, ErrorCode.ALREADY_PROCESSED_SUBSCRIPTION);
     }
 
     // REST
     @ExceptionHandler(ExistGroupRestException.class)
-    ResponseEntity<ErrorResponse> existGroupRestHandler(ExistGroupRestException e) {
+    ResponseEntity<ErrorResponse> existGroupRestException(ExistGroupRestException e) {
 
         return getErrorResponseEntity(e, ErrorCode.EXIST_GROUP_REST);
     }
 
     @ExceptionHandler(GroupRestNotFoundException.class)
-    ResponseEntity<ErrorResponse> groupRestNotFoundHandler(GroupRestNotFoundException e) {
+    ResponseEntity<ErrorResponse> groupRestNotFoundException(GroupRestNotFoundException e) {
         return getErrorResponseEntity(e, ErrorCode.GROUP_REST_NOT_FOUND);
     }
 
     @ExceptionHandler(RestNotFoundException.class)
-    ResponseEntity<ErrorResponse> restNotFoundHandler(RestNotFoundException e) {
+    ResponseEntity<ErrorResponse> restNotFoundException(RestNotFoundException e) {
         return getErrorResponseEntity(e, ErrorCode.REST_NOT_FOUND);
     }
 

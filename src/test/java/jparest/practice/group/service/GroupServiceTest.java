@@ -13,6 +13,7 @@ import jparest.practice.invite.domain.Invite;
 import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
+import jparest.practice.invite.dto.ProcessInviteRequest;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.invite.service.InviteService;
@@ -182,7 +183,8 @@ public class GroupServiceTest {
         InviteUserRequest inviteUserRequest = new InviteUserRequest(secondUser.getId(), saveGroupId);
         InviteUserResponse inviteUserResponse = inviteService.inviteToGroup(firstUser, inviteUserRequest);
 
-        inviteService.procInvitation(inviteUserResponse.getInviteId(), secondUser, InviteStatus.ACCEPT);
+        inviteService.processInvite(secondUser,inviteUserResponse.getInviteId(),
+                new ProcessInviteRequest(InviteStatus.ACCEPT));
 
         //when
         ChangeOwnerRequest changeOwnerRequest = ChangeOwnerRequest.builder()

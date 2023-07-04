@@ -3,7 +3,7 @@ package jparest.practice.invite.controller;
 import jparest.practice.common.document.RestDocsTestSupport;
 import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
-import jparest.practice.invite.dto.InviteStatusPatchRequest;
+import jparest.practice.invite.dto.ProcessInviteRequest;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -69,13 +69,13 @@ public class InviteControllerTest extends RestDocsTestSupport {
     }
 
     @Test
-    @DisplayName("초대 상태 변경")
+    @DisplayName("초대 상태 처리")
     void update_invites_status() throws Exception {
 
         //given
-        InviteStatusPatchRequest inviteStatusPatchRequest = new InviteStatusPatchRequest(InviteStatus.ACCEPT);
+        ProcessInviteRequest inviteStatusPatchRequest = new ProcessInviteRequest(InviteStatus.ACCEPT);
 
-        given(inviteService.procInvitation(any(), any(), any()))
+        given(inviteService.processInvite(any(), any(), any()))
                 .willReturn(true);
 
         //when
@@ -96,7 +96,7 @@ public class InviteControllerTest extends RestDocsTestSupport {
                                 parameterWithName("inviteId").description("초대 아이디")
                         ),
                         requestFields(
-                                fieldWithPath("inviteStatus").description(inviteStatus)
+                                fieldWithPath("status").description(inviteStatus)
                         ),
                         responseFields(
                                 fieldWithPath("success").description("성공 여부"),

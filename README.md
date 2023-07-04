@@ -26,7 +26,7 @@
 * [테스트](https://github.com/vvs-kim/jpa_rest/tree/develop/src/test/java/jparest/practice)
 
 ## ERD
-![](./src/main/resources/image/erd.png)
+![](./src/main/resources/static/image/erd.png)
 
 ## 고민한 점
 ### RESTful API 설계
@@ -93,7 +93,7 @@ Rolling 배포 옵션을 사용하여 배포 시, 무중단 배포가 가능하�
 Jpa 는 엔티티를 저장할 때, 새로운 엔티티면 merge, 아니라면 persist 메서드를 호출합니다.
 새로운 엔티티를 판별하는 메서드를 오버라이딩 하여 성능을 최적화했습니다.
 
-![](./src/main/resources/image/new-entity.png)
+![](./src/main/resources/static/image/new-entity.png)
 
 ### 조회 쿼리 메서드 사용 시 불필요한 Join 사용
 조회 쿼리 메서드 사용 시, 엔티티 필드의 속성값을 조건으로 사용하는 경우 자동으로 Join 이 사용되는 이슈가 있었습니다. <br />
@@ -107,5 +107,5 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
                                                                 SubscriptionStatus status);
 }
 ```
-![](./src/main/resources/image/select-query-method-join.png)
+![](./src/main/resources/static/image/select-query-method-join.png)
 

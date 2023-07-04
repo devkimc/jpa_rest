@@ -1,0 +1,35 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= Subscription API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 1
+:toc-title: 초대
+
+== 그룹 가입 신청하기
+=== REQUEST
+include::{snippets}/subscription-controller-test/subscribe_for_group/http-request.adoc[]
+
+include::{snippets}/subscription-controller-test/subscribe_for_group/request-fields.adoc[]
+
+=== RESPONSE
+include::{snippets}/subscription-controller-test/subscribe_for_group/response-body.adoc[]
+
+include::{snippets}/subscription-controller-test/subscribe_for_group/response-fields.adoc[]
+
+== 그룹 가입 신청 상태 변경
+=== REQUEST
+include::{snippets}/subscription-controller-test/update_subscription_status/http-request.adoc[]
+
+include::{snippets}/subscription-controller-test/update_subscription_status/path-parameters.adoc[]
+
+include::{snippets}/subscription-controller-test/update_subscription_status/request-fields.adoc[]
+
+=== RESPONSE
+include::{snippets}/subscription-controller-test/update_subscription_status/response-body.adoc[]
+
+include::{snippets}/subscription-controller-test/update_subscription_status/response-fields.adoc[]

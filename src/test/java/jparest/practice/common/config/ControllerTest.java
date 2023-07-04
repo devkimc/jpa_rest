@@ -11,6 +11,8 @@ import jparest.practice.rest.controller.FavoriteRestaurantController;
 import jparest.practice.rest.controller.RankingRestaurantController;
 import jparest.practice.rest.service.FavoriteRestaurantService;
 import jparest.practice.rest.service.RankingRestaurantService;
+import jparest.practice.subscription.controller.SubscriptionController;
+import jparest.practice.subscription.service.SubscriptionService;
 import jparest.practice.user.controller.UserAuthController;
 import jparest.practice.user.controller.UserInfoController;
 import jparest.practice.user.service.UserAuthService;
@@ -26,7 +28,8 @@ import org.springframework.test.web.servlet.MockMvc;
         GroupController.class,
         InviteController.class,
         FavoriteRestaurantController.class,
-        RankingRestaurantController.class
+        RankingRestaurantController.class,
+        SubscriptionController.class
 })
 public abstract class ControllerTest {
 
@@ -53,6 +56,9 @@ public abstract class ControllerTest {
 
     @MockBean
     protected FavoriteRestaurantService favoriteRestaurantService;
+
+    @MockBean
+    protected SubscriptionService subscriptionService;
 
     @MockBean
     JwtFilter jwtFilter;
