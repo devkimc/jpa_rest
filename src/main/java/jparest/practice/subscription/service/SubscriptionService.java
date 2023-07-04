@@ -7,4 +7,6 @@ import jparest.practice.user.domain.User;
 public interface SubscriptionService {
 
     SubscribeForGroupResponse subscribeForGroup(User user, SubscribeForGroupRequest subscribeForGroupRequest);
+
+
 }

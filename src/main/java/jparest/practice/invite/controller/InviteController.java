@@ -4,7 +4,7 @@ import jparest.practice.auth.security.CurrentUser;
 import jparest.practice.common.util.ApiResult;
 import jparest.practice.common.util.ApiUtils;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
-import jparest.practice.invite.dto.InviteStatusPatchRequest;
+import jparest.practice.invite.dto.ProcessInvitationRequest;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
 import jparest.practice.invite.service.InviteService;
@@ -33,10 +33,10 @@ public class InviteController {
     }
 
     @PatchMapping(value = "/{inviteId}/status")
-    public ApiResult<Boolean> procInvite(@CurrentUser User user,
+    public ApiResult<Boolean> processInvite(@CurrentUser User user,
                                          @PathVariable Long inviteId,
-                                         @RequestBody @Valid InviteStatusPatchRequest inviteStatusPatchRequest
+                                         @RequestBody @Valid ProcessInvitationRequest processInvitationRequest
     ) {
-        return ApiUtils.success(inviteService.procInvitation(inviteId, user, inviteStatusPatchRequest.getInviteStatus()));
+        return ApiUtils.success(inviteService.processInvitation(inviteId, user, processInvitationRequest));
     }
 }

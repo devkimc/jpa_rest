@@ -11,6 +11,7 @@ import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
+import jparest.practice.invite.dto.ProcessInvitationRequest;
 import jparest.practice.invite.exception.ExistWaitingInviteException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.invite.repository.InviteRepository;
@@ -68,8 +69,10 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     @Transactional
-    public boolean procInvitation(Long inviteId, User user, InviteStatus requestStatus) {
+    public boolean processInvitation(Long inviteId, User user, ProcessInvitationRequest processInvitationRequest) {
         Invite invite = findInvite(inviteId);
+
+        InviteStatus requestStatus = processInvitationRequest.getStatus();
 
         invite.chkAuthorizationOfInvitation(user, requestStatus);
 
