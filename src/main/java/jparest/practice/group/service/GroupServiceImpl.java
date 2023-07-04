@@ -41,7 +41,7 @@ public class GroupServiceImpl implements GroupService {
 
         Group saveGroup = groupRepository.save(newGroup);
 
-        saveGroupUser(user, saveGroup);
+        groupUserRepository.save(GroupUser.createGroupUser(saveGroup, user, GroupUserType.ROLE_OWNER));
 
         return CreateGroupResponse.builder()
                 .id(saveGroup.getId())
@@ -174,17 +174,5 @@ public class GroupServiceImpl implements GroupService {
     private List<GroupUser> findAllGroupUserByGroupId(Long groupId) {
         return groupUserRepository.findAllByGroupId(groupId)
                 .orElseThrow(() -> new GroupUserNotFoundException("groupId = " + groupId));
-    }
-
-    private GroupUser saveGroupUser(User user, Group group) {
-        GroupUser groupUser = GroupUser.builder()
-                .user(user)
-                .group(group)
-                .groupUserType(GroupUserType.ROLE_OWNER)
-                .build();
-
-        GroupUser saveGroupUser = groupUserRepository.save(groupUser);
-        saveGroupUser.addGroupUser();
-        return saveGroupUser;
     }
 }

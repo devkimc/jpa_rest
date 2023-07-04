@@ -30,7 +30,7 @@ include::{snippets}/invite-controller-test/get_invites/response-body.adoc[]
 
 include::{snippets}/invite-controller-test/get_invites/response-fields.adoc[]
 
-== 초대 상태 변경(초대 응답)
+== 초대 상태 변경
 === REQUEST
 include::{snippets}/invite-controller-test/update_invites_status/http-request.adoc[]
 

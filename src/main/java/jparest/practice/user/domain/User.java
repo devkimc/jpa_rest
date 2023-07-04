@@ -1,6 +1,7 @@
 package jparest.practice.user.domain;
 
 import jparest.practice.common.util.TimeBaseEntity;
+import jparest.practice.group.domain.Group;
 import jparest.practice.group.domain.GroupUser;
 import jparest.practice.invite.domain.Invite;
 import jparest.practice.subscription.domain.Subscription;
@@ -61,12 +62,6 @@ public class User extends TimeBaseEntity {
         this.nickname = nickname;
     }
 
-    //==연관관계 메서드==//
-    public void addInvite(Invite invite) {
-        invites.add(invite);
-        invite.setRecvUser(this);
-    }
-
     public boolean isJoinGroup(Long groupId) {
         long matchGroupCount = this.getGroupUsers()
                 .stream()
@@ -74,6 +69,31 @@ public class User extends TimeBaseEntity {
                 .count();
 
         if (matchGroupCount == 1) {
+            return true;
+        }
+
+        log.error(this.id + " 유저가 그룹된 가입은 총 " + matchGroupCount + "개 입니다.");
+
+        if (matchGroupCount > 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isJoinGroup(Group group) {
+        long matchGroupCount = this.getGroupUsers()
+                .stream()
+                .filter(e -> e.getGroup().equals(group))
+                .count();
+
+        if (matchGroupCount == 1) {
+            return true;
+        }
+
+        log.error(this.id + " 유저가 그룹된 가입은 총 " + matchGroupCount + "개 입니다.");
+
+        if (matchGroupCount > 1) {
             return true;
         }
 

@@ -69,7 +69,7 @@ public class InviteControllerTest extends RestDocsTestSupport {
     }
 
     @Test
-    @DisplayName("초대 상태 변경")
+    @DisplayName("초대 상태 처리")
     void update_invites_status() throws Exception {
 
         //given

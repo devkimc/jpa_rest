@@ -98,7 +98,6 @@ public class FavoriteRestaurantServiceImpl implements FavoriteRestaurantService 
     }
 
     private void saveGroupRest(Long groupId, Rest rest) {
-//        GroupRest groupRest =  groupRest.createGroupRest(findGroupById(groupId), rest);
         GroupRest groupRest = GroupRest.createGroupRest(findGroupById(groupId), rest);
 
         groupRestRepository.save(groupRest);

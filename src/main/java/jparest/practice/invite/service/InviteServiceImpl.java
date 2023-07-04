@@ -12,6 +12,7 @@ import jparest.practice.invite.dto.GetWaitingInviteResponse;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
 import jparest.practice.invite.dto.ProcessInviteRequest;
+import jparest.practice.invite.exception.AlreadyProcessedInviteException;
 import jparest.practice.invite.exception.ExistWaitingInviteException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.invite.exception.NotValidUpdateInviteStatusException;
@@ -71,23 +72,37 @@ public class InviteServiceImpl implements InviteService {
     @Override
     @Transactional
     public boolean processInvite(User user, Long inviteId, ProcessInviteRequest processInviteRequest) {
-        Invite invite = findInvite(inviteId);
 
+        Invite invite = findInvite(inviteId);
         InviteStatus requestStatus = processInviteRequest.getStatus();
 
+        // 1. 현재 초대 상태에 대한 유효성 검사
+        if (invite.getStatus() != WAITING) {
+            throw new AlreadyProcessedInviteException(
+                    "inviteId = " + inviteId + ", userId = " + user.getId() + ", status = " + invite.getStatus());
+        }
+
+        // 2. 변경 상태에 대한 유효성 검사
         if (requestStatus == WAITING) {
             throw new NotValidUpdateInviteStatusException(
                     "inviteId = " + inviteId + ", userId = " + user.getId() + ", status = WAITING");
         }
 
+        // 3. 초대를 처리하는 유저가 권한이 있는지 확인
         invite.chkAuthorizationOfInviteProcess(user, requestStatus);
 
+        // 4. 초대를 받은 유저가 수락할 경우 그룹원으로 추가
         if (requestStatus == ACCEPT) {
             Group group = invite.getSendGroupUser().getGroup();
-            saveGroupUser(user, group);
+            GroupUser groupUser = GroupUser.createGroupUser(group, user, GroupUserType.ROLE_MEMBER);
+
+            groupUserRepository.save(groupUser);
         }
 
-        updateStatus(invite, requestStatus);
+        // 5. 초대 상태 변경
+        invite.updateStatus(requestStatus);
+        inviteRepository.save(invite);
+
         return true;
     }
 
@@ -128,22 +143,5 @@ public class InviteServiceImpl implements InviteService {
     private GroupUser findGroupUser(UUID userId, Long groupId) {
         return groupUserRepository.findByUserIdAndGroupId(userId, groupId)
                 .orElseThrow(() -> new GroupUserNotFoundException("userId = " + userId + ", groupId = " + groupId));
-    }
-    
-    private void updateStatus(Invite invite, InviteStatus status) {
-        invite.updateStatus(status);
-        inviteRepository.save(invite);
-    }
-
-    private GroupUser saveGroupUser(User user, Group group) {
-        GroupUser groupUser = GroupUser.builder()
-                .user(user)
-                .group(group)
-                .groupUserType(GroupUserType.ROLE_MEMBER)
-                .build();
-
-        GroupUser saveGroupUser = groupUserRepository.save(groupUser);
-        saveGroupUser.addGroupUser();
-        return saveGroupUser;
     }
 }

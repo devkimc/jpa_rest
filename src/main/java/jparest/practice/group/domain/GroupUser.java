@@ -26,12 +26,12 @@ public class GroupUser extends TimeBaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Builder.Default
     @OneToMany(mappedBy = "sendGroupUser", orphanRemoval = true)
@@ -45,13 +45,31 @@ public class GroupUser extends TimeBaseEntity {
         this.group = group;
     }
 
-    //==연관관계 메서드==//
+    public GroupUser(Group group, User user, GroupUserType groupUserType) {
+        this.group = group;
+        this.user = user;
+        this.groupUserType = groupUserType;
+    }
+
+    //==생성 메서드==//
+    public static GroupUser createGroupUser(Group group, User user, GroupUserType groupUserType) {
+        GroupUser groupUser = GroupUser.builder()
+                .group(group)
+                .user(user)
+                .groupUserType(groupUserType)
+                .build();
+
+        group.getGroupUsers().add(groupUser);
+        user.getGroupUsers().add(groupUser);
+
+        return groupUser;
+    }
+
     public void addGroupUser() {
         this.user.getGroupUsers().add(this);
         this.group.getGroupUsers().add(this);
     }
 
-    //==생성 메서드==//
 //    public static UserGroup createGroupUser(Optional<User> user) {
 //        UserGroup userGroup = new UserGroup();
 //        groupUser.setUser(user);
