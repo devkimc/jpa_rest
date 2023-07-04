@@ -3,7 +3,7 @@ package jparest.practice.invite.controller;
 import jparest.practice.common.document.RestDocsTestSupport;
 import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
-import jparest.practice.invite.dto.ProcessInvitationRequest;
+import jparest.practice.invite.dto.ProcessInviteRequest;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -73,9 +73,9 @@ public class InviteControllerTest extends RestDocsTestSupport {
     void update_invites_status() throws Exception {
 
         //given
-        ProcessInvitationRequest inviteStatusPatchRequest = new ProcessInvitationRequest(InviteStatus.ACCEPT);
+        ProcessInviteRequest inviteStatusPatchRequest = new ProcessInviteRequest(InviteStatus.ACCEPT);
 
-        given(inviteService.processInvitation(any(), any(), any()))
+        given(inviteService.processInvite(any(), any(), any()))
                 .willReturn(true);
 
         //when

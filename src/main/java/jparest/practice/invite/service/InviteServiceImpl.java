@@ -11,9 +11,10 @@ import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
-import jparest.practice.invite.dto.ProcessInvitationRequest;
+import jparest.practice.invite.dto.ProcessInviteRequest;
 import jparest.practice.invite.exception.ExistWaitingInviteException;
 import jparest.practice.invite.exception.InviteNotFoundException;
+import jparest.practice.invite.exception.NotValidUpdateInviteStatusException;
 import jparest.practice.invite.repository.InviteRepository;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.exception.UserNotFoundException;
@@ -69,12 +70,17 @@ public class InviteServiceImpl implements InviteService {
 
     @Override
     @Transactional
-    public boolean processInvitation(Long inviteId, User user, ProcessInvitationRequest processInvitationRequest) {
+    public boolean processInvite(User user, Long inviteId, ProcessInviteRequest processInviteRequest) {
         Invite invite = findInvite(inviteId);
 
-        InviteStatus requestStatus = processInvitationRequest.getStatus();
+        InviteStatus requestStatus = processInviteRequest.getStatus();
 
-        invite.chkAuthorizationOfInvitation(user, requestStatus);
+        if (requestStatus == WAITING) {
+            throw new NotValidUpdateInviteStatusException(
+                    "inviteId = " + inviteId + ", userId = " + user.getId() + ", status = WAITING");
+        }
+
+        invite.chkAuthorizationOfInviteProcess(user, requestStatus);
 
         if (requestStatus == ACCEPT) {
             Group group = invite.getSendGroupUser().getGroup();

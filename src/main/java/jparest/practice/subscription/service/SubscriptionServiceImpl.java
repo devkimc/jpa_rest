@@ -6,6 +6,7 @@ import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.subscription.domain.Subscription;
 import jparest.practice.subscription.domain.SubscriptionStatus;
+import jparest.practice.subscription.dto.ProcessSubscriptionRequest;
 import jparest.practice.subscription.dto.SubscribeForGroupRequest;
 import jparest.practice.subscription.dto.SubscribeForGroupResponse;
 import jparest.practice.subscription.exception.ExistWaitingSubscriptionException;
@@ -52,6 +53,23 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return SubscribeForGroupResponse.builder()
                 .subscriptionId(saveSubscription.getId())
                 .build();
+    }
+
+    @Override
+    public Boolean processSubscription(User user, Long subscriptionId, ProcessSubscriptionRequest processSubscriptionRequest) {
+
+        // 1. 대기 - 별경 불가
+
+
+        // 2. 수락, 거절 - 호출하는 유저 그룹원이 맞는지 확인
+
+        // 3. 취소 - 호출하는 유저가 그룹으로 가입신청을 요청한 적이 있는지 확인
+
+        // 4. 취소나 거절 이라면 리턴
+
+        // 5. 수락이라면 그룹원으로 추가
+
+        return null;
     }
 
     private Group findGroupById(Long groupId) {

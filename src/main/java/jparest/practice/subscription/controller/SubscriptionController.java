@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/subscription")
@@ -21,7 +23,8 @@ public class SubscriptionController {
     private final SubscriptionService subscriptionService;
 
     @PostMapping
-    ApiResult<SubscribeForGroupResponse> subscribeForGroup(@CurrentUser User user, @RequestBody SubscribeForGroupRequest subscribeForGroupRequest) {
+    ApiResult<SubscribeForGroupResponse> subscribeForGroup(@CurrentUser User user,
+                                                           @Valid @RequestBody SubscribeForGroupRequest subscribeForGroupRequest) {
         return ApiUtils.success(subscriptionService.subscribeForGroup(user, subscribeForGroupRequest));
     }
 }

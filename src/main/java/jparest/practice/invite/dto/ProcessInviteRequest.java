@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProcessInvitationRequest {
+public class ProcessInviteRequest {
 
     private InviteStatus status;
 }

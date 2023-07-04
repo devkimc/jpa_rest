@@ -14,7 +14,7 @@ import jparest.practice.invite.domain.InviteStatus;
 import jparest.practice.invite.dto.GetWaitingInviteResponse;
 import jparest.practice.invite.dto.InviteUserRequest;
 import jparest.practice.invite.dto.InviteUserResponse;
-import jparest.practice.invite.dto.ProcessInvitationRequest;
+import jparest.practice.invite.dto.ProcessInviteRequest;
 import jparest.practice.invite.exception.ExistWaitingInviteException;
 import jparest.practice.invite.exception.InviteNotFoundException;
 import jparest.practice.invite.repository.InviteRepository;
@@ -99,7 +99,7 @@ public class InviteServiceTest {
         Invite invite = findInviteById(response.getInviteId());
 
         //when
-        inviteService.processInvitation(invite.getId(), secondUser, new ProcessInvitationRequest(InviteStatus.ACCEPT));
+        inviteService.processInvite(secondUser, invite.getId(), new ProcessInviteRequest(InviteStatus.ACCEPT));
 
         GroupUser groupUser = group.getGroupUsers().get(1);
 
@@ -121,7 +121,7 @@ public class InviteServiceTest {
         Invite invite = findInviteById(response.getInviteId());
 
         //when
-        inviteService.processInvitation(invite.getId(), secondUser, new ProcessInvitationRequest(InviteStatus.REJECT));
+        inviteService.processInvite(secondUser, invite.getId(), new ProcessInviteRequest(InviteStatus.REJECT));
 
         //then
         assertEquals(InviteStatus.REJECT, invite.getStatus());
@@ -136,7 +136,7 @@ public class InviteServiceTest {
         Invite invite = findInviteById(response.getInviteId());
 
         //when
-        inviteService.processInvitation(invite.getId(), firstUser, new ProcessInvitationRequest(InviteStatus.CANCEL));
+        inviteService.processInvite(firstUser, invite.getId(), new ProcessInviteRequest(InviteStatus.CANCEL));
 
         //then
         assertEquals(InviteStatus.CANCEL, invite.getStatus());
@@ -152,7 +152,7 @@ public class InviteServiceTest {
         Invite invite = findInviteById(response.getInviteId());
 
         //when
-        inviteService.processInvitation(invite.getId(), secondUser, new ProcessInvitationRequest(InviteStatus.ACCEPT));
+        inviteService.processInvite(secondUser, invite.getId(), new ProcessInviteRequest(InviteStatus.ACCEPT));
 
         //then
         assertThrows(ExistGroupUserException.class,

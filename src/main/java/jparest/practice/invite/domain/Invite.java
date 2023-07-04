@@ -57,22 +57,24 @@ public class Invite extends TimeBaseEntity {
     }
 
     // 초대 처리에 대한 권한 체크
-    public void chkAuthorizationOfInvitation(User user, InviteStatus status) {
+    public void chkAuthorizationOfInviteProcess(User user, InviteStatus status) {
 
-        if(status == ACCEPT && !this.getRecvUser().equals(user)) {
-            throw new InviteNotFoundException("승낙 요청한 유저의 초대가 아닙니다.");
+        String strInviteIdAndUserId = "inviteId = " + this.id + ", userId = " + user.getId();
+
+        if (status == ACCEPT && !this.getRecvUser().equals(user)) {
+            throw new InviteNotFoundException("승낙 요청한 유저의 초대가 아닙니다." + strInviteIdAndUserId);
         }
 
         if (status == ACCEPT && this.getStatus() != WAITING) {
-            throw new AlreadyProcessedInviteException("inviteId = " + this.getId());
+            throw new AlreadyProcessedInviteException(strInviteIdAndUserId);
         }
 
-        if(status == REJECT && !this.getRecvUser().equals(user)) {
-            throw new InviteNotFoundException("거절 요청한 유저의 초대가 아닙니다.");
+        if (status == REJECT && !this.getRecvUser().equals(user)) {
+            throw new InviteNotFoundException("거절 요청한 유저의 초대가 아닙니다." + strInviteIdAndUserId);
         }
 
-        if(status == CANCEL && !this.getSendGroupUser().getUser().equals(user)) {
-            throw new InviteNotFoundException("취소 요청한 유저의 초대가 아닙니다.");
+        if (status == CANCEL && !this.getSendGroupUser().getUser().equals(user)) {
+            throw new InviteNotFoundException("취소 요청한 유저의 초대가 아닙니다." + strInviteIdAndUserId);
         }
     }
 }
