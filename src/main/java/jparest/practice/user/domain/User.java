@@ -68,17 +68,7 @@ public class User extends TimeBaseEntity {
                 .filter(e -> e.getGroup().getId().equals(groupId))
                 .count();
 
-        if (matchGroupCount == 1) {
-            return true;
-        }
-
-        log.error(this.id + " 유저가 그룹된 가입은 총 " + matchGroupCount + "개 입니다.");
-
-        if (matchGroupCount > 1) {
-            return true;
-        }
-
-        return false;
+        return chkJoinGroupCount(matchGroupCount);
     }
 
     public boolean isJoinGroup(Group group) {
@@ -87,13 +77,16 @@ public class User extends TimeBaseEntity {
                 .filter(e -> e.getGroup().equals(group))
                 .count();
 
-        if (matchGroupCount == 1) {
+        return chkJoinGroupCount(matchGroupCount);
+    }
+
+    private boolean chkJoinGroupCount(long count) {
+        if (count == 1) {
             return true;
         }
 
-        log.error(this.id + " 유저가 그룹된 가입은 총 " + matchGroupCount + "개 입니다.");
-
-        if (matchGroupCount > 1) {
+        if (count > 1) {
+            log.error(this.id + " 유저가 그룹된 가입은 총 " + count + "개 입니다.");
             return true;
         }
 

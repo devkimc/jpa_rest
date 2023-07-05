@@ -57,10 +57,11 @@ DELETE /api/restaurants/23523434/favorite?groupId=1
 #### 고아 객체
 
 그룹 -> 그룹맛집(연관관계 주인)<br/>
-그룹 -> 그룹유저(연관관계 주인)<br/>
-그룹유저 -> 초대(연관관계 주인)
+그룹 -> 그룹유저( ' ' )<br/>
+그룹 -> 가입신청( ' ' )<br/>
+그룹유저 -> 초대( ' ' )
 
-그룹의 마지막 유저가 탙퇴 시, DB 의 4 개의 테이블(그룹, 그룹유저, 초대, 그룹맛집)에서 데이터가 삭제됩니다.
+그룹의 마지막 유저가 탙퇴 시, DB 에 존재하는 5 개의 테이블에서 데이터가 삭제됩니다.
 부모 엔티티와 연관관계가 끊어진 자식 엔티티(고아객체)를 자동으로 삭제하도록 설정했습니다.
 반복적인 delete 메서드를 줄였습니다.
 ```java
@@ -89,16 +90,22 @@ Rolling 배포 옵션을 사용하여 배포 시, 무중단 배포가 가능하�
 ## 성능 최적화
 
 ### 기본 키 직접 할당 전략 시, 새로운 Entity 판별
-기본 키 직접 할당 전략을 사용하는 엔티티를 저장할 때 insert 전에 select 쿼리가 호출되는 현상이 있었습니다.
-Jpa 는 엔티티를 저장할 때, 새로운 엔티티면 merge, 아니라면 persist 메서드를 호출합니다.
+기본 키 직접 할당 전략을 사용하는 엔티티를 저장할 때 insert 전에 select 쿼리가 호출되는 현상이 있었습니다. <br />
+Jpa 는 엔티티를 저장할 때, 새로운 엔티티면 merge, 아니라면 persist 메서드를 호출합니다. <br />
 새로운 엔티티를 판별하는 메서드를 오버라이딩 하여 성능을 최적화했습니다.
 
+[엔티티 저장 시 Select 쿼리를 호출 하는 이유](https://velog.io/@kws60000/jpa-insert-before-select)
+
 ![](./src/main/resources/static/image/new-entity.png)
+
+<br />
 
 ### 조회 쿼리 메서드 사용 시 불필요한 Join 사용
 조회 쿼리 메서드 사용 시, 엔티티 필드의 속성값을 조건으로 사용하는 경우 자동으로 Join 이 사용되는 이슈가 있었습니다. <br />
 쿼리 메서드는 속성 순환을 통해 속성값을 분석하고, 다른 테이블의 기본키인 속성값을 사용하는 경우 Join 이 자동으로 사용된다는 것을 알게되었습니다. <br />
 쿼리 메서드 대신 JPQL 을 사용해서 불필요한 Join 을 사용하지 않도록 했습니다.
+
+[조회 쿼리 메서드 사용 시 불필요한 Join 이 사용되는 이유](https://velog.io/@kws60000/select-query-method-join)
 
 ```java
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {

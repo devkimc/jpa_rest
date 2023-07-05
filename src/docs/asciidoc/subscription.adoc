@@ -8,7 +8,7 @@ endif::[]
 :source-highlighter: highlightjs
 :toc: left
 :toclevels: 1
-:toc-title: 초대
+:toc-title: 그룹 가입 신청
 
 == 그룹 가입 신청하기
 === REQUEST

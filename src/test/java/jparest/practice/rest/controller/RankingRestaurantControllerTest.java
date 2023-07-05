@@ -47,7 +47,7 @@ class RankingRestaurantControllerTest extends RestDocsTestSupport {
 
         //when
         ResultActions result = mockMvc.perform(
-                RestDocumentationRequestBuilders.get(REST_RANKING_API + "/most/save")
+                RestDocumentationRequestBuilders.get(REST_RANKING_API + "/storage/number")
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -96,7 +96,7 @@ class RankingRestaurantControllerTest extends RestDocsTestSupport {
 
         //when
         ResultActions result = mockMvc.perform(
-                RestDocumentationRequestBuilders.get(REST_RANKING_API + "/new/save")
+                RestDocumentationRequestBuilders.get(REST_RANKING_API + "/storage/time")
                         .contentType(MediaType.APPLICATION_JSON)
         );
 

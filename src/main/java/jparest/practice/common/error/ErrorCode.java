@@ -33,9 +33,6 @@ public enum ErrorCode {
     SUBSCRIPTION_NOT_FOUND(404, "S03", "존재하지 않는 가입신청입니다."),
     ALREADY_PROCESSED_SUBSCRIPTION(400, "S04", "이미 처리된 가입신청입니다."),
 
-    // SUBSCRIPTION
-    EXIST_WAITING_SUBSCRIPTION(400, "S01", "대기중인 가입신청이 존재합니다. 그룹의 승인을 기다려주세요."),
-
     // REST
     REST_NOT_FOUND(404, "R01", "존재하지 않는 식당입니다."),
     GROUP_REST_NOT_FOUND(404, "R02", "존재하지 않는 그룹식당입니다."),
