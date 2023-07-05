@@ -32,4 +32,5 @@ public class SubscriptionController {
                                            @RequestBody ProcessSubscriptionRequest processSubscriptionRequest) {
         return ApiUtils.success(subscriptionService.processSubscription(user, subscriptionId, processSubscriptionRequest));
     }
+
 }

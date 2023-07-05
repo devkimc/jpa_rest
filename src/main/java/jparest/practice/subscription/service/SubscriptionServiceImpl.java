@@ -104,7 +104,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public List<GetReceivedSubscriptionResponse> getReceivedSubscription(User user, Long groupId) {
-        return null;
+        return subscriptionRepository.findAllByGroupIdAndStatus(groupId, WAITING);
     }
 
     private Group findGroupById(Long groupId) {

@@ -37,7 +37,7 @@ public class SubscriptionControllerTest extends RestDocsTestSupport {
         //given
         SubscribeForGroupRequest request = SubscribeForGroupRequest.builder()
                 .groupId(1L)
-                .message(SubscriptionFixture.message)
+                .message(SubscriptionFixture.message1)
                 .build();
 
         SubscribeForGroupResponse response = SubscribeForGroupResponse.builder()

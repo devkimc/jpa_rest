@@ -41,7 +41,7 @@ import java.util.UUID;
 import static jparest.practice.common.fixture.GroupFixture.groupName1;
 import static jparest.practice.common.fixture.GroupFixture.groupName2;
 import static jparest.practice.common.fixture.RestFixture.*;
-import static jparest.practice.common.fixture.SubscriptionFixture.message;
+import static jparest.practice.common.fixture.SubscriptionFixture.message1;
 import static jparest.practice.common.fixture.UserFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -151,7 +151,7 @@ public class GroupServiceTest {
 
         // 3. 삭제되어야 할 가입신청
         SubscribeForGroupResponse subscribeForGroupResponse = subscriptionService.subscribeForGroup(
-                thirdUser, new SubscribeForGroupRequest(saveGroupId, message));
+                thirdUser, new SubscribeForGroupRequest(saveGroupId, message1));
 
         Long subscriptionId = subscribeForGroupResponse.getSubscriptionId();
         GroupRest groupRest = findGroup(saveGroupId).getGroupRests().get(0);
