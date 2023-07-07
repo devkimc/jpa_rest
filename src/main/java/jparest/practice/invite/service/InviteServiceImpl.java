@@ -48,7 +48,7 @@ public class InviteServiceImpl implements InviteService {
         UUID recvUserId = inviteUserRequest.getRecvUserId();
 
         // 1. 초대한 사람이 그룹의 회원이 맞는지 확인
-        GroupUser sendGroupUser = findGroupUser(sendUser.getId(), groupId);
+        GroupUser sendGroupUser = findGroupUser(sendUser, groupId);
 
         // 2. 그룹에 속한 유저를 초대했는지 확인
         if (sendGroupUser.getGroup().isJoinUser(recvUserId)) {
@@ -140,8 +140,8 @@ public class InviteServiceImpl implements InviteService {
         return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("userId = " + userId));
     }
 
-    private GroupUser findGroupUser(UUID userId, Long groupId) {
-        return groupUserRepository.findByUserIdAndGroupId(userId, groupId)
-                .orElseThrow(() -> new GroupUserNotFoundException("userId = " + userId + ", groupId = " + groupId));
+    private GroupUser findGroupUser(User user, Long groupId) {
+        return groupUserRepository.findByUserAndGroupId(user, groupId)
+                .orElseThrow(() -> new GroupUserNotFoundException("userId = " + user.getId() + ", groupId = " + groupId));
     }
 }
