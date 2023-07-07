@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static jparest.practice.common.fixture.GroupFixture.groupName1;
 import static jparest.practice.common.fixture.UserFixture.nickname1;
-import static jparest.practice.common.fixture.UserFixture.userId;
+import static jparest.practice.common.fixture.UserFixture.userId1;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -39,7 +39,7 @@ public class InviteControllerTest extends RestDocsTestSupport {
     void add_invites() throws Exception {
 
         //given
-        InviteUserRequest inviteUserRequest = new InviteUserRequest(userId, 1L);
+        InviteUserRequest inviteUserRequest = new InviteUserRequest(userId1, 1L);
 
         given(inviteService.inviteToGroup(any(), any()))
                 .willReturn(new InviteUserResponse(1L));

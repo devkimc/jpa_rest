@@ -10,6 +10,7 @@ import jparest.practice.group.repository.GroupUserRepository;
 import jparest.practice.invite.exception.NotValidUpdateInviteStatusException;
 import jparest.practice.subscription.domain.Subscription;
 import jparest.practice.subscription.domain.SubscriptionStatus;
+import jparest.practice.subscription.dto.GetReceivedSubscriptionResponse;
 import jparest.practice.subscription.dto.ProcessSubscriptionRequest;
 import jparest.practice.subscription.dto.SubscribeForGroupRequest;
 import jparest.practice.subscription.dto.SubscribeForGroupResponse;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static jparest.practice.subscription.domain.SubscriptionStatus.*;
@@ -98,6 +100,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscriptionRepository.save(subscription);
 
         return true;
+    }
+
+    @Override
+    public List<GetReceivedSubscriptionResponse> getReceivedSubscription(User user, Long groupId) {
+        return subscriptionRepository.findAllByGroupIdAndStatus(groupId, WAITING);
     }
 
     private Group findGroupById(Long groupId) {

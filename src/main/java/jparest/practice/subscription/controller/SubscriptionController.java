@@ -3,6 +3,7 @@ package jparest.practice.subscription.controller;
 import jparest.practice.auth.security.CurrentUser;
 import jparest.practice.common.util.ApiResult;
 import jparest.practice.common.util.ApiUtils;
+import jparest.practice.subscription.dto.GetReceivedSubscriptionResponse;
 import jparest.practice.subscription.dto.ProcessSubscriptionRequest;
 import jparest.practice.subscription.dto.SubscribeForGroupRequest;
 import jparest.practice.subscription.dto.SubscribeForGroupResponse;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,4 +34,11 @@ public class SubscriptionController {
                                            @RequestBody ProcessSubscriptionRequest processSubscriptionRequest) {
         return ApiUtils.success(subscriptionService.processSubscription(user, subscriptionId, processSubscriptionRequest));
     }
+
+    @GetMapping("/users")
+    ApiResult<List<GetReceivedSubscriptionResponse>> getReceivedSubscription(@CurrentUser User user,
+                                                                             @RequestParam Long groupId) {
+        return ApiUtils.success(subscriptionService.getReceivedSubscription(user, groupId));
+    }
+
 }

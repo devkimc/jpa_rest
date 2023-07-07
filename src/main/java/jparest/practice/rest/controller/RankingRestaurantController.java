@@ -20,12 +20,12 @@ public class RankingRestaurantController {
 
     private final RankingRestaurantService rankingRestaurantService;
 
-    @GetMapping("/most/save")
+    @GetMapping("/storage/number")
     public ApiResult<List<GetMostSavedRestResponse>> getMostSavedRest() {
         return ApiUtils.success(rankingRestaurantService.getMostSavedRest());
     }
 
-    @GetMapping("/new/save")
+    @GetMapping("/storage/time")
     public ApiResult<List<GetNewSavedRestResponse>> getNewSavedRest() {
         return ApiUtils.success(rankingRestaurantService.getNewSavedRest());
     }

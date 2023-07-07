@@ -21,6 +21,12 @@ import jparest.practice.rest.domain.GroupRest;
 import jparest.practice.rest.exception.GroupRestNotFoundException;
 import jparest.practice.rest.repository.GroupRestRepository;
 import jparest.practice.rest.service.FavoriteRestaurantService;
+import jparest.practice.subscription.domain.Subscription;
+import jparest.practice.subscription.dto.SubscribeForGroupRequest;
+import jparest.practice.subscription.dto.SubscribeForGroupResponse;
+import jparest.practice.subscription.exception.SubscriptionNotFoundException;
+import jparest.practice.subscription.repository.SubscriptionRepository;
+import jparest.practice.subscription.service.SubscriptionService;
 import jparest.practice.user.domain.User;
 import jparest.practice.user.service.UserAuthService;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,8 +41,8 @@ import java.util.UUID;
 import static jparest.practice.common.fixture.GroupFixture.groupName1;
 import static jparest.practice.common.fixture.GroupFixture.groupName2;
 import static jparest.practice.common.fixture.RestFixture.*;
-import static jparest.practice.common.fixture.UserFixture.createFirstUser;
-import static jparest.practice.common.fixture.UserFixture.createSecondUser;
+import static jparest.practice.common.fixture.SubscriptionFixture.message1;
+import static jparest.practice.common.fixture.UserFixture.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -45,6 +51,7 @@ public class GroupServiceTest {
 
     private User firstUser;
     private User secondUser;
+    private User thirdUser;
 
     private CreateGroupRequest createFirstGroupRequest;
     private CreateGroupRequest createSecondGroupRequest;
@@ -75,6 +82,12 @@ public class GroupServiceTest {
 
     @Autowired
     GroupRestRepository groupRestRepository;
+
+    @Autowired
+    SubscriptionRepository subscriptionRepository;
+
+    @Autowired
+    SubscriptionService subscriptionService;
 
     @BeforeEach
     void setUp() {
@@ -128,10 +141,19 @@ public class GroupServiceTest {
         //given
         Long saveGroupId = groupService.createGroup(firstUser, createFirstGroupRequest).getId();
         secondUser = userAuthService.join(createSecondUser());
+        thirdUser = userAuthService.join(createThirdUser());
 
+        // 1. 삭제되어야 할 초대, 그룹
         InviteUserResponse response = inviteService.inviteToGroup(firstUser, new InviteUserRequest(secondUser.getId(), saveGroupId));
 
+        // 2. 삭제되어야 할 맛집
         favoriteRestaurantService.addFavRest(firstUser, restId1, createAddFavoriteRestRequest(saveGroupId, restName1));
+
+        // 3. 삭제되어야 할 가입신청
+        SubscribeForGroupResponse subscribeForGroupResponse = subscriptionService.subscribeForGroup(
+                thirdUser, new SubscribeForGroupRequest(saveGroupId, message1));
+
+        Long subscriptionId = subscribeForGroupResponse.getSubscriptionId();
         GroupRest groupRest = findGroup(saveGroupId).getGroupRests().get(0);
 
         // when
@@ -142,8 +164,9 @@ public class GroupServiceTest {
                 () -> assertThrows(GroupUserNotFoundException.class, () -> findGroupUser(firstUser.getId(), saveGroupId)),
                 () -> assertThrows(InviteNotFoundException.class, () -> findInvite(response.getInviteId())),
                 () -> assertThrows(GroupNotFoundException.class, () -> findGroup(saveGroupId)),
-                () -> assertThrows(GroupRestNotFoundException.class, () -> findGroupRest(groupRest.getId()))
-        );
+                () -> assertThrows(GroupRestNotFoundException.class, () -> findGroupRest(groupRest.getId())),
+                () -> assertThrows(SubscriptionNotFoundException.class, () -> findSubscription(subscriptionId)
+                ));
     }
 
     @Test
@@ -243,5 +266,10 @@ public class GroupServiceTest {
     private GroupRest findGroupRest(Long groupRestId) {
         return groupRestRepository.findById(groupRestId)
                 .orElseThrow(() -> new GroupRestNotFoundException("groupRestId = " + groupRestId));
+    }
+
+    private Subscription findSubscription(Long subscriptionId) {
+        return subscriptionRepository.findById(subscriptionId)
+                .orElseThrow(() -> new SubscriptionNotFoundException("subscriptionId = " + subscriptionId));
     }
 }

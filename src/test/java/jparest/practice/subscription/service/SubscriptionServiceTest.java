@@ -9,6 +9,7 @@ import jparest.practice.group.exception.GroupNotFoundException;
 import jparest.practice.group.repository.GroupRepository;
 import jparest.practice.group.service.GroupService;
 import jparest.practice.subscription.domain.Subscription;
+import jparest.practice.subscription.dto.GetReceivedSubscriptionResponse;
 import jparest.practice.subscription.dto.ProcessSubscriptionRequest;
 import jparest.practice.subscription.dto.SubscribeForGroupRequest;
 import jparest.practice.subscription.exception.ExistWaitingSubscriptionException;
@@ -21,9 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static jparest.practice.common.fixture.GroupFixture.groupName1;
-import static jparest.practice.common.fixture.UserFixture.createFirstUser;
-import static jparest.practice.common.fixture.UserFixture.createSecondUser;
+import static jparest.practice.common.fixture.UserFixture.*;
 import static jparest.practice.subscription.domain.SubscriptionStatus.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,6 +36,7 @@ public class SubscriptionServiceTest {
 
     private User firstUser;
     private User secondUser;
+    private User thirdUser;
     private Group group;
 
     @Autowired
@@ -68,7 +71,7 @@ public class SubscriptionServiceTest {
         //given
         SubscribeForGroupRequest subscribeForGroupRequest = SubscribeForGroupRequest.builder()
                 .groupId(group.getId())
-                .message(SubscriptionFixture.message)
+                .message(SubscriptionFixture.message1)
                 .build();
 
         //when
@@ -84,7 +87,7 @@ public class SubscriptionServiceTest {
         //given
         SubscribeForGroupRequest subscribeForGroupRequest = SubscribeForGroupRequest.builder()
                 .groupId(group.getId())
-                .message(SubscriptionFixture.message)
+                .message(SubscriptionFixture.message1)
                 .build();
 
         //when
@@ -102,7 +105,7 @@ public class SubscriptionServiceTest {
         //given
         SubscribeForGroupRequest subscribeForGroupRequest = SubscribeForGroupRequest.builder()
                 .groupId(group.getId())
-                .message(SubscriptionFixture.message)
+                .message(SubscriptionFixture.message1)
                 .build();
 
         //when
@@ -114,7 +117,7 @@ public class SubscriptionServiceTest {
         assertAll(
                 () -> assertEquals(secondUser, subscription.getApplicant(), "신청한 유저가 동일해야 한다."),
                 () -> assertEquals(group, subscription.getGroup(), "신청한 그룹이 동일해야 한다."),
-                () -> assertEquals(SubscriptionFixture.message, subscription.getMessage(), "신청 메시지가 동일해야 한다.")
+                () -> assertEquals(SubscriptionFixture.message1, subscription.getMessage(), "신청 메시지가 동일해야 한다.")
         );
     }
 
@@ -124,7 +127,7 @@ public class SubscriptionServiceTest {
         //given
         SubscribeForGroupRequest subscribeForGroupRequest = SubscribeForGroupRequest.builder()
                 .groupId(group.getId())
-                .message(SubscriptionFixture.message)
+                .message(SubscriptionFixture.message1)
                 .build();
 
         subscriptionService.subscribeForGroup(secondUser, subscribeForGroupRequest);
@@ -149,7 +152,7 @@ public class SubscriptionServiceTest {
         //given
         SubscribeForGroupRequest subscribeForGroupRequest = SubscribeForGroupRequest.builder()
                 .groupId(group.getId())
-                .message(SubscriptionFixture.message)
+                .message(SubscriptionFixture.message1)
                 .build();
 
         subscriptionService.subscribeForGroup(secondUser, subscribeForGroupRequest);
@@ -175,7 +178,7 @@ public class SubscriptionServiceTest {
         //given
         SubscribeForGroupRequest subscribeForGroupRequest = SubscribeForGroupRequest.builder()
                 .groupId(group.getId())
-                .message(SubscriptionFixture.message)
+                .message(SubscriptionFixture.message1)
                 .build();
 
         subscriptionService.subscribeForGroup(secondUser, subscribeForGroupRequest);
@@ -192,6 +195,35 @@ public class SubscriptionServiceTest {
                 () -> assertEquals(false, secondUser.isJoinGroup(group),
                         "가입신청한 유저는 그룹원이 되지 않는다."),
                 () -> assertEquals(CANCEL, subscription.getStatus(), "가입 신청 상태는 거절상태로 변경된다.")
+        );
+    }
+
+    @Test
+    public void 그룹원이_가입신청내역_조회_시() throws Exception {
+
+        //given
+        thirdUser = userAuthService.join(createThirdUser());
+
+        SubscribeForGroupRequest subscribeForGroupRequest1 = SubscribeForGroupRequest.builder()
+                .groupId(group.getId())
+                .message(SubscriptionFixture.message1)
+                .build();
+
+        SubscribeForGroupRequest subscribeForGroupRequest2 = SubscribeForGroupRequest.builder()
+                .groupId(group.getId())
+                .message(SubscriptionFixture.message2)
+                .build();
+
+        subscriptionService.subscribeForGroup(secondUser, subscribeForGroupRequest1);
+        subscriptionService.subscribeForGroup(thirdUser, subscribeForGroupRequest2);
+
+        //when
+        List<GetReceivedSubscriptionResponse> receivedSubscription =
+                subscriptionService.getReceivedSubscription(firstUser, group.getId());
+
+        //then
+        assertAll(
+                () -> assertEquals(2, receivedSubscription.size(), "리스트 수가 동일하다.")
         );
     }
 
