@@ -217,8 +217,6 @@ public class SubscriptionServiceTest {
         subscriptionService.subscribeForGroup(secondUser, subscribeForGroupRequest1);
         subscriptionService.subscribeForGroup(thirdUser, subscribeForGroupRequest2);
 
-        Subscription subscription = group.getSubscriptions().get(0);
-
         //when
         List<GetReceivedSubscriptionResponse> receivedSubscription =
                 subscriptionService.getReceivedSubscription(firstUser, group.getId());

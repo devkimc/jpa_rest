@@ -7,7 +7,8 @@ import java.util.UUID;
 
 public class UserFixture {
     public static final String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBQ0NFU1NfVE9LRU4iLCJhdXRoIjoiUk9MRV9HRU5FUkFMIiwidXNlcklkIjoiMTIzMTIzMTMxMjMxMjMiLCJpc3MiOiJqcGEucmVzdC53c2tpbSIsImlhdCI6MTY4NjEwMzA4NiwiZXhwIjoxNjg2MTAzMDg5fQ.JY0kvn7RBCdDGi8Pakk71EKgy0LF9aHw9LtFqugUeBQ";
-    public static final UUID userId = UUID.fromString("43f28ebf-8921-477c-8089-dfa50d587697");
+    public static final UUID userId1 = UUID.fromString("43f28ebf-8921-477c-8089-dfa50d587697");
+    public static final UUID userId2 = UUID.fromString("1ee2aee3-1410-4f00-8a4e-447459bf7c90");
     public static final String socialUserId1 = "123123";
     public static final String socialUserId2 = "234234";
     public static final String socialUserId3 = "356789";

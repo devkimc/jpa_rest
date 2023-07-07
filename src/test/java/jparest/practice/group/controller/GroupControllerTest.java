@@ -16,7 +16,7 @@ import java.util.List;
 
 import static jparest.practice.common.fixture.GroupFixture.groupName1;
 import static jparest.practice.common.fixture.UserFixture.nickname1;
-import static jparest.practice.common.fixture.UserFixture.userId;
+import static jparest.practice.common.fixture.UserFixture.userId1;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -207,7 +207,7 @@ public class GroupControllerTest extends RestDocsTestSupport {
 
         //given
         ChangeOwnerRequest changeOwnerRequest = ChangeOwnerRequest.builder()
-                .successorId(userId)
+                .successorId(userId1)
                 .build();
 
         LocalDateTime currentTime = LocalDateTime.now();
