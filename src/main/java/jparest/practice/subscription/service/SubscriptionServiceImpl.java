@@ -103,6 +103,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<GetReceivedSubscriptionResponse> getReceivedSubscription(User user, Long groupId) {
         return subscriptionRepository.findAllByGroupIdAndStatus(groupId, WAITING);
     }

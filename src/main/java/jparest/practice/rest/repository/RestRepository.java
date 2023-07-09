@@ -14,8 +14,7 @@ public interface RestRepository extends JpaRepository<Rest, String> {
 
     @Query("SELECT " +
             "NEW jparest.practice.rest.dto.GetFavRestListResponse( " +
-            "r.id, r.restName, r.latitude, r.longitude " +
-            ") " +
+            "r.id, r.restName, r.latitude, r.longitude ) " +
             "FROM Rest r JOIN r.groupRests gr WHERE gr.group.id = :groupId")
     Page<GetFavRestListResponse> findAllByGroupId(@Param("groupId") Long groupId, Pageable pageable);
 

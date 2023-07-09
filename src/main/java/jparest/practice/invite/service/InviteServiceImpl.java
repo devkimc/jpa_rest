@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -109,27 +108,7 @@ public class InviteServiceImpl implements InviteService {
     @Override
     @Transactional(readOnly = true)
     public List<GetWaitingInviteResponse> getWaitingInviteList(User user) {
-        List<Invite> invites = findInviteAllByUserIdAndStatus(user.getId(), WAITING);
-
-        if(invites == null) {
-            return new ArrayList<>(0);
-        }
-
-        List<GetWaitingInviteResponse> result = new ArrayList<GetWaitingInviteResponse>(invites.size());
-
-        for (Invite invite : invites
-        ) {
-            result.add(GetWaitingInviteResponse.builder()
-                    .inviteId(invite.getId())
-                    .nickName(invite.getSendGroupUser().getUser().getNickname())
-                    .groupName(invite.getSendGroupUser().getGroup().getGroupName())
-                    .build());
-        }
-        return result;
-    }
-
-    private List<Invite> findInviteAllByUserIdAndStatus(UUID userId, InviteStatus status) {
-        return inviteRepository.findAllByRecvUserIdAndStatus(userId, status).get();
+        return inviteRepository.findAllByRecvUserIdAndStatus(user.getId(), WAITING);
     }
 
     private Invite findInvite(Long inviteId) {
