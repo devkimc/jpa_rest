@@ -21,8 +21,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
 
     @Query("SELECT " +
             "NEW jparest.practice.subscription.dto.GetReceivedSubscriptionResponse( " +
-            "s.id, s.applicant.id, s.applicant.nickname, s.message, s.createdAt " +
-            ") " +
+            "s.id, s.applicant.id, s.applicant.nickname, s.message, s.createdAt ) " +
             "FROM Subscription s WHERE s.group.id = :groupId AND status = :status")
     List<GetReceivedSubscriptionResponse> findAllByGroupIdAndStatus(@Param("groupId") Long groupId,
                                                                     @Param("status") SubscriptionStatus status);

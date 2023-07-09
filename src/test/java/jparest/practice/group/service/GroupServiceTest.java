@@ -36,7 +36,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 import static jparest.practice.common.fixture.GroupFixture.groupName1;
 import static jparest.practice.common.fixture.GroupFixture.groupName2;
@@ -113,7 +112,7 @@ public class GroupServiceTest {
         CreateGroupResponse response = groupService.createGroup(firstUser, createFirstGroupRequest);
 
         Group group = findGroup(response.getId());
-        GroupUser groupUser = findGroupUser(firstUser.getId(), group.getId());
+        GroupUser groupUser = findGroupUser(firstUser, group.getId());
 
         //then
         assertAll(
@@ -132,7 +131,7 @@ public class GroupServiceTest {
         groupService.withdrawGroup(firstUser, saveGroupId);
 
         //then
-        assertThrows(GroupUserNotFoundException.class, () -> findGroupUser(firstUser.getId(), saveGroupId));
+        assertThrows(GroupUserNotFoundException.class, () -> findGroupUser(firstUser, saveGroupId));
     }
 
     @Test
@@ -161,7 +160,7 @@ public class GroupServiceTest {
 
         //then
         assertAll(
-                () -> assertThrows(GroupUserNotFoundException.class, () -> findGroupUser(firstUser.getId(), saveGroupId)),
+                () -> assertThrows(GroupUserNotFoundException.class, () -> findGroupUser(firstUser, saveGroupId)),
                 () -> assertThrows(InviteNotFoundException.class, () -> findInvite(response.getInviteId())),
                 () -> assertThrows(GroupNotFoundException.class, () -> findGroup(saveGroupId)),
                 () -> assertThrows(GroupRestNotFoundException.class, () -> findGroupRest(groupRest.getId())),
@@ -253,9 +252,9 @@ public class GroupServiceTest {
                 .orElseThrow(() -> new GroupNotFoundException("groupId = " + groupId));
     }
 
-    private GroupUser findGroupUser(UUID userId, Long groupId) {
-        return groupUserRepository.findByUserIdAndGroupId(userId, groupId)
-                .orElseThrow(() -> new GroupUserNotFoundException("userId = " + userId + ", groupId = " + groupId));
+    private GroupUser findGroupUser(User user, Long groupId) {
+        return groupUserRepository.findByUserAndGroupId(user, groupId)
+                .orElseThrow(() -> new GroupUserNotFoundException("userId = " + user.getId() + ", groupId = " + groupId));
     }
 
     private Invite findInvite(Long inviteId) {

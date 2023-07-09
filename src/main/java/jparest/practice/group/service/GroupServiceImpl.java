@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,7 +55,7 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public Boolean withdrawGroup(User user, Long groupId) {
 
-        GroupUser findGroupUser = findGroupUser(user.getId(), groupId);
+        GroupUser findGroupUser = findGroupUser(user, groupId);
 
         Group group = findGroupUser.getGroup();
 
@@ -102,6 +101,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public ChangeOwnerResponse changeOwner(User user, Long groupId, ChangeOwnerRequest changeOwnerRequest) {
+
         List<GroupUser> groupUserList = findAllGroupUserByGroupId(groupId);
 
         // 1. 전임자의 역할 체크
@@ -166,13 +166,14 @@ public class GroupServiceImpl implements GroupService {
         );
     }
 
-    private GroupUser findGroupUser(UUID userId, Long groupId) {
-        return groupUserRepository.findByUserIdAndGroupId(userId, groupId)
-                .orElseThrow(() -> new GroupUserNotFoundException("userId = " + userId + ", groupId = " + groupId));
+    private GroupUser findGroupUser(User user, Long groupId) {
+        return groupUserRepository.findByUserAndGroupId(user, groupId)
+                .orElseThrow(() -> new GroupUserNotFoundException("userId = " + user.getId() + ", groupId = " + groupId));
     }
 
     private List<GroupUser> findAllGroupUserByGroupId(Long groupId) {
         return groupUserRepository.findAllByGroupId(groupId)
                 .orElseThrow(() -> new GroupUserNotFoundException("groupId = " + groupId));
     }
+
 }
